@@ -3,6 +3,8 @@
 # INT: intentos, codigo_nove1, codigo_nove2, codigo_nove3, opc, nuevo_codigo, opc_novedad, opc_aspecto, mayor, menor, contador_arg, contador_bra, contador_chi, opc_input, codigo_IATA
 # BOOL: fecha_valida
 #chau
+#hola que tal
+
 import os
 from datetime import datetime
 import getpass
