@@ -3,11 +3,12 @@
 # INT: intentos, codigo_nove1, codigo_nove2, codigo_nove3, opc, nuevo_codigo, opc_novedad, opc_aspecto, mayor, menor, contador_arg, contador_bra, contador_chi, opc_input, codigo_IATA
 # BOOL: fecha_valida
 
+
 import os
 from datetime import datetime
 import getpass
 
-intentos = 3
+
 
 us_admin = "admin@ventaspasajes777.com"
 contrasenia_admin = "admin"
@@ -387,9 +388,9 @@ def menu_gestion_aereo(): #menu 1
             case 4:
                 volver()
 
-def mostrar_menu_principal():
+def mostrar_menu_principal_admin():
     print("╔════════════════════════════════════╗")
-    print("║      🏠  MENÚ PRINCIPAL  🏠        ║")
+    print("║ 🏠    MENÚ PRINCIPAL ADMIN  🏠        ║")
     print("╚════════════════════════════════════╝\n")
     print("1) Gestión de Aerolíneas 🛩️")
     print("2) Aprobar / Denegar Promociones💲")
@@ -397,15 +398,15 @@ def mostrar_menu_principal():
     print("4) Mostrar Reportes 📊")
     print("5) Salir del Programa ❌")
 
-def menu_principal():
+def menu_administrador():
     opc = -1
     while opc != 5:
-        mostrar_menu_principal()
+        mostrar_menu_principal_admin()
         opc = validar_entero()
         os.system('cls')
         while opc < 1 or opc > 5:
             print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
-            mostrar_menu_principal()
+            mostrar_menu_principal_admin()
             opc = validar_entero()
             os.system('cls')
         match opc:
@@ -420,17 +421,158 @@ def menu_principal():
             case 5:
                 os.system('cls') #se borra la consola ya que la consigna dice que con salir se abandona el sistema
 
-while intentos != 0:
-    usuario = (input("Ingrese su usuario: "))
-    contrasenia = getpass.getpass(prompt="Ingrese la contraseña: ")
-    os.system('cls')
-    if usuario == us_admin and contrasenia == contrasenia_admin: 
-            intentos = 0 #se pone el intentos 0 para despues forzar a que se cierre el programa al cerrar cesion (segun consigna)
-            menu_principal()
+usuarios = [[""] * 3 for i in range(10)]
+cantidad_nuevos_usuarios = 0
+
+def menu_ceo():
+    print("entro")
+    
+def menu_usuario():
+    print("entro")
+    
+
+def CargaUsuarios(usuarios):
+    # Inicializar matriz de 10 usuarios con 4 columnas (email, clave, rol, extra opcional)
+    
+
+    # Administrador
+    usuarios[0][0] = "admin@ventaspasajes777.com"
+    usuarios[0][1] = "admin123"
+    usuarios[0][2] = "administrador"
+
+    # CEOs
+    usuarios[1][0] = "ceo1@ventaspasajes777.com"
+    usuarios[1][1] = "ceo123"
+    usuarios[1][2] = "ceo"
+
+    usuarios[2][0] = "ceo2@ventaspasajes777.com"
+    usuarios[2][1] = "ceo456"
+    usuarios[2][2] = "ceo"
+
+    usuarios[3][0] = "ceo3@ventaspasajes777.com"
+    usuarios[3][1] = "ceo789"
+    usuarios[3][2] = "ceo"
+
+    usuarios[4][0] = "ceo4@ventaspasajes777.com"
+    usuarios[4][1] = "ceo321"
+    usuarios[4][2] = "ceo"
+
+    usuarios[5][0] = "ceo5@ventaspasajes777.com"
+    usuarios[5][1] = "ceo654"
+    usuarios[5][2] = "ceo"
+
+    # Usuarios comunes
+    usuarios[6][0] = "usuario1@ventaspasajes777.com"
+    usuarios[6][1] = "usuario123"
+    usuarios[6][2] = "usuario"
+
+    usuarios[7][0] = "usuario2@ventaspasajes777.com"
+    usuarios[7][1] = "usuario456"
+    usuarios[7][2] = "usuario"
+
+CargaUsuarios(usuarios)
+
+def busquedaSecuencial (arreglo, elemento_buscado, columna):
+    cant_filas = len(arreglo)
+    i=0
+    while i<cant_filas-1 and arreglo[i][columna]!=elemento_buscado:
+        i=i+1
+    if arreglo[i][columna]==elemento_buscado:
+        return i
     else:
-        intentos = intentos - 1
-        if intentos == 0: 
-            print("\nHubieron 3 intentos fallidos. Por medidas de seguridad se cerrara el programa\n")
+        return-1
+
+       
+def registrarse(usuarios):
+    registrado = False
+    mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
+    while mail == "":
+            print("\nDebe ingresar un mail")
+            mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
+    while mail != "*" and not registrado:
+        posicion = busquedaSecuencial(usuarios, "", 0)
+        if posicion ==-1:
+            input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
+            mail = "*"
         else:
-            print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
-print("Se ha cerrado el programa")
+            encontrado = busquedaSecuencial(usuarios, mail, 0)
+            if encontrado == -1:
+                usuarios[posicion][0] = mail
+                usuarios[posicion][2] = "usuario"
+                contrasenia = input("Ingrese la contraseña: ")
+                usuarios[posicion][1] = contrasenia
+                registrado = True
+            else:
+                print("El mail ya fue utilizado. Intentelo nuevamente con un correo distinto")
+                mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
+                while mail == "":
+                    print("\nDebe ingresar un mail")
+                    mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
+    os.system('cls')
+    
+    
+def menu_login():
+    print("╔════════════════════════════════════╗")
+    print("║       🏠  INICIAR SESION  🏠       ║")
+    print("╚════════════════════════════════════╝\n")
+        
+def login(usuarios):
+    intentos = 3
+    menu_login()
+    mail_usuario = input("\nIngrese su usuario: (* para volver): ")
+    while intentos != 0 and mail_usuario!="*":
+        contrasenia = getpass.getpass(prompt="Ingrese la contraseña: ")
+        os.system('cls')
+        posicion = busquedaSecuencial(usuarios, mail_usuario , 0)
+        if posicion !=-1:
+            if  contrasenia == usuarios[posicion][1]: 
+                intentos = 3 
+                tipo_usuario = usuarios[posicion][2]
+                if tipo_usuario == "administrador":
+                    menu_administrador()
+                elif tipo_usuario == "ceo":
+                    menu_ceo()
+                else:
+                    menu_usuario()
+            else:
+                intentos = intentos -1
+                print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
+        else:
+            intentos = intentos - 1
+            if intentos == 0: 
+                print("\nHubieron 3 intentos fallidos. Por medidas de seguridad se cerrara el programa\n")
+            else:
+                print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
+        menu_login()
+        mail_usuario = input("Ingrese su mail: (* para volver)")
+    os.system('cls')
+
+def mostrar_primer_menu():
+    print("╔════════════════════════════════════╗")
+    print("║      🏠   BIENVENIDO     🏠        ║")
+    print("╚════════════════════════════════════╝\n")
+    print("1) Registrarse")
+    print("2) Iniciar sesion")
+    print("3) Salir")
+    
+mostrar_primer_menu()
+opc = validar_entero()
+while opc!= 3:
+    while opc <  1 or opc >3:
+        print("⚠️   Opción no válida. Inténtelo nuevamente.")
+        mostrar_primer_menu
+        opc = validar_entero()
+    os.system('cls')
+    match opc:
+        case 1:
+            registrarse(usuarios)
+            mostrar_primer_menu()
+            opc = validar_entero()
+        case 2:
+            login(usuarios)
+            mostrar_primer_menu()
+            opc = validar_entero()
+        case 3:
+            print()
+print("Cerrando programa...")
+        
