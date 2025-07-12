@@ -421,14 +421,159 @@ def menu_administrador():
             case 5:
                 os.system('cls') #se borra la consola ya que la consigna dice que con salir se abandona el sistema
 
-usuarios = [[""] * 3 for i in range(10)]
-cantidad_nuevos_usuarios = 0
+
+
+def mostrar_menu_gestion_vuelos():
+    print("╔════════════════════════════════════════╗")
+    print("║    🛩️  MENÚ DE GESTIÓN DE VUELOS 🛩️      ║")
+    print("╚════════════════════════════════════════╝\n")
+    print("1) Crear Vuelo ✈️")
+    print("2) Modificar Vuelo ✏️")
+    print("3) Eliminar Vuelo 🗑️")
+    print("4) Volver al Menú Principal 🔙") 
+
+def  menu_gestion_vuelos():
+    mostrar_menu_gestion_vuelos()
+    entro = input()
+
+def  mostrar_menu_gestion_promociones():
+    print("╔════════════════════════════════════════╗")
+    print("║ 💲 MENÚ DE GESTIÓN DE PROMOCIONES 💲   ║")
+    print("╚════════════════════════════════════════╝\n")
+    print("1) Crear  Promoción💲 ") 
+    print("2) Modificar  Promoción ✏️")
+    print("3) Eliminar  Promoción 🗑️")
+    print("4) Volver al Menú Principal 🔙") 
+
+    
+def  menu_gestion_promociones():
+    mostrar_menu_gestion_promociones()
+    entro = input()
+
+def  mostrar_menu_reportes():
+    print("╔════════════════════════════════════════╗")
+    print("║        📊  MENÚ DE REPORTES 📊         ║")
+    print("╚════════════════════════════════════════╝\n")
+    print("1) Reporte de ventas de mi Aerolínea 💲") 
+    print("2) Reporte de ocupación de Vuelos de mi Aerolínea 📆")
+    print("3) Volver al Menú Principal 🔙")
+        
+def  menu_reportes_ceo():
+    mostrar_menu_reportes()
+    entro = input()
+
+
+def mostrar_menu_principal_ceo():
+    print("╔════════════════════════════════════╗")
+    print("║   🏠   MENÚ PRINCIPAL CEO   🏠     ║")
+    print("╚════════════════════════════════════╝\n")
+    print("1) Gestión de Vuelos 🛩️")
+    print("2) Gestión de  Promociones💲")
+    print("3) Reportes 📊")
+    print("4) Salir del Programa ❌")
+    
+
 
 def menu_ceo():
-    print("entro")
+    opc = -1
+    while opc != 4:
+        mostrar_menu_principal_ceo()
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        while opc < 1 or opc > 4:
+            print("⚠️  Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_principal_ceo()
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        match opc:
+            case 1:
+                menu_gestion_vuelos()
+            case 2:
+                menu_gestion_promociones()
+            case 3:
+                menu_reportes_ceo()
+            case 4:
+                print("Cerrando sesión...\n")
+                os.system('cls' if os.name == 'nt' else 'clear')
+
+def  buscar_vuelos():
+    print("entra a vuelos")
+    entra = input()
+
+def  buscar_asientos():
+    print("entra a asientos")
+    entra = input()
+
+def  reservar_vuelo():
+    print("entra a reservar vuelo")
+    entra = input()
+    
+def mostrar_menu_reservas():
+    print("╔════════════════════════════════════════╗")
+    print("║  📆  MENÚ DE GESTION DE RESERVAS 📆    ║")
+    print("╚════════════════════════════════════════╝\n")
+    print("1) Consultar Reservas 📆") 
+    print("2) Cancelar o Confirmar Reservas 📆")
+    print("3) Volver al Menú Principal 🔙") 
+    
+def  menu_gestion_reservas():
+    mostrar_menu_reservas()
+    entra = input()
+
+def  ver_historial_compras():
+    print("entra a historial")
+    entra = input()
+
+def  ver_novedades():
+    print("entra a novedad")
+    entra = input()
+
+def  mostrar_menu_principal_usuario():
+    print("╔════════════════════════════════════╗")
+    print("║   👤 MENÚ PRINCIPAL USUARIO  👤    ║")
+    print("╚════════════════════════════════════╝\n")
+    print("1) Buscar Vuelos 🛩️")
+    print("2) Buscar Asientos💺")
+    print("3) Reservar Vuelos 🛩️")
+    print("4) Gestionar Reservas 📆")
+    print("5) Ver Historial de Compras 💲")
+    print("6) Ver Novedades 📑")
+    print("7) Cerrar Sesión ❌")
     
 def menu_usuario():
-    print("entro")
+     opc = -1
+     while opc != 7:
+        mostrar_menu_principal_usuario()
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        while opc < 1 or opc > 7:
+            print("⚠️  Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_principal_usuario()
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        match opc:
+            case 1:
+                buscar_vuelos()
+            case 2:
+                buscar_asientos()
+            case 3:
+                reservar_vuelo()
+            case 4:
+                menu_gestion_reservas()
+            case 5:
+                ver_historial_compras()
+            case 6:
+                ver_novedades()
+            case 7:
+                print("Cerrando sesión...\n")
+                os.system('cls' if os.name == 'nt' else 'clear')
+    
+usuarios = [[""] * 3 for i in range(10)]
+cantidad_nuevos_usuarios = 0
     
 
 def CargaUsuarios(usuarios):
@@ -544,7 +689,7 @@ def login(usuarios):
             else:
                 print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
         menu_login()
-        mail_usuario = input("Ingrese su mail: (* para volver)")
+        mail_usuario = input("Ingrese su mail (* para volver):")
     os.system('cls')
 
 def mostrar_primer_menu():
