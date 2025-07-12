@@ -257,8 +257,7 @@ def pedir_codigo_aerolinea():
     codigo = input("Ingrese código de la aerolinea: ")
     while not (1 <= len(codigo) <= 5):   
         print("El código debe tener como máximo 5 caracteres")
-        codigo = input("Ingrese código de la aerolinea: ")
-        codigo = codigo.upper()
+        codigo = input("Ingrese código de la aerolinea: ").upper()
     return codigo
 
 def obtener_pos_menor(arreglo):
@@ -323,7 +322,7 @@ def crear_aereo(aerolineas):
 def modificar_aereo(aerolineas): #falta testear
     os.system('cls')
     
-    codigo = input("Ingrese el código de la aerolínea que desea modificar (0 para salir): ")
+    codigo = input("Ingrese el código de la aerolínea que desea modificar (0 para salir): ").upper()
 
     while codigo != "0":
         pos = busquedaSecuencial(aerolineas, codigo, 0)
@@ -394,7 +393,7 @@ def menu_gestion_aereo(aerolineas): #menu 1
             case 1:
                 crear_aereo(aerolineas)
             case 2:
-                en_construccion()
+                modificar_aereo(aerolineas)
             case 3:
                 en_construccion()
             case 4:
