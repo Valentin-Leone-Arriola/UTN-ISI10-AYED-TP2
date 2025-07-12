@@ -3,7 +3,7 @@
 # INT: intentos, codigo_nove1, codigo_nove2, codigo_nove3, opc, nuevo_codigo, opc_novedad, opc_aspecto, mayor, menor, contador_arg, contador_bra, contador_chi, opc_input, codigo_IATA
 # BOOL: fecha_valida
 
-
+import pwinput
 import os
 from datetime import datetime
 import getpass
@@ -519,9 +519,9 @@ def menu_login():
 def login(usuarios):
     intentos = 3
     menu_login()
-    mail_usuario = input("\nIngrese su usuario: (* para volver): ")
+    mail_usuario = input("\nIngrese su usuario (* para volver): ")
     while intentos != 0 and mail_usuario!="*":
-        contrasenia = getpass.getpass(prompt="Ingrese la contraseña: ")
+        contrasenia = pwinput.pwinput(prompt="Ingrese la contraseña: ")
         os.system('cls')
         posicion = busquedaSecuencial(usuarios, mail_usuario , 0)
         if posicion !=-1:
