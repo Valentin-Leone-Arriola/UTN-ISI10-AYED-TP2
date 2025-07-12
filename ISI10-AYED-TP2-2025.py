@@ -9,6 +9,41 @@ from datetime import datetime
 import getpass
 
 
+#PROCEDIMIENTOS Y FUNCIONES GENERALES
+
+def validar_entero():
+    opc_input = input("\nSeleccione una opción valida: ")
+    if opc_input.isdigit():
+        return(int(opc_input))
+    else:
+        return -1
+
+def en_construccion():
+    input("En construccion. Presione enter para continuar")
+    os.system('cls')
+
+def volver():
+    input("Regresando al menu anterior. Presione enter para continuar")
+    os.system('cls')
+    
+def add_item(arreglo, valores_fila, posicion):
+    for i in range(len(valores_fila)): #[0-1-2]
+        arreglo[posicion][i] = valores_fila[i]
+        
+def pedir_fecha_valida():
+    fecha_valida = False
+    while not fecha_valida:
+        fecha = input("Ingrese la fecha en formato dd/mm/aaaa: ")
+        try:
+            datetime.strptime(fecha,"%d/%m/%Y")
+            fecha_valida = True
+        except:
+            print("Error: Fecha inexistente. Verificá los valores.\n")
+    return fecha 
+
+#MENU ADMINISTRADOR
+
+#############
 
 us_admin = "admin@ventaspasajes777.com"
 contrasenia_admin = "admin"
@@ -26,31 +61,7 @@ texto_nove3 = "los vuelos con destino a Miami seran suspendidos por fuertes torm
 fecha_ini_nove3 = "04/08/2025"
 fecha_fin_nove3 = '11/08/2025'
 
-def validar_entero():
-    opc_input = input("\nSeleccione una opción valida: ")
-    if opc_input.isdigit():
-        return(int(opc_input))
-    else:
-        return -1
 
-def pedir_fecha_valida():
-    fecha_valida = False
-    while not fecha_valida:
-        fecha = input("Ingrese la fecha en formato dd/mm/aaaa: ")
-        try:
-            datetime.strptime(fecha,"%d/%m/%Y")
-            fecha_valida = True
-        except:
-            print("Error: Fecha inexistente. Verificá los valores.\n")
-    return fecha
-
-def en_construccion():
-    input("En construccion. Presione enter para continuar")
-    os.system('cls')
-
-def volver():
-    input("Regresando al menu anterior. Presione enter para continuar")
-    os.system('cls')
 
 def mostrar_menu_report():
     print("╔═════════════════════════════════════╗")
@@ -112,7 +123,7 @@ def ver_nov():
     input("Presione enter para continuar")
     os.system('cls') """
 
-def validar_codigo():
+def validar_codigo(): #DE LA NOVEDAD
     nuevo_codigo = -1
     while nuevo_codigo <0:
         nuevo_codigo = input("Ingrese el nuevo codigo (DEBE SER ENTERO POSITIVO, 0 PARA SALIR)\n")
@@ -301,34 +312,43 @@ def pedir_codigo_pais():
         print("")
     return codigo_pais
 
-def crear_aereo():
+def pedir_codigo_IATA():
+    codigo = input("Ingrese código IATA: ")
+    while not (1 <= len(codigo) <= 3):   
+        print("El código debe tener como máximo 3 caracteres")
+        codigo = input("Ingrese código IATA: ")
+    return codigo
+
+def crear_aereo(aerolineas):
     nombre_aereo = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n')
-    contador_arg = 0
-    contador_chi = 0
-    contador_bra = 0
-    while nombre_aereo != "0":
-        codigo_IATA = 1000
-        while codigo_IATA > 999 or codigo_IATA < 1:
-            codigo_IATA = input("\nIngrese el codigo IATA\n")
-            if codigo_IATA.isdigit():
-                codigo_IATA = int(codigo_IATA)
-                if codigo_IATA > 999 or codigo_IATA < 1:
-                    print("\nEl codigo debe ser de un maximo de 3 digitos y mayor a 0. Intentelo nuevamente.")
-            else:
-                print("\nEl codigo debe ser un numero entero positivo. Intentelo nuevamente.")
-                codigo_IATA = 0
-        descripcion_aereo = input("\nIngrese la descripcion del vuelo\n")
-        codigo_pais = pedir_codigo_pais()
-        match codigo_pais:
-            case "ARG":
-                contador_arg+=1
-            case "BRA":
-                contador_bra+=1
-            case "CHI":
-                contador_chi+=1
-        os.system('cls')
-        nombre_aereo = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n')
-        
+    cantidad_aereo =  busquedaSecuencial(aerolineas,"",0)
+    if cantidad_aereo ==-1:
+        input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
+        nombre_aereo = "0"
+    else:
+        contador_arg = 0
+        contador_chi = 0
+        contador_bra = 0
+        while nombre_aereo != "0" and cantidad_aereo<5:
+            aerolineas[cantidad_aereo][0]=input("Ingrese el codigo de aerolinea")
+            aerolineas[cantidad_aereo][1]=nombre_aereo
+            aerolineas[cantidad_aereo][2] = pedir_codigo_IATA()
+            aerolineas[cantidad_aereo][3]= input("\nIngrese la descripcion del vuelo\n")
+            codigo_pais = pedir_codigo_pais()
+            aerolineas[cantidad_aereo][4]=codigo_pais
+            match codigo_pais:
+                case "ARG":
+                    contador_arg+=1
+                case "BRA":
+                    contador_bra+=1
+                case "CHI":
+                    contador_chi+=1
+            os.system('cls')
+            cantidad_aereo = cantidad_aereo+1
+            nombre_aereo = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n')
+    
+    
+    
     if contador_arg == contador_chi == contador_bra:
         print("Los tres codigos (ARG, CHI y BRA) tienen la misma cantidad de aerolineas cargadas:", contador_arg)
         print("")
@@ -357,6 +377,8 @@ def crear_aereo():
         print("Menor:", codigo_menor, "con una cantidad de aerolineas cargada de", menor)
         print("")
     volver()
+    
+
 
 def mostrar_menu_gestion_aereo():
     print("╔════════════════════════════════════════╗")
@@ -367,7 +389,7 @@ def mostrar_menu_gestion_aereo():
     print("3) Eliminar Aerolínea 🗑️")
     print("4) Volver al Menú Principal 🔙")
 
-def menu_gestion_aereo(): #menu 1
+def menu_gestion_aereo(aerolineas): #menu 1
     opc = -1
     while opc != 4:
         mostrar_menu_gestion_aereo()
@@ -380,7 +402,7 @@ def menu_gestion_aereo(): #menu 1
             os.system('cls')
         match opc:
             case 1:
-                crear_aereo()
+                crear_aereo(aerolineas)
             case 2:
                 en_construccion()
             case 3:
@@ -398,7 +420,7 @@ def mostrar_menu_principal_admin():
     print("4) Mostrar Reportes 📊")
     print("5) Salir del Programa ❌")
 
-def menu_administrador():
+def menu_administrador(aerolineas):
     opc = -1
     while opc != 5:
         mostrar_menu_principal_admin()
@@ -411,7 +433,7 @@ def menu_administrador():
             os.system('cls')
         match opc:
             case 1:
-                menu_gestion_aereo()
+                menu_gestion_aereo(aerolineas)
             case 2:
                 en_construccion()
             case 3:
@@ -420,9 +442,6 @@ def menu_administrador():
                 menu_report()
             case 5:
                 os.system('cls') #se borra la consola ya que la consigna dice que con salir se abandona el sistema
-
-usuarios = [[""] * 3 for i in range(10)]
-cantidad_nuevos_usuarios = 0
 
 def menu_ceo():
     print("entro")
@@ -470,7 +489,7 @@ def CargaUsuarios(usuarios):
     usuarios[7][1] = "usuario456"
     usuarios[7][2] = "usuario"
 
-CargaUsuarios(usuarios)
+
 
 def busquedaSecuencial (arreglo, elemento_buscado, columna):
     cant_filas = len(arreglo)
@@ -516,7 +535,7 @@ def menu_login():
     print("║       🏠  INICIAR SESION  🏠       ║")
     print("╚════════════════════════════════════╝\n")
         
-def login(usuarios):
+def login(usuarios,aerolineas):
     intentos = 3
     menu_login()
     mail_usuario = input("\nIngrese su usuario (* para volver): ")
@@ -529,7 +548,7 @@ def login(usuarios):
                 intentos = 3 
                 tipo_usuario = usuarios[posicion][2]
                 if tipo_usuario == "administrador":
-                    menu_administrador()
+                    menu_administrador(aerolineas)
                 elif tipo_usuario == "ceo":
                     menu_ceo()
                 else:
@@ -554,7 +573,16 @@ def mostrar_primer_menu():
     print("1) Registrarse")
     print("2) Iniciar sesion")
     print("3) Salir")
-    
+
+
+
+
+#PROGRAMA PRINCIPAL
+
+usuarios = [[""] * 3 for i in range(10)]
+cantidad_nuevos_usuarios = 0
+aerolineas = [[""] * 5 for i in range(5)]
+CargaUsuarios(usuarios)
 mostrar_primer_menu()
 opc = validar_entero()
 while opc!= 3:
@@ -569,7 +597,7 @@ while opc!= 3:
             mostrar_primer_menu()
             opc = validar_entero()
         case 2:
-            login(usuarios)
+            login(usuarios,aerolineas)
             mostrar_primer_menu()
             opc = validar_entero()
         case 3:
