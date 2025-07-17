@@ -443,7 +443,7 @@ def mostrar_menu_gestion_vuelos():
     print("3) Eliminar Vuelo 🗑️")
     print("4) Volver al Menú Principal 🔙") 
 
-def  menu_gestion_vuelos():
+def  menu_gestion_vuelos(vuelos):
     mostrar_menu_gestion_vuelos()
     entro = input()
 
@@ -485,7 +485,7 @@ def mostrar_menu_principal_ceo():
     
 
 
-def menu_ceo():
+def menu_ceo(vuelos):
     opc = -1
     while opc != 4:
         mostrar_menu_principal_ceo()
@@ -500,7 +500,7 @@ def menu_ceo():
 
         match opc:
             case 1:
-                menu_gestion_vuelos()
+                menu_gestion_vuelos(vuelos)
             case 2:
                 menu_gestion_promociones()
             case 3:
@@ -537,10 +537,6 @@ def  ver_historial_compras():
     print("entra a historial")
     entra = input()
 
-def  ver_novedades():
-    print("entra a novedad")
-    entra = input()
-
 def  mostrar_menu_principal_usuario():
     print("╔════════════════════════════════════╗")
     print("║   👤 MENÚ PRINCIPAL USUARIO  👤    ║")
@@ -553,7 +549,7 @@ def  mostrar_menu_principal_usuario():
     print("6) Ver Novedades 📑")
     print("7) Cerrar Sesión ❌")
     
-def menu_usuario():
+def menu_usuario(vuelos):
      opc = -1
      while opc != 7:
         mostrar_menu_principal_usuario()
@@ -685,7 +681,7 @@ def menu_login():
     print("║       🏠  INICIAR SESION  🏠       ║")
     print("╚════════════════════════════════════╝\n")
         
-def login(usuarios,novedades,aerolineas):
+def login(usuarios,novedades,aerolineas,vuelos):
     intentos = 3
     menu_login()
     mail_usuario = input("\nIngrese su usuario (* para volver): ")
@@ -700,9 +696,9 @@ def login(usuarios,novedades,aerolineas):
                 if tipo_usuario == "administrador":
                     menu_administrador(novedades,aerolineas)
                 elif tipo_usuario == "ceo":
-                    menu_ceo()
+                    menu_ceo(vuelos)
                 else:
-                    menu_usuario()
+                    menu_usuario(vuelos)
             else:
                 intentos = intentos -1
                 print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
@@ -733,6 +729,7 @@ cargarNovedades(novedades)
 usuarios = [[""] * 3 for i in range(10)]
 cargarUsuarios(usuarios)
 aerolineas = [[""] * 5 for i in range(5)]
+vuelos = [[""]* 5 for i in range(20)]
 
 mostrar_primer_menu()
 opc = validar_entero()
@@ -748,7 +745,7 @@ while opc!= 3:
             mostrar_primer_menu()
             opc = validar_entero()
         case 2:
-            login(usuarios,novedades,aerolineas)
+            login(usuarios,novedades,aerolineas,vuelos)
             mostrar_primer_menu()
             opc = validar_entero()
         case 3:
