@@ -7,7 +7,7 @@ import pwinput
 import os
 from datetime import datetime
 import getpass
-
+import random
 
 #PROCEDIMIENTOS Y FUNCIONES GENERALES
 
@@ -256,7 +256,7 @@ def pedir_codigo_IATA():
 def pedir_codigo_aerolinea():
     codigo = input("Ingrese código de la aerolinea: ")
     while not (1 <= len(codigo) <= 5):   
-        print("El código debe tener como máximo 5 caracteres")
+        print("El código debe tener como minimo 1 caracter y como máximo 5 caracteres")
         codigo = input("Ingrese código de la aerolinea: ").upper()
     return codigo
 
@@ -430,9 +430,8 @@ def menu_administrador(novedades,aerolineas):
             case 4:
                 menu_report()
             case 5:
-                os.system('cls') #se borra la consola ya que la consigna dice que con salir se abandona el sistema
-
-
+                os.system('cls')
+                volver()
 
 def mostrar_menu_gestion_vuelos():
     print("╔════════════════════════════════════════╗")
@@ -443,9 +442,123 @@ def mostrar_menu_gestion_vuelos():
     print("3) Eliminar Vuelo 🗑️")
     print("4) Volver al Menú Principal 🔙") 
 
+def validar_hora():
+    h = [0,0]
+    m = [0,0]
+    hora_valida = False
+    while not hora_valida:
+        hora = input("Ingrese la hora (HH:MM): ")
+        if len(hora) == 5 and hora[2] == ":":
+            for i in range(2):
+                j = i+3
+                h[i]=hora[i]
+                m[i]=hora[j]
+            if h.isdigit() and m.isdigit():
+                hh = int(h)
+                mm = int(m)
+                if hh >= 0 and hh <= 23 and mm >= 0 and mm <= 59:
+                    hora_valida = True
+                else:
+                    print("Hora fuera de rango.")
+            else:
+                print("Formato inválido. Solo números.")
+        else:
+            print("Formato incorrecto. Use HH:MM.")
+    return hora
+
+def validar_precio():
+    valido = False
+    while not valido:
+        entrada = input("Precio del vuelo: ")
+        i = 0
+        punto = 0
+        while i < len(entrada):
+            if entrada[i] == ".":
+                punto += 1
+            elif entrada[i] < "0" or entrada[i] > "9":
+                punto = 999  # fuerza error
+            i += 1
+        if punto <= 1 and len(entrada) > 0:
+            valido = True
+        else:
+            print("Precio inválido. Ingrese solo números.")
+    return float(entrada)
+
+def crear_vuelo(vuelos, precios_vuelos, asientos, cant_vuelos_aerolinea, asientos_por_avion):
+    
+    
+    print("\n--- CARGA DE VUELOS ---")
+    
+    pos = busquedaSecuencial(vuelos, "", 0) #VER
+    while pos!=-1 and pos<=19:
+
+        print("\nIngrese datos del vuelo (deje el codigo vacio para salir):")
+        codigo = input("Codigo de aerolinea: ").upper()
+        if codigo == "":
+            pos = 100
+        else:
+            pos_aerolinea = busquedaSecuencial(aerolineas, codigo, 0)
+            if pos_aerolinea == -1:
+                print("Aerolínea no encontrada. Intente nuevamente.")
+            else:
+                vuelos[pos][0] = codigo
+                vuelos[pos][1] = input("Origen: ").upper()
+                vuelos[pos][2] = input("Destino: ").upper()
+                vuelos[pos][3] = pedir_fecha_valida()
+                fecha_llegada = pedir_fecha_valida()
+                
+                while datetime.strptime(fecha_llegada, "%d/%m/%Y") > datetime.strptime(vuelos[pos][3], "%d/%m/%Y"):
+                    print("⚠️  La fecha de finalización no puede ser anterior a la de inicio")
+                    fecha_llegada = pedir_fecha_valida()
+                    
+                vuelos[pos][3] = fecha_llegada
+                vuelos[pos][4] = pedir_fecha_valida()
+                vuelos[pos][5] = validar_hora()
+                vuelos[pos][6] = "A"
+                precios_vuelos[pos] = validar_precio()
+                
+                
+                j = (pos * asientos_por_avion)/6
+                for i in range(asientos_por_avion/6):
+                    for k in range(3): #carga hasta pasillo
+                        asientos[j][k] = random.choice(["L", "O", "R"])
+                    for k in range(4,7): #carga dsp pasillo
+                        asientos[j][k] = random.choice(["L", "O", "R"])
+                    j += 1
+                cant_vuelos_aerolinea[pos_aerolinea] += 1
+                print("✔ Vuelo cargado correctamente.")
+                
+    if pos == -1 or pos==20:
+        print("Ya no hay espacio disponible para mas vuelos.")
+    else:
+        if pos>19:
+            volver()
+            
+def modificar_vuelo():
+    pass
+
+def eliminar_vuelo():
+    pass
+            
 def  menu_gestion_vuelos(vuelos):
-    mostrar_menu_gestion_vuelos()
-    entro = input()
+    global asientos, precios_vuelos, cant_vuelos_aerolinea, ASIENTOS_POR_AVION #preguntar si se puede
+    opc = -1
+    while opc !=4:
+        mostrar_menu_gestion_vuelos()
+        opc=validar_entero()
+        while opc<1 or opc>4:
+            print("⚠️  Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_gestion_vuelos()
+            opc=validar_entero()
+        match opc:
+            case 1:
+                crear_vuelo(vuelos, precios_vuelos, asientos, cant_vuelos_aerolinea, ASIENTOS_POR_AVION)
+            case 2:
+                modificar_vuelo()
+            case 3:
+                eliminar_vuelo()
+            case 4:
+                volver()
 
 def  mostrar_menu_gestion_promociones():
     print("╔════════════════════════════════════════╗")
@@ -730,6 +843,14 @@ usuarios = [[""] * 3 for i in range(10)]
 cargarUsuarios(usuarios)
 aerolineas = [[""] * 5 for i in range(5)]
 vuelos = [[""]* 5 for i in range(20)]
+precios_vuelos = [0.0 for _ in range(20)]
+cant_vuelos_aerolinea = [0 for _ in range(5)]
+
+ASIENTOS_POR_AVION = 240
+asientos = [[""]*7 for i in range(20*(ASIENTOS_POR_AVION/6))]
+
+
+
 
 mostrar_primer_menu()
 opc = validar_entero()
