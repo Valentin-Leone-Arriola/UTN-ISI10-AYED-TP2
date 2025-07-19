@@ -3,7 +3,7 @@
 # C0SAS QUE FALTAN: ESCRIBIR SI YA LO ESTAN HACIENDO
 
 listar_vuelos_aerolineas(al final de crear vuelo) --VALEN
-modificar_vuelo --ABRU
+modificar_vuelo --ABRUU
 eliminar_vuelo --URI
 
 mejorar en construccion (color/tabla/diseño)--ROMI
