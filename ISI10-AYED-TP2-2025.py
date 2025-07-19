@@ -277,7 +277,7 @@ def obtener_pos_mayor(arreglo):
 def crear_aereo(aerolineas):
     
     nombre_aereo = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n')
-    cantidad_aereo =  busquedaSecuencial(aerolineas,"",0)
+    cantidad_aereo =  busqueda_secuencial(aerolineas,"",0)
     if cantidad_aereo ==-1:
         input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
         nombre_aereo = "0"
@@ -325,7 +325,7 @@ def modificar_aereo(aerolineas): #falta testear
     codigo = input("Ingrese el código de la aerolínea que desea modificar (0 para salir): ").upper()
 
     while codigo != "0":
-        pos = busquedaSecuencial(aerolineas, codigo, 0)
+        pos = busqueda_secuencial(aerolineas, codigo, 0)
 
         if pos == -1:
             print("⚠️  No se encontró ninguna aerolínea con ese código.")
@@ -484,12 +484,10 @@ def validar_precio():
             print("Precio inválido. Ingrese solo números.")
     return float(entrada)
 
-def crear_vuelo(vuelos, precios_vuelos, asientos, cant_vuelos_aerolinea, asientos_por_avion):
+def crear_vuelo(vuelos, precios_vuelos, asientos, asientos_por_avion):
     
-    
-    print("\n--- CARGA DE VUELOS ---")
-    
-    pos = busquedaSecuencial(vuelos, "", 0) #VER
+
+    pos = busqueda_secuencial(vuelos, "", 0) #VER
     while pos!=-1 and pos<=19:
 
         print("\nIngrese datos del vuelo (deje el codigo vacio para salir):")
@@ -497,7 +495,7 @@ def crear_vuelo(vuelos, precios_vuelos, asientos, cant_vuelos_aerolinea, asiento
         if codigo == "":
             pos = 100
         else:
-            pos_aerolinea = busquedaSecuencial(aerolineas, codigo, 0)
+            pos_aerolinea = busqueda_secuencial(aerolineas, codigo, 0)
             if pos_aerolinea == -1:
                 print("Aerolínea no encontrada. Intente nuevamente.")
             else:
@@ -525,14 +523,11 @@ def crear_vuelo(vuelos, precios_vuelos, asientos, cant_vuelos_aerolinea, asiento
                     for k in range(4,7): #carga dsp pasillo
                         asientos[j][k] = random.choice(["L", "O", "R"])
                     j += 1
-                cant_vuelos_aerolinea[pos_aerolinea] += 1
                 print("✔ Vuelo cargado correctamente.")
-                
+        pos = pos+1           
     if pos == -1 or pos==20:
         print("Ya no hay espacio disponible para mas vuelos.")
-    else:
-        if pos>19:
-            volver()
+    volver()
             
 def modificar_vuelo():
     pass
@@ -541,7 +536,7 @@ def eliminar_vuelo():
     pass
             
 def  menu_gestion_vuelos(vuelos):
-    global asientos, precios_vuelos, cant_vuelos_aerolinea, ASIENTOS_POR_AVION #preguntar si se puede
+    global asientos, precios_vuelos, ASIENTOS_POR_AVION #preguntar si se puede
     opc = -1
     while opc !=4:
         mostrar_menu_gestion_vuelos()
@@ -552,7 +547,7 @@ def  menu_gestion_vuelos(vuelos):
             opc=validar_entero()
         match opc:
             case 1:
-                crear_vuelo(vuelos, precios_vuelos, asientos, cant_vuelos_aerolinea, ASIENTOS_POR_AVION)
+                crear_vuelo(vuelos, precios_vuelos, asientos, ASIENTOS_POR_AVION)
             case 2:
                 modificar_vuelo()
             case 3:
@@ -750,7 +745,7 @@ def cargarUsuarios(usuarios):
 
 
 
-def busquedaSecuencial (arreglo, elemento_buscado, columna):
+def busqueda_secuencial (arreglo, elemento_buscado, columna):
     cant_filas = len(arreglo)
     i=0
     while i<cant_filas-1 and arreglo[i][columna]!=elemento_buscado:
@@ -768,12 +763,12 @@ def registrarse(usuarios):
             print("\nDebe ingresar un mail")
             mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
     while mail != "*" and not registrado:
-        posicion = busquedaSecuencial(usuarios, "", 0)
+        posicion = busqueda_secuencial(usuarios, "", 0)
         if posicion ==-1:
             input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
             mail = "*"
         else:
-            encontrado = busquedaSecuencial(usuarios, mail, 0)
+            encontrado = busqueda_secuencial(usuarios, mail, 0)
             if encontrado == -1:
                 usuarios[posicion][0] = mail
                 usuarios[posicion][2] = "usuario"
@@ -801,7 +796,7 @@ def login(usuarios,novedades,aerolineas,vuelos):
     while intentos != 0 and mail_usuario!="*":
         contrasenia = pwinput.pwinput(prompt="Ingrese la contraseña: ")
         os.system('cls')
-        posicion = busquedaSecuencial(usuarios, mail_usuario , 0)
+        posicion = busqueda_secuencial(usuarios, mail_usuario , 0)
         if posicion !=-1:
             if  contrasenia == usuarios[posicion][1]: 
                 intentos = 3 
@@ -844,7 +839,6 @@ cargarUsuarios(usuarios)
 aerolineas = [[""] * 5 for i in range(5)]
 vuelos = [[""]* 5 for i in range(20)]
 precios_vuelos = [0.0 for _ in range(20)]
-cant_vuelos_aerolinea = [0 for _ in range(5)]
 
 ASIENTOS_POR_AVION = 240
 asientos = [[""]*7 for i in range(20*(ASIENTOS_POR_AVION/6))]
