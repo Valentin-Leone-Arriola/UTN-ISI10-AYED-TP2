@@ -154,7 +154,7 @@ def menu_report ():
 
 
 
-def ver_novedades(novedades):
+""" def ver_novedades(novedades):
     print("╔═══════════════════════════════════════╗")
     print("║    📑  NOVEDADES DISPONIBLES  📑      ║")
     print("╚═══════════════════════════════════════╝\n")
@@ -174,7 +174,7 @@ def ver_novedades(novedades):
     print("-" * 130)
     print()
     return i
-
+ """
 
 """ def validar_codigo(): #DE LA NOVEDAD
     nuevo_codigo = -1
@@ -249,7 +249,7 @@ def editar_nov(novedades): #menu3_2
                 opc_aspecto = validar_entero()
                 os.system('cls')
         volver()
-        ver_novedades(novedades)
+        ver_arreglo_limitado(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
         print("Ingrese el codigo de la novedad (0 para salir)")
         opc_novedad = validar_entero()-1
     os.system('cls')
@@ -755,7 +755,7 @@ def menu_usuario(vuelos):
             case 5:
                 ver_historial_compras()
             case 6:
-                ver_novedades()
+                ver_arreglo_limitado(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
             case 7:
                 print("Cerrando sesión...\n")
                 os.system('cls' if os.name == 'nt' else 'clear')
