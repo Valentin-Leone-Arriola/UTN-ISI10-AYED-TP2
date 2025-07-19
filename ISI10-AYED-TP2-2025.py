@@ -11,13 +11,6 @@ import random
 
 #PROCEDIMIENTOS Y FUNCIONES GENERALES
 
-def validar_entero():
-    opc_input = input("\nSeleccione una opción valida: ")
-    if opc_input.isdigit():
-        return(int(opc_input))
-    else:
-        return -1
-
 def en_construccion():
     input("En construccion. Presione enter para continuar")
     os.system('cls')
@@ -40,6 +33,15 @@ def pedir_fecha_valida():
         except:
             print("Error: Fecha inexistente. Verificá los valores.\n")
     return fecha 
+
+def validar_entero():
+    opc_input = input("\nSeleccione una opción valida: ")
+    if opc_input.isdigit():
+        return(int(opc_input))
+    else:
+        return -1
+
+
 
 #MENU ADMINISTRADOR
 
@@ -841,7 +843,7 @@ vuelos = [[""]* 5 for i in range(20)]
 precios_vuelos = [0.0 for _ in range(20)]
 
 ASIENTOS_POR_AVION = 240
-asientos = [[""]*7 for i in range(20*(ASIENTOS_POR_AVION/6))]
+asientos = [[""]*7 for i in range(int(20*(ASIENTOS_POR_AVION/6)))]
 
 
 
