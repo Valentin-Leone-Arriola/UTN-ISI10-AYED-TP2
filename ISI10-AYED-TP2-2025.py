@@ -333,15 +333,16 @@ def validar_nombre():
 
 def crear_aereo(aerolineas):
     
-    nombre_aereo = validar_nombre()
-    cantidad_aereo =  busqueda_secuencial(aerolineas,"",0)
+    nombre_aereo = input('Ingrese el nombre del aereo. Presione enter para salir\n')
+    cantidad_aereo =  busquedaSecuencial(aerolineas,"",0)
+
     if cantidad_aereo ==-1:
         input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
-        nombre_aereo = "0"
+        nombre_aereo = ""
     else:
         contadores = [0]*3
         paises = ["ARG", "BRA", "CHI"]
-        while nombre_aereo != "0" and cantidad_aereo<5:
+        while nombre_aereo != "" and cantidad_aereo<5:
             aerolineas[cantidad_aereo][0]=pedir_codigo_aerolinea()
             aerolineas[cantidad_aereo][1]=nombre_aereo
             aerolineas[cantidad_aereo][2] = pedir_codigo_IATA()
