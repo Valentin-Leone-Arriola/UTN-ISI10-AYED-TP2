@@ -334,7 +334,7 @@ def validar_nombre():
 def crear_aereo(aerolineas):
     
     nombre_aereo = input('Ingrese el nombre del aereo. Presione enter para salir\n')
-    cantidad_aereo =  busquedaSecuencial(aerolineas,"",0)
+    cantidad_aereo =  busqueda_secuencial(aerolineas,"",0)
 
     if cantidad_aereo ==-1:
         input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
