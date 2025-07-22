@@ -255,6 +255,177 @@ def editar_nov(novedades): #menu3_2
     os.system('cls')
     volver()
 
+
+#-------------------------------------------------------------------------------------------------------------
+
+def mostrar_menu_principal_admin():
+    print("╔════════════════════════════════════╗")
+    print("║ 🏠    MENÚ PRINCIPAL ADMIN  🏠        ║")
+    print("╚════════════════════════════════════╝\n")
+    print("1) Gestión de Aerolíneas 🛩️")
+    print("2) Aprobar / Denegar Promociones💲")
+    print("3) Gestión de Novedades 📆")
+    print("4) Mostrar Reportes 📊")
+    print("5) Salir del Programa ❌")
+
+def menu_administrador(novedades,aerolineas):
+    opc = -1
+    while opc != 5:
+        mostrar_menu_principal_admin()
+        opc = validar_entero()
+        os.system('cls')
+        while opc < 1 or opc > 5:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_principal_admin()
+            opc = validar_entero()
+            os.system('cls')
+        match opc:
+            case 1:
+                menu_gestion_aereo(aerolineas)
+            case 2:
+                en_construccion()
+            case 3:
+                menu_novedades(novedades)
+            case 4:
+                menu_report()
+            case 5:
+                os.system('cls')
+                volver()
+
+def mostrar_menu_gestion_aereo():
+    print("╔════════════════════════════════════════╗")
+    print("║  🛩️  MENÚ DE GESTIÓN DE AEROLÍNEAS 🛩️    ║")
+    print("╚════════════════════════════════════════╝\n")
+    print("1) Crear Aerolínea ✈️")
+    print("2) Modificar Aerolínea ✏️")
+    print("3) Eliminar Aerolínea 🗑️")
+    print("4) Volver al Menú Principal 🔙")
+
+def menu_gestion_aereo(aerolineas): #menu 1
+    opc = -1
+    while opc != 4:
+        mostrar_menu_gestion_aereo()
+        opc = validar_entero()
+        os.system('cls')
+        while opc <1 or opc >4:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_gestion_aereo()
+            opc = validar_entero()
+            os.system('cls')
+        match opc:
+            case 1:
+                crear_aereo(aerolineas)
+            case 2:
+                modificar_aereo(aerolineas)
+            case 3:
+                en_construccion()
+            case 4:
+                volver()
+
+#----------------------------------------------TESTEAR-------------------------------------
+def validar_nombre():
+    aerolinea= ""
+    aerolinea = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n') 
+    while not aerolinea != "":
+        print("⚠️  Opción no válida. Inténtelo nuevamente.")
+        aerolinea = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n') 
+    return aerolinea
+
+def crear_aereo(aerolineas):
+    
+    nombre_aereo = input('Ingrese el nombre del aereo. Presione enter para salir\n')
+    cantidad_aereo =  busquedaSecuencial(aerolineas,"",0)
+
+    if cantidad_aereo ==-1:
+        input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
+        nombre_aereo = ""
+    else:
+        contadores = [0]*3
+        paises = ["ARG", "BRA", "CHI"]
+        while nombre_aereo != "" and cantidad_aereo<5:
+            aerolineas[cantidad_aereo][0]=pedir_codigo_aerolinea()
+            aerolineas[cantidad_aereo][1]=nombre_aereo
+            aerolineas[cantidad_aereo][2] = pedir_codigo_IATA()
+            aerolineas[cantidad_aereo][3]= input("\nIngrese la descripcion del vuelo\n")
+            codigo_pais = pedir_codigo_pais()
+            aerolineas[cantidad_aereo][4]=codigo_pais
+
+            os.system('cls')
+            cantidad_aereo = cantidad_aereo+1
+            nombre_aereo = validar_nombre()
+    
+    for i in range(0,5):#es necesario recorrer ya que el admin puede registrar una aerolinea, irse y despues registrar otra.
+        match aerolineas[i][4]:
+            case "ARG":
+                contadores[0]=contadores[0]+1
+            case "BRA":
+                contadores[1]=contadores[1]+1
+            case "CHI":
+                contadores[2]=contadores[2]+1
+    
+    
+    if contadores[0] == contadores[1] == contadores[2]:
+        print("Los tres codigos (ARG, CHI y BRA) tienen la misma cantidad de aerolineas cargadas:", contadores[0])
+        print("")
+    else:
+        menor=obtener_pos_menor(contadores)
+        mayor=obtener_pos_mayor(contadores)
+        print("")
+        print("Mayor:", paises[mayor],"con una cantidad de aerolineas cargadas de", contadores[mayor])
+        print("Menor:", paises[menor], "con una cantidad de aerolineas cargada de", contadores[menor])
+        print("")
+    volver()
+
+
+def modificar_aereo(aerolineas): #falta testear
+    os.system('cls')
+    
+    codigo = input("Ingrese el código de la aerolínea que desea modificar (0 para salir): ").upper()
+
+    while codigo != "0":
+        pos = busqueda_secuencial(aerolineas, codigo, 0)
+
+        if pos == -1:
+            print("⚠️  No se encontró ninguna aerolínea con ese código.")
+        else:
+            os.system('cls')
+            print(f"Aerolínea actual:\nCódigo: {aerolineas[pos][0]}\nNombre: {aerolineas[pos][1]}\nIATA: {aerolineas[pos][2]}\nDescripción: {aerolineas[pos][3]}\nPaís: {aerolineas[pos][4]}")
+            print()
+            print("Seleccione qué desea modificar:")
+            print("1. Nombre ✏️")
+            print("2. Código IATA 🛫")
+            print("3. Descripción 📝")
+            print("4. País 🌍")
+            print("5. Volver 🔙")
+            opcion = validar_entero()
+
+            while opcion < 1 or opcion > 5:
+                print("⚠️  Opción no válida. Inténtelo nuevamente.")
+                opcion = validar_entero()
+
+            if opcion == 1:
+                nuevo_nombre = input("Ingrese el nuevo nombre: ")
+                aerolineas[pos][1] = nuevo_nombre
+            elif opcion == 2:
+                nuevo_iata = pedir_codigo_IATA()
+                aerolineas[pos][2] = nuevo_iata
+            elif opcion == 3:
+                nueva_descripcion = input("Ingrese la nueva descripción: ")
+                aerolineas[pos][3] = nueva_descripcion
+            elif opcion == 4:
+                nuevo_pais = pedir_codigo_pais()
+                aerolineas[pos][4] = nuevo_pais
+            else:
+                volver()
+
+            input("✅ Modificación realizada (o cancelada). Presione Enter para continuar...")
+
+        os.system('cls')
+        codigo = input("Ingrese otro código de aerolínea a modificar (0 para salir): ").upper()
+
+    os.system('cls')
+    volver()
+
 def mostrar_menu_novedades():
     print("╔═════════════════════════════════════╗")
     print("║        📆 MENÚ DE NOVEDADES 📆      ║")
@@ -335,166 +506,8 @@ def obtener_pos_mayor(arreglo):
         if arreglo[i] > arreglo[pos_mayor]:
             pos_mayor = i
     return pos_mayor
-
-def crear_aereo(aerolineas):
     
-    nombre_aereo = input('Ingrese el nombre del aereo. Presione enter para salir\n')
-    cantidad_aereo =  busquedaSecuencial(aerolineas,"",0)
-
-    if cantidad_aereo ==-1:
-        input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
-        nombre_aereo = ""
-    else:
-        contadores = [0]*3
-        paises = ["ARG", "BRA", "CHI"]
-        while nombre_aereo != "" and cantidad_aereo<5:
-            aerolineas[cantidad_aereo][0]=pedir_codigo_aerolinea()
-            aerolineas[cantidad_aereo][1]=nombre_aereo
-            aerolineas[cantidad_aereo][2] = pedir_codigo_IATA()
-            aerolineas[cantidad_aereo][3]= input("\nIngrese la descripcion del vuelo\n")
-            codigo_pais = pedir_codigo_pais()
-            aerolineas[cantidad_aereo][4]=codigo_pais
-
-            os.system('cls')
-            cantidad_aereo = cantidad_aereo+1
-            nombre_aereo = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n')
-    
-    for i in range(0,5):#es necesario recorrer ya que el admin puede registrar una aerolinea, irse y despues registrar otra.
-        match aerolineas[i][4]:
-            case "ARG":
-                contadores[0]=contadores[0]+1
-            case "BRA":
-                contadores[1]=contadores[1]+1
-            case "CHI":
-                contadores[2]=contadores[2]+1
-    
-    
-    if contadores[0] == contadores[1] == contadores[2]:
-        print("Los tres codigos (ARG, CHI y BRA) tienen la misma cantidad de aerolineas cargadas:", contadores[0])
-        print("")
-    else:
-        menor=obtener_pos_menor(contadores)
-        mayor=obtener_pos_mayor(contadores)
-        print("")
-        print("Mayor:", paises[mayor],"con una cantidad de aerolineas cargadas de", contadores[mayor])
-        print("Menor:", paises[menor], "con una cantidad de aerolineas cargada de", contadores[menor])
-        print("")
-    volver()
-
-
-def modificar_aereo(aerolineas): #falta testear
-    os.system('cls')
-    
-    codigo = input("Ingrese el código de la aerolínea que desea modificar (0 para salir): ").upper()
-
-    while codigo != "0":
-        pos = busqueda_secuencial(aerolineas, codigo, 0)
-
-        if pos == -1:
-            print("⚠️  No se encontró ninguna aerolínea con ese código.")
-        else:
-            os.system('cls')
-            print(f"Aerolínea actual:\nCódigo: {aerolineas[pos][0]}\nNombre: {aerolineas[pos][1]}\nIATA: {aerolineas[pos][2]}\nDescripción: {aerolineas[pos][3]}\nPaís: {aerolineas[pos][4]}")
-            print()
-            print("Seleccione qué desea modificar:")
-            print("1. Nombre ✏️")
-            print("2. Código IATA 🛫")
-            print("3. Descripción 📝")
-            print("4. País 🌍")
-            print("5. Volver 🔙")
-            opcion = validar_entero()
-
-            while opcion < 1 or opcion > 5:
-                print("⚠️  Opción no válida. Inténtelo nuevamente.")
-                opcion = validar_entero()
-
-            if opcion == 1:
-                nuevo_nombre = input("Ingrese el nuevo nombre: ")
-                aerolineas[pos][1] = nuevo_nombre
-            elif opcion == 2:
-                nuevo_iata = pedir_codigo_IATA()
-                aerolineas[pos][2] = nuevo_iata
-            elif opcion == 3:
-                nueva_descripcion = input("Ingrese la nueva descripción: ")
-                aerolineas[pos][3] = nueva_descripcion
-            elif opcion == 4:
-                nuevo_pais = pedir_codigo_pais()
-                aerolineas[pos][4] = nuevo_pais
-            else:
-                volver()
-
-            input("✅ Modificación realizada (o cancelada). Presione Enter para continuar...")
-
-        os.system('cls')
-        codigo = input("Ingrese otro código de aerolínea a modificar (0 para salir): ").upper()
-
-    os.system('cls')
-    volver()
-    
-
-def mostrar_menu_gestion_aereo():
-    print("╔════════════════════════════════════════╗")
-    print("║  🛩️  MENÚ DE GESTIÓN DE AEROLÍNEAS 🛩️    ║")
-    print("╚════════════════════════════════════════╝\n")
-    print("1) Crear Aerolínea ✈️")
-    print("2) Modificar Aerolínea ✏️")
-    print("3) Eliminar Aerolínea 🗑️")
-    print("4) Volver al Menú Principal 🔙")
-
-def menu_gestion_aereo(aerolineas): #menu 1
-    opc = -1
-    while opc != 4:
-        mostrar_menu_gestion_aereo()
-        opc = validar_entero()
-        os.system('cls')
-        while opc <1 or opc >4:
-            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
-            mostrar_menu_gestion_aereo()
-            opc = validar_entero()
-            os.system('cls')
-        match opc:
-            case 1:
-                crear_aereo(aerolineas)
-            case 2:
-                modificar_aereo(aerolineas)
-            case 3:
-                en_construccion()
-            case 4:
-                volver()
-
-def mostrar_menu_principal_admin():
-    print("╔════════════════════════════════════╗")
-    print("║ 🏠    MENÚ PRINCIPAL ADMIN  🏠        ║")
-    print("╚════════════════════════════════════╝\n")
-    print("1) Gestión de Aerolíneas 🛩️")
-    print("2) Aprobar / Denegar Promociones💲")
-    print("3) Gestión de Novedades 📆")
-    print("4) Mostrar Reportes 📊")
-    print("5) Salir del Programa ❌")
-
-def menu_administrador(novedades,aerolineas):
-    opc = -1
-    while opc != 5:
-        mostrar_menu_principal_admin()
-        opc = validar_entero()
-        os.system('cls')
-        while opc < 1 or opc > 5:
-            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
-            mostrar_menu_principal_admin()
-            opc = validar_entero()
-            os.system('cls')
-        match opc:
-            case 1:
-                menu_gestion_aereo(aerolineas)
-            case 2:
-                en_construccion()
-            case 3:
-                menu_novedades(novedades)
-            case 4:
-                menu_report()
-            case 5:
-                os.system('cls')
-                volver()
+#-------------------------------------------------------------------------------------------------------------
 
 def mostrar_menu_gestion_vuelos():
     print("╔════════════════════════════════════════╗")
