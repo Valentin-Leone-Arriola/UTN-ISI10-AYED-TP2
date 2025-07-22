@@ -280,7 +280,7 @@ def crear_aereo(aerolineas):
     cantidad_aereo =  busquedaSecuencial(aerolineas,"",0)
     if cantidad_aereo ==-1:
         input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
-        nombre_aereo = "0"
+        nombre_aereo = ""
     else:
         contadores = [0]*3
         paises = ["ARG", "BRA", "CHI"]
