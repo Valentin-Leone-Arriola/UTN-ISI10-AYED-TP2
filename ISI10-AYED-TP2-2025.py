@@ -78,7 +78,6 @@ def ver_arreglo_limitado_pr(arreglo, texto_principal, titulos, condicion_hasta, 
             i += 1
     
     print()
-    
 
 def ver_arreglo_limitado_func(arreglo, texto_principal, titulos, condicion_hasta, pos_evaluar, mostrar_pos_y_modo, longitud_columnas):
     print(f"\n📑 {texto_principal} 📑\n")
@@ -154,8 +153,40 @@ def ver_arreglo_limitado_unidimensional(arreglo, texto_principal, titulos, condi
     
     print()
 
+def ordenar_burbuja_desc(arreglo, columna_orden, cant_columnas):
+    filas = len(arreglo)
 
+    fila_temp = [""] * cant_columnas
+    i = 0
+    while i < filas - 1:
+        j = i + 1
+        while j < filas:
+            if arreglo[j][columna_orden] > arreglo[i][columna_orden]:
+                k = 0
+                while k < cant_columnas:
+                    fila_temp[k] = arreglo[i][k]
+                    k += 1
+                k = 0
+                while k < cant_columnas:
+                    arreglo[i][k] = arreglo[j][k]
+                    k += 1
+                k = 0
+                while k < cant_columnas:
+                    arreglo[j][k] = fila_temp[k]
+                    k += 1
+            j += 1
+        i += 1
 
+def busqueda_secuencial (arreglo, elemento_buscado, columna):
+    cant_filas = len(arreglo)
+    i=0
+    while i<cant_filas-1 and arreglo[i][columna]!=elemento_buscado:
+        i=i+1
+    if arreglo[i][columna]==elemento_buscado:
+        return i
+    else:
+        return-1
+    
 #MENU ADMINISTRADOR
 
 #############
@@ -600,7 +631,46 @@ def validar_precio():
             print("Precio inválido. Ingrese solo números.")
     return float(entrada)
 
+def listar_vuelos_aerolineas(aerolineas, vuelos):
+    fecha_actual = datetime.today()
+    vuelos_por_aerolinea = [[i, 0] for i in range(len(aerolineas))]
 
+    i = 0
+    while i < len(vuelos) and vuelos[i][0] != "":
+        fecha_vuelo = datetime.strptime(vuelos[i][3], "%d/%m/%Y")
+        if fecha_vuelo > fecha_actual:
+            cod_aerolinea = vuelos[i][0]
+            pos = busqueda_secuencial(aerolineas, cod_aerolinea, 0)
+            if pos != -1:
+                vuelos_por_aerolinea[pos][1] += 1
+        i += 1
+
+    ordenar_burbuja_desc(vuelos_por_aerolinea, 1, 2)
+
+    print("\n" + "="*60)
+    print("REPORTE DE VUELOS VIGENTES POR AEROLINEA")
+    print("="*60)
+    print(f"{'POSICION':<10}{'AEROLINEA':<30}{'CANTIDAD DE VUELOS'}")
+    print("-" * 60)
+
+    total = 0
+    i = 0
+    while i < len(aerolineas) and aerolineas[i][0] != "":
+        pos_aero = vuelos_por_aerolinea[i][0]
+        nombre = aerolineas[pos_aero][1]
+        cantidad = vuelos_por_aerolinea[i][1]
+        print(f"{i:<10}{nombre:<30}{cantidad}")
+        total += cantidad
+        i += 1
+
+    print("-" * 60)
+    print(f"TOTAL DE VUELOS VIGENTES: {total}")
+    
+    if i > 0:
+        print(f"Aerolínea con MAYOR cantidad de vuelos: {aerolineas[vuelos_por_aerolinea[0][0]][1]} ({vuelos_por_aerolinea[0][1]})") #la aerolinea que se encuentra en la primer posicion del arreglo ordenado de forma descendente y su cantidad
+        print(f"Aerolínea con MENOR cantidad de vuelos: {aerolineas[vuelos_por_aerolinea[i - 1][0]][1]} ({vuelos_por_aerolinea[i - 1][1]})") #la aerolinea que se encuentra en la ultima posicion no "vacia" del arreglo ordenado de forma descendente y su cantidad
+    
+    
 def crear_vuelo():
     global vuelos, precios_vuelos, asientos, ASIENTOS_POR_AVION
     ultimo= busqueda_secuencial(vuelos, "", 0)
@@ -644,6 +714,7 @@ def crear_vuelo():
         ultimo = ultimo+1           
     if ultimo == -1 or ultimo==20:
         print("Ya no hay espacio disponible para mas vuelos.")
+    listar_vuelos_aerolineas()
     volver()
             
 def modificar_vuelo():
@@ -868,18 +939,6 @@ def cargarUsuarios(usuarios):
     usuarios[7][0] = "usuario2@ventaspasajes777.com"
     usuarios[7][1] = "usuario456"
     usuarios[7][2] = "usuario"
-
-
-
-def busqueda_secuencial (arreglo, elemento_buscado, columna):
-    cant_filas = len(arreglo)
-    i=0
-    while i<cant_filas-1 and arreglo[i][columna]!=elemento_buscado:
-        i=i+1
-    if arreglo[i][columna]==elemento_buscado:
-        return i
-    else:
-        return-1
 
        
 def registrarse(usuarios):
