@@ -41,7 +41,46 @@ def validar_entero():
     else:
         return -1
 
-def ver_arreglo_limitado(arreglo, texto_principal, titulos, condicion_hasta, pos_evaluar, mostrar_pos_y_modo, longitud_columnas):
+def ver_arreglo_limitado_pr(arreglo, texto_principal, titulos, condicion_hasta, pos_evaluar, mostrar_pos_y_modo, longitud_columnas):
+    print(f"\n📑 {texto_principal} 📑\n")
+    longitud= int(longitud_columnas)
+    columnas = len(titulos)
+    filas = len(arreglo)
+    pos= int(pos_evaluar)
+    print("-" * int(longitud*(columnas-1)))
+    print()
+
+    if mostrar_pos_y_modo[0]:
+        print(f"{'N°':<4}", end=" ")
+    for i in range(columnas):
+        print(f"{titulos[i]:<{longitud}}", end=" ")
+    print()
+    i = 0
+    if mostrar_pos_y_modo[0] and not mostrar_pos_y_modo[1]:
+        while i < len(arreglo) and arreglo[i][pos] != condicion_hasta:
+            print(f"{i :<4}", end=" ")
+            for j in range(columnas):
+                print(f"{arreglo[i][j]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    elif mostrar_pos_y_modo[0] and mostrar_pos_y_modo[1]:
+        while i < len(arreglo) and arreglo[i][pos] != condicion_hasta:
+            print(f"{i+1 :<4}", end=" ")
+            for j in range(columnas):
+                print(f"{arreglo[i][j]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    else:
+        while i < filas and arreglo[i][pos] != condicion_hasta:
+            for j in range(columnas):
+                print(f"{arreglo[i][j]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    
+    print()
+    
+
+def ver_arreglo_limitado_func(arreglo, texto_principal, titulos, condicion_hasta, pos_evaluar, mostrar_pos_y_modo, longitud_columnas):
     print(f"\n📑 {texto_principal} 📑\n")
     longitud= int(longitud_columnas)
     columnas = len(titulos)
@@ -114,7 +153,6 @@ def ver_arreglo_limitado_unidimensional(arreglo, texto_principal, titulos, condi
             i += 1
     
     print()
-    return i
 
 
 
@@ -197,9 +235,9 @@ def mostrar_menu_editar_nov():
     print("3) Fecha de Finalización 📅")
     print("4) Volver 🔙")
 
-def editar_nov(novedades): #menu3_2
-    
-    ultima_novedad = ver_arreglo_limitado(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
+def editar_nov(): #menu3_2
+    global novedades
+    ultima_novedad = ver_arreglo_limitado_func(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
     print("Ingrese la novedad que desea editar (0 para salir)")
     opc_novedad = validar_entero()-1
     while opc_novedad !=-1:
@@ -249,7 +287,7 @@ def editar_nov(novedades): #menu3_2
                 opc_aspecto = validar_entero()
                 os.system('cls')
         volver()
-        ver_arreglo_limitado(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
+        ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
         print("Ingrese el codigo de la novedad (0 para salir)")
         opc_novedad = validar_entero()-1
     os.system('cls')
@@ -268,7 +306,7 @@ def mostrar_menu_principal_admin():
     print("4) Mostrar Reportes 📊")
     print("5) Salir del Programa ❌")
 
-def menu_administrador(novedades,aerolineas):
+def menu_administrador():
     opc = -1
     while opc != 5:
         mostrar_menu_principal_admin()
@@ -281,11 +319,11 @@ def menu_administrador(novedades,aerolineas):
             os.system('cls')
         match opc:
             case 1:
-                menu_gestion_aereo(aerolineas)
+                menu_gestion_aereo()
             case 2:
                 en_construccion()
             case 3:
-                menu_novedades(novedades)
+                menu_novedades()
             case 4:
                 menu_report()
             case 5:
@@ -301,7 +339,7 @@ def mostrar_menu_gestion_aereo():
     print("3) Eliminar Aerolínea 🗑️")
     print("4) Volver al Menú Principal 🔙")
 
-def menu_gestion_aereo(aerolineas): #menu 1
+def menu_gestion_aereo(): #menu 1
     opc = -1
     while opc != 4:
         mostrar_menu_gestion_aereo()
@@ -314,9 +352,9 @@ def menu_gestion_aereo(aerolineas): #menu 1
             os.system('cls')
         match opc:
             case 1:
-                crear_aereo(aerolineas)
+                crear_aereo()
             case 2:
-                modificar_aereo(aerolineas)
+                modificar_aereo()
             case 3:
                 en_construccion()
             case 4:
@@ -331,8 +369,8 @@ def validar_nombre():
         aerolinea = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n') 
     return aerolinea
 
-def crear_aereo(aerolineas):
-    
+def crear_aereo():
+    global aerolineas
     nombre_aereo = input('Ingrese el nombre del aereo. Presione enter para salir\n')
     cantidad_aereo =  busqueda_secuencial(aerolineas,"",0)
 
@@ -377,7 +415,8 @@ def crear_aereo(aerolineas):
     volver()
 
 
-def modificar_aereo(aerolineas): #falta testear
+def modificar_aereo(): #falta testear
+    global aerolineas
     os.system('cls')
     
     codigo = input("Ingrese el código de la aerolínea que desea modificar (0 para salir): ").upper()
@@ -436,7 +475,8 @@ def mostrar_menu_novedades():
     print("4) Ver Novedades 📑")
     print("5) Volver al Menú Principal 🔙")
 
-def menu_novedades(novedades):
+def menu_novedades():
+    global novedades
     opc = -1
     while opc != 5:
         mostrar_menu_novedades()
@@ -451,11 +491,11 @@ def menu_novedades(novedades):
             case 1:
                 en_construccion()
             case 2:
-                editar_nov(novedades)
+                editar_nov()
             case 3:
                 en_construccion()
             case 4:
-                ver_arreglo_limitado(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
+                ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
                 input("Presione Enter para continuar...")
                 os.system('cls')
             case 5:
@@ -561,8 +601,8 @@ def validar_precio():
     return float(entrada)
 
 
-def crear_vuelo(vuelos, precios_vuelos, asientos, asientos_por_avion):
-    
+def crear_vuelo():
+    global vuelos, precios_vuelos, asientos, ASIENTOS_POR_AVION
     ultimo= busqueda_secuencial(vuelos, "", 0)
      #VER
     
@@ -593,8 +633,8 @@ def crear_vuelo(vuelos, precios_vuelos, asientos, asientos_por_avion):
                 precios_vuelos[ultimo] = validar_precio()
                 
                 
-                j = int((ultimo * asientos_por_avion)/6)
-                for i in range(int(asientos_por_avion/6)):
+                j = int((ultimo * ASIENTOS_POR_AVION)/6)
+                for i in range(int(ASIENTOS_POR_AVION/6)):
                     for k in range(3): #carga hasta pasillo
                         asientos[j][k] = random.choice(["L", "O", "R"])
                     for k in range(4,7): #carga dsp pasillo
@@ -614,8 +654,8 @@ def eliminar_vuelo():
 
 
 
-def menu_gestion_vuelos(vuelos):
-    global asientos, precios_vuelos, ASIENTOS_POR_AVION #preguntar si se puede
+def menu_gestion_vuelos():
+    global vuelos, asientos, precios_vuelos, ASIENTOS_POR_AVION #preguntar si se puede
     opc = -1
     while opc !=4:
         mostrar_menu_gestion_vuelos()
@@ -629,7 +669,7 @@ def menu_gestion_vuelos(vuelos):
             print("Desea ver los vuelos cargados hasta el momento? 1-Si 2-No")
             mostrar = validar_entero()
         if mostrar == 1:
-            ver_arreglo_limitado(vuelos, "Vuelos Ingresados", ["Cod Ar", "Origen", "Destino", "Salida", "Llegada", "Hora","Estado"], "", 0, [1,0], 15)
+            ver_arreglo_limitado_pr(vuelos, "Vuelos Ingresados", ["Cod Ar", "Origen", "Destino", "Salida", "Llegada", "Hora","Estado"], "", 0, [1,0], 15)
             ver_arreglo_limitado_unidimensional(precios_vuelos, "Precios vuelos", ["Precio"], 0,[1,0],15)
 
         match opc:
@@ -680,7 +720,7 @@ def mostrar_menu_principal_ceo():
     
 
 
-def menu_ceo(vuelos):
+def menu_ceo():
     opc = -1
     while opc != 4:
         mostrar_menu_principal_ceo()
@@ -695,7 +735,7 @@ def menu_ceo(vuelos):
 
         match opc:
             case 1:
-                menu_gestion_vuelos(vuelos)
+                menu_gestion_vuelos()
             case 2:
                 menu_gestion_promociones()
             case 3:
@@ -744,8 +784,9 @@ def  mostrar_menu_principal_usuario():
     print("6) Ver Novedades 📑")
     print("7) Cerrar Sesión ❌")
     
-def menu_usuario(vuelos):
+def menu_usuario():
      opc = -1
+     global novedades
      while opc != 7:
         mostrar_menu_principal_usuario()
         opc = validar_entero()
@@ -769,13 +810,11 @@ def menu_usuario(vuelos):
             case 5:
                 ver_historial_compras()
             case 6:
-                ver_arreglo_limitado(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
+                ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
             case 7:
                 print("Cerrando sesión...\n")
                 os.system('cls' if os.name == 'nt' else 'clear')
-    
-usuarios = [[""] * 3 for i in range(10)]
-cantidad_nuevos_usuarios = 0
+
     
 
 def cargarNovedades(novedades):
