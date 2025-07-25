@@ -392,13 +392,13 @@ def menu_gestion_aereo(): #menu 1
                 volver()
 
 #----------------------------------------------TESTEAR-------------------------------------
-def validar_nombre():
+""" def validar_nombre(): NO VA MEPA
     aerolinea= ""
     aerolinea = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n') 
     while not aerolinea != "":
         print("⚠️  Opción no válida. Inténtelo nuevamente.")
         aerolinea = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n') 
-    return aerolinea
+    return aerolinea """
 
 def crear_aereo():
     global aerolineas
@@ -421,7 +421,7 @@ def crear_aereo():
 
             os.system('cls')
             cantidad_aereo = cantidad_aereo+1
-            nombre_aereo = validar_nombre()
+            nombre_aereo =input('Ingrese el nombre del aereo. Presione enter para salir\n')
     
     for i in range(0,5):#es necesario recorrer ya que el admin puede registrar una aerolinea, irse y despues registrar otra.
         match aerolineas[i][4]:
@@ -726,7 +726,7 @@ def eliminar_vuelo():
 
 
 def menu_gestion_vuelos():
-    global vuelos, asientos, precios_vuelos, ASIENTOS_POR_AVION #preguntar si se puede
+    global vuelos, asientos, precios_vuelos
     opc = -1
     while opc !=4:
         mostrar_menu_gestion_vuelos()
@@ -745,7 +745,7 @@ def menu_gestion_vuelos():
 
         match opc:
             case 1:
-                crear_vuelo(vuelos, precios_vuelos, asientos, ASIENTOS_POR_AVION)
+                crear_vuelo()
             case 2:
                 modificar_vuelo()
             case 3:
@@ -974,7 +974,7 @@ def menu_login():
     print("║       🏠  INICIAR SESION  🏠       ║")
     print("╚════════════════════════════════════╝\n")
         
-def login(usuarios,novedades,aerolineas,vuelos):
+def login(usuarios):
     intentos = 3
     menu_login()
     mail_usuario = input("\nIngrese su usuario (* para volver): ")
@@ -987,11 +987,11 @@ def login(usuarios,novedades,aerolineas,vuelos):
                 intentos = 3 
                 tipo_usuario = usuarios[posicion][2]
                 if tipo_usuario == "administrador":
-                    menu_administrador(novedades,aerolineas)
+                    menu_administrador()
                 elif tipo_usuario == "ceo":
-                    menu_ceo(vuelos)
+                    menu_ceo()
                 else:
-                    menu_usuario(vuelos)
+                    menu_usuario()
             else:
                 intentos = intentos -1
                 print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
@@ -1045,7 +1045,7 @@ while opc!= 3:
             mostrar_primer_menu()
             opc = validar_entero()
         case 2:
-            login(usuarios,novedades,aerolineas,vuelos)
+            login(usuarios)
             mostrar_primer_menu()
             opc = validar_entero()
         case 3:
