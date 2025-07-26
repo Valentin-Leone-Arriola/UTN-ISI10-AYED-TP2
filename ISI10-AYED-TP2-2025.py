@@ -599,18 +599,24 @@ def validar_hora():
             for i in range(2):
                 j = i+3
                 h[i]=hora[i]
-                m[i]=hora[j]
-            if h.isdigit() and m.isdigit():
-                hh = int(h)
-                mm = int(m)
-                if hh >= 0 and hh <= 23 and mm >= 0 and mm <= 59:
+                m[i]=hora[i + 3]
+                
+            try:
+                hh = int(h[0]) * 10 + int(h[1])
+                mm = int(m[0]) * 10 + int(m[1])
+                
+                if 0 <= hh <= 23 and 0 <= mm <= 59:
                     hora_valida = True
+                    
                 else:
-                    print("Hora fuera de rango.")
-            else:
-                print("Formato inválido. Solo números.")
+                    print("hora fuera de rango.")
+                    
+            except ValueError:
+                print("formato invalido solo numeros.") 
+                
         else:
-            print("Formato incorrecto. Use HH:MM.")
+            print("formato incorrecto use HH:MM.")
+                        
     return hora
 
 def validar_precio():
@@ -631,7 +637,8 @@ def validar_precio():
             print("Precio inválido. Ingrese solo números.")
     return float(entrada)
 
-def listar_vuelos_aerolineas(aerolineas, vuelos):
+def listar_vuelos_aerolineas():
+    global vuelos, aerolineas
     fecha_actual = datetime.today()
     vuelos_por_aerolinea = [[i, 0] for i in range(len(aerolineas))]
 
@@ -693,7 +700,7 @@ def crear_vuelo():
                 vuelos[ultimo][3] = pedir_fecha_valida()
                 fecha_llegada = pedir_fecha_valida()
                 
-                while datetime.strptime(fecha_llegada, "%d/%m/%Y") > datetime.strptime(vuelos[ultimo][3], "%d/%m/%Y"):
+                while datetime.strptime(fecha_llegada, "%d/%m/%Y") < datetime.strptime(vuelos[ultimo][3], "%d/%m/%Y"):
                     print("⚠️  La fecha de finalización no puede ser anterior a la de inicio")
                     fecha_llegada = pedir_fecha_valida()
                     
@@ -718,12 +725,43 @@ def crear_vuelo():
     volver()
             
 def modificar_vuelo():
-    pass
+    pass          
 
+# testear por las dudas
 def eliminar_vuelo():
-    pass
-
-
+    global vuelos
+    print("ingrese el codigo del vuelo que quiere eliminar: ")
+    codigo = validar_entero()
+    os.system('cls')
+    
+    while codigo == -1 or codigo > 19 :
+        print(" ⚠️  codigo de vuelo invalido. ")
+        codigo = validar_entero()
+    
+    while vuelos[codigo][6] != 'A' and vuelos[codigo][6] != 'B' :
+        print("no se ha creado un vuelo con ese codigo aun.")
+        codigo = validar_entero()
+        while codigo == -1 or codigo > 19 :
+            print(" ⚠️  codigo de vuelo invalido. ")
+            codigo = validar_entero()
+    
+    if vuelos[codigo][6] == 'A':
+        opc = input("seguro que quiere eliminar el vuelo, S(si) N(no): ")
+        while opc != 'S' and opc != 'N':
+            opc = input("opcion invalida, poravor seleccione S o N: ")
+            
+        if opc == 'S':
+            vuelos[codigo][6] = 'B'
+            print("se ha eliminado el vuelo nro:", codigo)
+            input("presione enter para volver.")
+            volver()
+        else:
+            input("no se ha eliminado el vuelo, presione enter para volver.")
+            volver()
+    else:
+        input("ese vuelo ya fue eliminado, presione enter para volver.")
+        volver()
+        
 
 def menu_gestion_vuelos():
     global vuelos, asientos, precios_vuelos
@@ -1022,7 +1060,7 @@ cargarNovedades(novedades)
 usuarios = [[""] * 3 for i in range(10)]
 cargarUsuarios(usuarios)
 aerolineas = [[""] * 5 for i in range(5)]
-vuelos = [[""]* 5 for i in range(20)]
+vuelos = [[""]* 7 for i in range(20)]
 precios_vuelos = [0.0 for i in range(20)]
 
 ASIENTOS_POR_AVION = 240
