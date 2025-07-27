@@ -405,14 +405,20 @@ def crear_aereo():
     nombre_aereo = input('Ingrese el nombre del aereo. Presione enter para salir\n')
     cantidad_aereo =  busqueda_secuencial(aerolineas,"",0)
 
-    if cantidad_aereo ==-1:
-        input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
+    if cantidad_aereo == -1:
+        input("\nYa no se pueden cargar mas aerolineas. Presione enter para continuar")
         nombre_aereo = ""
     else:
         contadores = [0]*3
         paises = ["ARG", "BRA", "CHI"]
-        while nombre_aereo != "" and cantidad_aereo<5:
-            aerolineas[cantidad_aereo][0]=pedir_codigo_aerolinea()
+        while nombre_aereo != "" and cantidad_aereo < 5:
+            codigo_nuevo = pedir_codigo_aerolinea()
+            nro = busqueda_secuencial(aerolineas, codigo_nuevo, 0)
+            while nro != -1:
+                print("Ese código de aerolínea ya existe. Intente con otro.")
+                codigo_nuevo = pedir_codigo_aerolinea()
+                nro = busqueda_secuencial(aerolineas, codigo_nuevo, 0)
+            aerolineas[cantidad_aereo][0]=codigo_nuevo
             aerolineas[cantidad_aereo][1]=nombre_aereo
             aerolineas[cantidad_aereo][2] = pedir_codigo_IATA()
             aerolineas[cantidad_aereo][3]= input("\nIngrese la descripcion del vuelo\n")
