@@ -391,22 +391,15 @@ def menu_gestion_aereo(): #menu 1
             case 4:
                 volver()
 
-#----------------------------------------------TESTEAR-------------------------------------
-""" def validar_nombre(): NO VA MEPA
-    aerolinea= ""
-    aerolinea = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n') 
-    while not aerolinea != "":
-        print("⚠️  Opción no válida. Inténtelo nuevamente.")
-        aerolinea = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n') 
-    return aerolinea """
+#----------------------------------------------TESTEAdo-------------------------------------
 
 def crear_aereo():
     global aerolineas
-    nombre_aereo = input('Ingrese el nombre del aereo. Presione enter para salir\n')
+    nombre_aereo = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
     cantidad_aereo =  busqueda_secuencial(aerolineas,"",0)
 
     if cantidad_aereo == -1:
-        input("\nYa no se pueden cargar mas aerolineas. Presione enter para continuar")
+        input("\nYa no se pueden cargar mas aerolíneas. Presione enter para continuar")
         nombre_aereo = ""
     else:
         contadores = [0]*3
@@ -421,13 +414,13 @@ def crear_aereo():
             aerolineas[cantidad_aereo][0]=codigo_nuevo
             aerolineas[cantidad_aereo][1]=nombre_aereo
             aerolineas[cantidad_aereo][2] = pedir_codigo_IATA()
-            aerolineas[cantidad_aereo][3]= input("\nIngrese la descripcion del vuelo\n")
+            aerolineas[cantidad_aereo][3]= input("Ingrese la descripcion del vuelo: ")
             codigo_pais = pedir_codigo_pais()
             aerolineas[cantidad_aereo][4]=codigo_pais
 
             os.system('cls')
             cantidad_aereo = cantidad_aereo+1
-            nombre_aereo =input('Ingrese el nombre del aereo. Presione enter para salir\n')
+            nombre_aereo =input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
     
     for i in range(0,5):#es necesario recorrer ya que el admin puede registrar una aerolinea, irse y despues registrar otra.
         match aerolineas[i][4]:
@@ -447,12 +440,12 @@ def crear_aereo():
         mayor=obtener_pos_mayor(contadores)
         print("")
         print("Mayor:", paises[mayor],"con una cantidad de aerolineas cargadas de", contadores[mayor])
-        print("Menor:", paises[menor], "con una cantidad de aerolineas cargada de", contadores[menor])
+        print("Menor:", paises[menor],"con una cantidad de aerolineas cargada de", contadores[menor])
         print("")
     volver()
 
 
-def modificar_aereo(): #falta testear
+def modificar_aereo(): #testeado
     global aerolineas
     os.system('cls')
     
@@ -462,10 +455,10 @@ def modificar_aereo(): #falta testear
         pos = busqueda_secuencial(aerolineas, codigo, 0)
 
         if pos == -1:
-            print("⚠️  No se encontró ninguna aerolínea con ese código.")
+            print("⚠️ No se encontró ninguna aerolínea con ese código.")
         else:
             os.system('cls')
-            print(f"Aerolínea actual:\nCódigo: {aerolineas[pos][0]}\nNombre: {aerolineas[pos][1]}\nIATA: {aerolineas[pos][2]}\nDescripción: {aerolineas[pos][3]}\nPaís: {aerolineas[pos][4]}")
+            print(f"Aerolínea actual:\nCódigo: {aerolineas[pos][0]}\nNombre: {aerolineas[pos][1]}\nCódigo IATA: {aerolineas[pos][2]}\nDescripción: {aerolineas[pos][3]}\nPaís: {aerolineas[pos][4]}")
             print()
             print("Seleccione qué desea modificar:")
             print("1. Nombre ✏️")
