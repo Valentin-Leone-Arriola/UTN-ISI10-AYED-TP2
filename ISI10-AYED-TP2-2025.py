@@ -2,14 +2,14 @@
 # STRING: us_admin, contrasenia_admin, texto_nove1, texto_nove2, texto_nove3, fecha_ini_nove1, fecha_ini_nove2, fecha_ini_nove3, fecha_fin_nove1, fecha_fin_nove2, fecha_fin_nove3, fecha, fecha_aux, codigo_pais, descripcion_aereo, nombre_aereo, codigo_mayor, codigo_menor, usuario, contrasenia
 # INT: intentos, codigo_nove1, codigo_nove2, codigo_nove3, opc, nuevo_codigo, opc_novedad, opc_aspecto, mayor, menor, contador_arg, contador_bra, contador_chi, opc_input, codigo_IATA
 # BOOL: fecha_valida
-
+from colorama import Fore, Style, Back, init  
 import pwinput
 import os
 from datetime import datetime
-import getpass
-
-
+import getpass 
 #PROCEDIMIENTOS Y FUNCIONES GENERALES
+init(autoreset=True) 
+
 
 def validar_entero():
     opc_input = input("\nSeleccione una opción valida: ")
@@ -17,10 +17,15 @@ def validar_entero():
         return(int(opc_input))
     else:
         return -1
+    
+
+def cambiar_color(): 
+    print(Fore.BLUE )
+
 
 def en_construccion():
-    input("En construccion. Presione enter para continuar")
-    os.system('cls')
+     input(Back.GREEN + Fore.BLUE + " En construccion. Presione enter para continuar:" + Style.RESET_ALL)
+     os.system('cls')
 
 def volver():
     input("Regresando al menu anterior. Presione enter para continuar")
@@ -75,7 +80,7 @@ def menu_report ():
             case 4:
                 volver()
 
-""" def ver_nov():
+""" def ver_nodefv():
     print("╔═══════════════════════════════════════╗")
     print("║    📑  NOVEDADES DISPONIBLES  📑      ║")
     print("╚═══════════════════════════════════════╝\n")
@@ -443,9 +448,26 @@ def mostrar_menu_gestion_vuelos():
     print("3) Eliminar Vuelo 🗑️")
     print("4) Volver al Menú Principal 🔙") 
 
-def  menu_gestion_vuelos(vuelos):
-    mostrar_menu_gestion_vuelos()
-    entro = input()
+def  menu_gestion_vuelos(vuelos ) :
+        opc= -1 
+        while opc != 4:
+         mostrar_menu_gestion_vuelos()
+        opc = validar_entero()
+        os.system('cls')
+        while opc < 1 or opc > 4:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_gestion_vuelos()
+            opc = validar_entero()
+            os.system('cls')
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                en_construccion()
+            case 3:
+                en_construccion()
+            case 4:
+                volver()
 
 def  mostrar_menu_gestion_promociones():
     print("╔════════════════════════════════════════╗")
@@ -458,8 +480,25 @@ def  mostrar_menu_gestion_promociones():
 
     
 def  menu_gestion_promociones():
-    mostrar_menu_gestion_promociones()
-    entro = input()
+    opc= -1 
+    while opc != 4:
+        mostrar_menu_gestion_promociones()
+        opc = validar_entero()
+        os.system('cls')
+        while opc < 1 or opc > 4:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_gestion_promociones()
+            opc = validar_entero()
+            os.system('cls')
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                en_construccion()
+            case 3:
+                en_construccion()
+            case 4:
+                volver() 
 
 def  mostrar_menu_reportes():
     print("╔════════════════════════════════════════╗")
@@ -470,8 +509,23 @@ def  mostrar_menu_reportes():
     print("3) Volver al Menú Principal 🔙")
         
 def  menu_reportes_ceo():
-    mostrar_menu_reportes()
-    entro = input()
+    opc= -1 
+    while opc != 3:
+        mostrar_menu_reportes()
+        opc = validar_entero()
+        os.system('cls')
+        while opc < 1 or opc > 3:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_reportes()
+            opc = validar_entero()
+            os.system('cls')
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                en_construccion()
+            case 3:
+                volver()
 
 
 def mostrar_menu_principal_ceo():
@@ -509,17 +563,89 @@ def menu_ceo(vuelos):
                 print("Cerrando sesión...\n")
                 os.system('cls' if os.name == 'nt' else 'clear')
 
-def  buscar_vuelos():
+def  buscar_vuelos(): 
+    opc = -1
+    while opc != 4:
+        print("╔════════════════════════════════════╗")
+        print("║   🛩️  MENÚ DE BÚSQUEDA DE VUELOS 🛩️   ║")
+        print("╚════════════════════════════════════╝\n")
+        print("1) Buscar por Aerolínea ✈️")
+        print("2) Buscar por Fecha 📅")
+        print("3) Buscar por Destino 🌍")
+        print("4) Volver al Menú Principal 🔙") 
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        while opc < 1 or opc > 4:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                en_construccion()
+            case 3:
+                en_construccion()
+            case 4:
+                volver()
     print("entra a vuelos")
     entra = input()
 
 def  buscar_asientos():
-    print("entra a asientos")
-    entra = input()
+    opc = -1
+    while opc != 3:
+        print("╔════════════════════════════════════╗")
+        print("║   💺  MENÚ DE BÚSQUEDA DE ASIENTOS 💺  ║")
+        print("╚════════════════════════════════════╝\n")
+        print("1) Buscar por Vuelo ✈️")
+        print("2) Buscar por Clase de Asiento 🛋️")
+        print("3) Volver al Menú Principal 🔙") 
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
 
-def  reservar_vuelo():
-    print("entra a reservar vuelo")
-    entra = input()
+        while opc < 1 or opc > 3:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                en_construccion()
+            case 3:
+                volver()
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+  #  print("entra a asientos")
+  #   entra = input()
+
+def reservar_vuelo():
+    opc = -1    
+    while opc != 2:
+        print("╔════════════════════════════════════╗")
+        print("║   🛩️  MENÚ DE RESERVA DE VUELOS 🛩️   ║")
+        print("╚════════════════════════════════════╝\n")
+        print("1) Reservar Vuelo ✈️")
+        print("2) Volver al Menú Principal 🔙")
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+        while opc < 1 or opc > 2:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                volver()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+   # print("entra a reservar vuelo")
+   # entra = input()
     
 def mostrar_menu_reservas():
     print("╔════════════════════════════════════════╗")
@@ -530,12 +656,77 @@ def mostrar_menu_reservas():
     print("3) Volver al Menú Principal 🔙") 
     
 def  menu_gestion_reservas():
-    mostrar_menu_reservas()
-    entra = input()
+    opc = -1
+    while opc != 3:
+        mostrar_menu_reservas()
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+        while opc < 1 or opc > 3:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_reservas()
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+        match opc: 
+            case 1:
+                consultar_reservas()
+            case 2:
+                cancelar_confirmar_reservas() 
+            case 3:
+                volver()
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+
 
 def  ver_historial_compras():
     print("entra a historial")
-    entra = input()
+    opc = -1
+    while opc != 2:
+        print("╔════════════════════════════════════╗")
+        print("║   💲  MENÚ DE HISTORIAL DE COMPRAS 💲  ║")
+        print("╚════════════════════════════════════╝\n")
+        print("1) Ver Historial de Compras 💰")
+        print("2) Volver al Menú Principal 🔙") 
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        while opc < 1 or opc > 2:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                volver() 
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def ver_novedades():
+    print("entra a novedades")
+    opc = -1
+    while opc != 2:
+        print("╔════════════════════════════════════╗")
+        print("║   📑  MENÚ DE NOVEDADES 📑          ║")
+        print("╚════════════════════════════════════╝\n")
+        print("1) Ver Novedades 📑")
+        print("2) Volver al Menú Principal 🔙") 
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        while opc < 1 or opc > 2:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                volver() 
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
 
 def  mostrar_menu_principal_usuario():
     print("╔════════════════════════════════════╗")
@@ -750,5 +941,6 @@ while opc!= 3:
             opc = validar_entero()
         case 3:
             print()
-print("Cerrando programa...")
-        
+print("Cerrando programa...") 
+
+
