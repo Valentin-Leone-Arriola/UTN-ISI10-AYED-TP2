@@ -46,6 +46,159 @@ def pedir_fecha_valida():
             print("Error: Fecha inexistente. Verificá los valores.\n")
     return fecha 
 
+def validar_entero():
+    opc_input = input("\nSeleccione una opción valida: ")
+    if opc_input.isdigit():
+        return(int(opc_input))
+    else:
+        return -1
+
+def ver_arreglo_limitado_pr(arreglo, texto_principal, titulos, condicion_hasta, pos_evaluar, mostrar_pos_y_modo, longitud_columnas):
+    print(f"\n📑 {texto_principal} 📑\n")
+    longitud= int(longitud_columnas)
+    columnas = len(titulos)
+    filas = len(arreglo)
+    pos= int(pos_evaluar)
+    print("-" * int(longitud*(columnas-1)))
+    print()
+
+    if mostrar_pos_y_modo[0]:
+        print(f"{'N°':<4}", end=" ")
+    for i in range(columnas):
+        print(f"{titulos[i]:<{longitud}}", end=" ")
+    print()
+    i = 0
+    if mostrar_pos_y_modo[0] and not mostrar_pos_y_modo[1]:
+        while i < len(arreglo) and arreglo[i][pos] != condicion_hasta:
+            print(f"{i :<4}", end=" ")
+            for j in range(columnas):
+                print(f"{arreglo[i][j]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    elif mostrar_pos_y_modo[0] and mostrar_pos_y_modo[1]:
+        while i < len(arreglo) and arreglo[i][pos] != condicion_hasta:
+            print(f"{i+1 :<4}", end=" ")
+            for j in range(columnas):
+                print(f"{arreglo[i][j]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    else:
+        while i < filas and arreglo[i][pos] != condicion_hasta:
+            for j in range(columnas):
+                print(f"{arreglo[i][j]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    
+    print()
+
+def ver_arreglo_limitado_func(arreglo, texto_principal, titulos, condicion_hasta, pos_evaluar, mostrar_pos_y_modo, longitud_columnas):
+    print(f"\n📑 {texto_principal} 📑\n")
+    longitud= int(longitud_columnas)
+    columnas = len(titulos)
+    filas = len(arreglo)
+    pos= int(pos_evaluar)
+    print("-" * int(longitud*(columnas-1)))
+    print()
+
+    if mostrar_pos_y_modo[0]:
+        print(f"{'N°':<4}", end=" ")
+    for i in range(columnas):
+        print(f"{titulos[i]:<{longitud}}", end=" ")
+    print()
+    i = 0
+    if mostrar_pos_y_modo[0] and not mostrar_pos_y_modo[1]:
+        while i < len(arreglo) and arreglo[i][pos] != condicion_hasta:
+            print(f"{i :<4}", end=" ")
+            for j in range(columnas):
+                print(f"{arreglo[i][j]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    elif mostrar_pos_y_modo[0] and mostrar_pos_y_modo[1]:
+        while i < len(arreglo) and arreglo[i][pos] != condicion_hasta:
+            print(f"{i+1 :<4}", end=" ")
+            for j in range(columnas):
+                print(f"{arreglo[i][j]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    else:
+        while i < filas and arreglo[i][pos] != condicion_hasta:
+            for j in range(columnas):
+                print(f"{arreglo[i][j]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    
+    print()
+    return i
+
+def ver_arreglo_limitado_unidimensional(arreglo, texto_principal, titulos, condicion_hasta, mostrar_pos_y_modo, longitud_columnas):
+    print(f"\n📑 {texto_principal} 📑\n")
+    longitud= int(longitud_columnas)
+    columnas = len(titulos)
+    filas = len(arreglo)
+    
+    print("-" * int(longitud*(columnas)))
+    print()
+
+    if mostrar_pos_y_modo[0]:
+        print(f"{'N°':<4}", end=" ")
+    for i in range(columnas):
+        print(f"{titulos[i]:<{longitud}}", end=" ")
+    print()
+    i = 0
+    if mostrar_pos_y_modo[0] and not mostrar_pos_y_modo[1]:
+        while i < len(arreglo) and arreglo[i]!= condicion_hasta:
+            print(f"{i :<4}", end=" ")
+            print(f"{arreglo[i]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    elif mostrar_pos_y_modo[0] and mostrar_pos_y_modo[1]:
+        while i < len(arreglo) and arreglo[i]!= condicion_hasta:
+            print(f"{i+1 :<4}", end=" ")
+            print(f"{arreglo[i]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    else:
+        while i < filas and arreglo[i]!= condicion_hasta:
+            print(f"{arreglo[i]:<{longitud}}", end=" ")
+            print()
+            i += 1
+    
+    print()
+
+def ordenar_burbuja_desc(arreglo, columna_orden, cant_columnas):
+    filas = len(arreglo)
+
+    fila_temp = [""] * cant_columnas
+    i = 0
+    while i < filas - 1:
+        j = i + 1
+        while j < filas:
+            if arreglo[j][columna_orden] > arreglo[i][columna_orden]:
+                k = 0
+                while k < cant_columnas:
+                    fila_temp[k] = arreglo[i][k]
+                    k += 1
+                k = 0
+                while k < cant_columnas:
+                    arreglo[i][k] = arreglo[j][k]
+                    k += 1
+                k = 0
+                while k < cant_columnas:
+                    arreglo[j][k] = fila_temp[k]
+                    k += 1
+            j += 1
+        i += 1
+
+def busqueda_secuencial (arreglo, elemento_buscado, columna):
+    cant_filas = len(arreglo)
+    i=0
+    while i<cant_filas-1 and arreglo[i][columna]!=elemento_buscado:
+        i=i+1
+    if arreglo[i][columna]==elemento_buscado:
+        return i
+    else:
+        return-1
+    
 #MENU ADMINISTRADOR
 
 #############
@@ -139,10 +292,9 @@ def mostrar_menu_editar_nov():
     print("3) Fecha de Finalización 📅")
     print("4) Volver 🔙")
 
-def editar_nov(novedades): #menu3_2
-    global codigo_nove1, codigo_nove2, codigo_nove3, texto_nove1, texto_nove2, texto_nove3, fecha_ini_nove1, fecha_ini_nove2, fecha_ini_nove3, fecha_fin_nove1, fecha_ini_nove2, fecha_fin_nove3
-    
-    ultima_novedad = ver_novedades(novedades)
+def editar_nov(): #menu3_2
+    global novedades
+    ultima_novedad = ver_arreglo_limitado_func(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
     print("Ingrese la novedad que desea editar (0 para salir)")
     opc_novedad = validar_entero()-1
     while opc_novedad !=-1:
@@ -192,114 +344,109 @@ def editar_nov(novedades): #menu3_2
                 opc_aspecto = validar_entero()
                 os.system('cls')
         volver()
-        ver_novedades(novedades)
+        ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
         print("Ingrese el codigo de la novedad (0 para salir)")
         opc_novedad = validar_entero()-1
     os.system('cls')
     volver()
 
-def mostrar_menu_novedades():
-    print("╔═════════════════════════════════════╗")
-    print("║        📆 MENÚ DE NOVEDADES 📆      ║")
-    print("╚═════════════════════════════════════╝\n")
-    print("1) Crear Novedades ➕")
-    print("2) Modificar Novedades ✏️")
-    print("3) Eliminar Novedades 🗑️")
-    print("4) Ver Novedades 📑")
-    print("5) Volver al Menú Principal 🔙")
 
-def menu_novedades(novedades): #menu3
+#-------------------------------------------------------------------------------------------------------------
+
+def mostrar_menu_principal_admin():
+    print("╔════════════════════════════════════╗")
+    print("║ 🏠    MENÚ PRINCIPAL ADMIN  🏠        ║")
+    print("╚════════════════════════════════════╝\n")
+    print("1) Gestión de Aerolíneas 🛩️")
+    print("2) Aprobar / Denegar Promociones💲")
+    print("3) Gestión de Novedades 📆")
+    print("4) Mostrar Reportes 📊")
+    print("5) Salir del Programa ❌")
+
+def menu_administrador():
     opc = -1
     while opc != 5:
-        mostrar_menu_novedades()
+        mostrar_menu_principal_admin()
         opc = validar_entero()
         os.system('cls')
-        while opc <1 or opc>5:
+        while opc < 1 or opc > 5:
             print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
-            mostrar_menu_novedades()
+            mostrar_menu_principal_admin()
             opc = validar_entero()
             os.system('cls')
         match opc:
             case 1:
-                en_construccion()
+                menu_gestion_aereo()
             case 2:
-                editar_nov(novedades)
+                en_construccion()
+            case 3:
+                menu_novedades()
+            case 4:
+                menu_report()
+            case 5:
+                os.system('cls')
+                volver()
+
+def mostrar_menu_gestion_aereo():
+    print("╔════════════════════════════════════════╗")
+    print("║  🛩️  MENÚ DE GESTIÓN DE AEROLÍNEAS 🛩️    ║")
+    print("╚════════════════════════════════════════╝\n")
+    print("1) Crear Aerolínea ✈️")
+    print("2) Modificar Aerolínea ✏️")
+    print("3) Eliminar Aerolínea 🗑️")
+    print("4) Volver al Menú Principal 🔙")
+
+def menu_gestion_aereo(): #menu 1
+    opc = -1
+    while opc != 4:
+        mostrar_menu_gestion_aereo()
+        opc = validar_entero()
+        os.system('cls')
+        while opc <1 or opc >4:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_gestion_aereo()
+            opc = validar_entero()
+            os.system('cls')
+        match opc:
+            case 1:
+                crear_aereo()
+            case 2:
+                modificar_aereo()
             case 3:
                 en_construccion()
             case 4:
-                ver_novedades(novedades)
-                input("Presione Enter para continuar...")
-                os.system('cls')
-            case 5:
                 volver()
-    os.system('cls')
 
-def pedir_codigo_pais():
-    print("\nCodigo de pais:")
-    print('- "ARG"')
-    print('- "CHI"')
-    print('- "BRA"')
-    codigo_pais = input("Ingrese la opcion que desea (SIN ESPACIOS O CARACTERES ESPECIALES Y TODO EN MAYUSCULAS)\n")
-    print("")
-    while codigo_pais != "ARG" and codigo_pais != "CHI" and codigo_pais != "BRA":
-        print("⚠️   Opción no válida. Inténtelo nuevamente.")
-        print("\nCodigo de pais:")
-        print('- "ARG"')
-        print('- "CHI"')
-        print('- "BRA"')
-        codigo_pais = input("Ingrese la opcion que desea (SIN ESPACIOS O CARACTERES ESPECIALES Y TODO EN MAYUSCULAS)\n")
-        print("")
-    return codigo_pais
+#----------------------------------------------TESTEAdo-------------------------------------
 
-def pedir_codigo_IATA():
-    codigo = input("Ingrese código IATA: ")
-    while not (1 <= len(codigo) <= 3):   
-        print("El código debe tener como máximo 3 caracteres")
-        codigo = input("Ingrese código IATA: ")
-    return codigo
+def crear_aereo():
+    global aerolineas
+    nombre_aereo = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
+    cantidad_aereo =  busqueda_secuencial(aerolineas,"",0)
 
-def pedir_codigo_aerolinea():
-    codigo = input("Ingrese código de la aerolinea: ")
-    while not (1 <= len(codigo) <= 5):   
-        print("El código debe tener como máximo 5 caracteres")
-        codigo = input("Ingrese código de la aerolinea: ").upper()
-    return codigo
-
-def obtener_pos_menor(arreglo):
-    pos_menor = 0
-    for i in range(1, len(arreglo)):
-        if arreglo[i] < arreglo[pos_menor]:
-            pos_menor = i
-    return pos_menor
-
-def obtener_pos_mayor(arreglo):
-    pos_mayor = 0
-    for i in range(1, len(arreglo)):
-        if arreglo[i] > arreglo[pos_mayor]:
-            pos_mayor = i
-    return pos_mayor
-
-def crear_aereo(aerolineas):
-    
-    nombre_aereo = input('Ingrese el nombre del aereo. Presione enter para salir\n')
-    cantidad_aereo =  busquedaSecuencial(aerolineas,"",0)
-    if cantidad_aereo ==-1:
-        input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
+    if cantidad_aereo == -1:
+        input("\nYa no se pueden cargar mas aerolíneas. Presione enter para continuar")
         nombre_aereo = ""
     else:
         contadores = [0]*3
         paises = ["ARG", "BRA", "CHI"]
-        while nombre_aereo != "" and cantidad_aereo<5:
-            aerolineas[cantidad_aereo][0]=pedir_codigo_aerolinea()
+        while nombre_aereo != "" and cantidad_aereo < 5:
+            codigo_nuevo = pedir_codigo_aerolinea()
+            nro = busqueda_secuencial(aerolineas, codigo_nuevo, 0)
+            while nro != -1:
+                print("Ese código de aerolínea ya existe. Intente con otro.")
+                codigo_nuevo = pedir_codigo_aerolinea()
+                nro = busqueda_secuencial(aerolineas, codigo_nuevo, 0)
+            aerolineas[cantidad_aereo][0]=codigo_nuevo
             aerolineas[cantidad_aereo][1]=nombre_aereo
             aerolineas[cantidad_aereo][2] = pedir_codigo_IATA()
-            aerolineas[cantidad_aereo][3]= input("\nIngrese la descripcion del vuelo\n")
+            aerolineas[cantidad_aereo][3]= input("Ingrese la descripcion del vuelo: ")
             codigo_pais = pedir_codigo_pais()
             aerolineas[cantidad_aereo][4]=codigo_pais
 
             os.system('cls')
             cantidad_aereo = cantidad_aereo+1
-            nombre_aereo = input('Ingrese el nombre del aereo. Ingrese 0 para salir\n')
+            nombre_aereo =input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
     
     for i in range(0,5):#es necesario recorrer ya que el admin puede registrar una aerolinea, irse y despues registrar otra.
         match aerolineas[i][4]:
@@ -319,12 +466,13 @@ def crear_aereo(aerolineas):
         mayor=obtener_pos_mayor(contadores)
         print("")
         print("Mayor:", paises[mayor],"con una cantidad de aerolineas cargadas de", contadores[mayor])
-        print("Menor:", paises[menor], "con una cantidad de aerolineas cargada de", contadores[menor])
+        print("Menor:", paises[menor],"con una cantidad de aerolineas cargada de", contadores[menor])
         print("")
     volver()
 
 
-def modificar_aereo(aerolineas): #falta testear
+def modificar_aereo(): #testeado
+    global aerolineas
     os.system('cls')
     
     codigo = input("Ingrese el código de la aerolínea que desea modificar (0 para salir): ").upper()
@@ -333,10 +481,10 @@ def modificar_aereo(aerolineas): #falta testear
         pos = busquedaSecuencial(aerolineas, codigo, 0)
 
         if pos == -1:
-            print("⚠️  No se encontró ninguna aerolínea con ese código.")
+            print("⚠️ No se encontró ninguna aerolínea con ese código.")
         else:
             os.system('cls')
-            print(f"Aerolínea actual:\nCódigo: {aerolineas[pos][0]}\nNombre: {aerolineas[pos][1]}\nIATA: {aerolineas[pos][2]}\nDescripción: {aerolineas[pos][3]}\nPaís: {aerolineas[pos][4]}")
+            print(f"Aerolínea actual:\nCódigo: {aerolineas[pos][0]}\nNombre: {aerolineas[pos][1]}\nCódigo IATA: {aerolineas[pos][2]}\nDescripción: {aerolineas[pos][3]}\nPaís: {aerolineas[pos][4]}")
             print()
             print("Seleccione qué desea modificar:")
             print("1. Nombre ✏️")
@@ -372,72 +520,90 @@ def modificar_aereo(aerolineas): #falta testear
 
     os.system('cls')
     volver()
-    
 
-def mostrar_menu_gestion_aereo():
-    print("╔════════════════════════════════════════╗")
-    print("║  🛩️  MENÚ DE GESTIÓN DE AEROLÍNEAS 🛩️    ║")
-    print("╚════════════════════════════════════════╝\n")
-    print("1) Crear Aerolínea ✈️")
-    print("2) Modificar Aerolínea ✏️")
-    print("3) Eliminar Aerolínea 🗑️")
-    print("4) Volver al Menú Principal 🔙")
+def mostrar_menu_novedades():
+    print("╔═════════════════════════════════════╗")
+    print("║        📆 MENÚ DE NOVEDADES 📆      ║")
+    print("╚═════════════════════════════════════╝\n")
+    print("1) Crear Novedades ➕")
+    print("2) Modificar Novedades ✏️")
+    print("3) Eliminar Novedades 🗑️")
+    print("4) Ver Novedades 📑")
+    print("5) Volver al Menú Principal 🔙")
 
-def menu_gestion_aereo(aerolineas): #menu 1
-    opc = -1
-    while opc != 4:
-        mostrar_menu_gestion_aereo()
-        opc = validar_entero()
-        os.system('cls')
-        while opc <1 or opc >4:
-            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
-            mostrar_menu_gestion_aereo()
-            opc = validar_entero()
-            os.system('cls')
-        match opc:
-            case 1:
-                crear_aereo(aerolineas)
-            case 2:
-                modificar_aereo(aerolineas)
-            case 3:
-                en_construccion()
-            case 4:
-                volver()
-
-def mostrar_menu_principal_admin():
-    print("╔════════════════════════════════════╗")
-    print("║ 🏠    MENÚ PRINCIPAL ADMIN  🏠        ║")
-    print("╚════════════════════════════════════╝\n")
-    print("1) Gestión de Aerolíneas 🛩️")
-    print("2) Aprobar / Denegar Promociones💲")
-    print("3) Gestión de Novedades 📆")
-    print("4) Mostrar Reportes 📊")
-    print("5) Salir del Programa ❌")
-
-def menu_administrador(novedades,aerolineas):
+def menu_novedades():
+    global novedades
     opc = -1
     while opc != 5:
-        mostrar_menu_principal_admin()
+        mostrar_menu_novedades()
         opc = validar_entero()
         os.system('cls')
-        while opc < 1 or opc > 5:
+        while opc <1 or opc>5:
             print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
-            mostrar_menu_principal_admin()
+            mostrar_menu_novedades()
             opc = validar_entero()
             os.system('cls')
         match opc:
             case 1:
-                menu_gestion_aereo(aerolineas)
-            case 2:
                 en_construccion()
+            case 2:
+                editar_nov()
             case 3:
-                menu_novedades(novedades)
+                en_construccion()
             case 4:
-                menu_report()
+                ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
+                input("Presione Enter para continuar...")
+                os.system('cls')
             case 5:
-                os.system('cls') #se borra la consola ya que la consigna dice que con salir se abandona el sistema
+                volver()
+    os.system('cls')
 
+def pedir_codigo_pais():
+    print("\nCodigo de pais:")
+    print('- "ARG"')
+    print('- "CHI"')
+    print('- "BRA"')
+    codigo_pais = input("Ingrese la opcion que desea (SIN ESPACIOS O CARACTERES ESPECIALES Y TODO EN MAYUSCULAS)\n")
+    print("")
+    while codigo_pais != "ARG" and codigo_pais != "CHI" and codigo_pais != "BRA":
+        print("⚠️   Opción no válida. Inténtelo nuevamente.")
+        print("\nCodigo de pais:")
+        print('- "ARG"')
+        print('- "CHI"')
+        print('- "BRA"')
+        codigo_pais = input("Ingrese la opcion que desea (SIN ESPACIOS O CARACTERES ESPECIALES Y TODO EN MAYUSCULAS)\n")
+        print("")
+    return codigo_pais
 
+def pedir_codigo_IATA():
+    codigo = input("Ingrese código IATA: ")
+    while not (1 <= len(codigo) <= 3):   
+        print("El código debe tener como máximo 3 caracteres")
+        codigo = input("Ingrese código IATA: ")
+    return codigo
+
+def pedir_codigo_aerolinea():
+    codigo = input("Ingrese código de la aerolinea: ")
+    while not (1 <= len(codigo) <= 5):   
+        print("El código debe tener como minimo 1 caracter y como máximo 5 caracteres")
+        codigo = input("Ingrese código de la aerolinea: ").upper()
+    return codigo
+
+def obtener_pos_menor(arreglo):
+    pos_menor = 0
+    for i in range(1, len(arreglo)):
+        if arreglo[i] < arreglo[pos_menor]:
+            pos_menor = i
+    return pos_menor
+
+def obtener_pos_mayor(arreglo):
+    pos_mayor = 0
+    for i in range(1, len(arreglo)):
+        if arreglo[i] > arreglo[pos_mayor]:
+            pos_mayor = i
+    return pos_mayor
+    
+#-------------------------------------------------------------------------------------------------------------
 
 def mostrar_menu_gestion_vuelos():
     print("╔════════════════════════════════════════╗")
@@ -448,20 +614,406 @@ def mostrar_menu_gestion_vuelos():
     print("3) Eliminar Vuelo 🗑️")
     print("4) Volver al Menú Principal 🔙") 
 
-def  menu_gestion_vuelos(vuelos ) :
-        opc= -1 
-        while opc != 4:
-         mostrar_menu_gestion_vuelos()
-        opc = validar_entero()
-        os.system('cls')
-        while opc < 1 or opc > 4:
-            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
-            mostrar_menu_gestion_vuelos()
-            opc = validar_entero()
+def validar_hora():
+    h = [0,0]
+    m = [0,0]
+    hora_valida = False
+    while not hora_valida:
+        hora = input("Ingrese la hora (HH:MM): ")
+        if len(hora) == 5 and hora[2] == ":":
+            for i in range(2):
+                j = i+3
+                h[i]=hora[i]
+                m[i]=hora[i + 3]
+                
+            try:
+                hh = int(h[0]) * 10 + int(h[1])
+                mm = int(m[0]) * 10 + int(m[1])
+                
+                if 0 <= hh <= 23 and 0 <= mm <= 59:
+                    hora_valida = True
+                    
+                else:
+                    print("hora fuera de rango.")
+                    
+            except ValueError:
+                print("formato invalido solo numeros.") 
+                
+        else:
+            print("formato incorrecto use HH:MM.")
+                        
+    return hora
+
+def validar_precio():
+    valido = False
+    while not valido:
+        entrada = input("Precio del vuelo: ")
+        i = 0
+        punto = 0
+        while i < len(entrada):
+            if entrada[i] == ".":
+                punto += 1
+            elif entrada[i] < "0" or entrada[i] > "9":
+                punto = 999  # fuerza error
+            i += 1
+        if punto <= 1 and len(entrada) > 0:
+            valido = True
+        else:
+            print("Precio inválido. Ingrese solo números.")
+    return float(entrada)
+
+def listar_vuelos_aerolineas():
+    global vuelos, aerolineas
+    fecha_actual = datetime.today()
+    vuelos_por_aerolinea = [[i, 0] for i in range(len(aerolineas))]
+
+    i = 0
+    while i < len(vuelos) and vuelos[i][0] != "":
+        fecha_vuelo = datetime.strptime(vuelos[i][3], "%d/%m/%Y")
+        if fecha_vuelo > fecha_actual:
+            cod_aerolinea = vuelos[i][0]
+            pos = busqueda_secuencial(aerolineas, cod_aerolinea, 0)
+            if pos != -1:
+                vuelos_por_aerolinea[pos][1] += 1
+        i += 1
+
+    ordenar_burbuja_desc(vuelos_por_aerolinea, 1, 2)
+
+    print("\n" + "="*60)
+    print("REPORTE DE VUELOS VIGENTES POR AEROLINEA")
+    print("="*60)
+    print(f"{'POSICION':<10}{'AEROLINEA':<30}{'CANTIDAD DE VUELOS'}")
+    print("-" * 60)
+
+    total = 0
+    i = 0
+    while i < len(aerolineas) and aerolineas[i][0] != "":
+        pos_aero = vuelos_por_aerolinea[i][0]
+        nombre = aerolineas[pos_aero][1]
+        cantidad = vuelos_por_aerolinea[i][1]
+        print(f"{i:<10}{nombre:<30}{cantidad}")
+        total += cantidad
+        i += 1
+
+    print("-" * 60)
+    print(f"TOTAL DE VUELOS VIGENTES: {total}")
+    
+    if i > 0:
+        print(f"Aerolínea con MAYOR cantidad de vuelos: {aerolineas[vuelos_por_aerolinea[0][0]][1]} ({vuelos_por_aerolinea[0][1]})") #la aerolinea que se encuentra en la primer posicion del arreglo ordenado de forma descendente y su cantidad
+        print(f"Aerolínea con MENOR cantidad de vuelos: {aerolineas[vuelos_por_aerolinea[i - 1][0]][1]} ({vuelos_por_aerolinea[i - 1][1]})") #la aerolinea que se encuentra en la ultima posicion no "vacia" del arreglo ordenado de forma descendente y su cantidad
+    
+    
+def crear_vuelo():
+    global vuelos, precios_vuelos, asientos, ASIENTOS_POR_AVION
+    ultimo= busqueda_secuencial(vuelos, "", 0)
+     #VER
+    
+    while ultimo!=-1 and ultimo<=19:
+
+        print("\nIngrese datos del vuelo (deje el codigo vacio para salir):")
+        codigo = input("Codigo de aerolinea: ").upper()
+        if codigo == "":
+            ultimo = 100
+        else:
+            ultimo_vuelo_aerolinea = busqueda_secuencial(aerolineas, codigo, 0)
+            if ultimo_vuelo_aerolinea == -1:
+                print("Aerolínea no encontrada. Intente nuevamente.")
+            else:
+                vuelos[ultimo][0] = codigo
+                vuelos[ultimo][1] = input("Origen: ").upper()
+                vuelos[ultimo][2] = input("Destino: ").upper()
+                vuelos[ultimo][3] = pedir_fecha_valida()
+                fecha_llegada = pedir_fecha_valida()
+                
+                while datetime.strptime(fecha_llegada, "%d/%m/%Y") < datetime.strptime(vuelos[ultimo][3], "%d/%m/%Y"):
+                    print("⚠️  La fecha de finalización no puede ser anterior a la de inicio")
+                    fecha_llegada = pedir_fecha_valida()
+                    
+                vuelos[ultimo][4] = fecha_llegada
+                vuelos[ultimo][5] = validar_hora()
+                vuelos[ultimo][6] = "A"
+                precios_vuelos[ultimo] = validar_precio()
+                
+                
+                j = int((ultimo * ASIENTOS_POR_AVION)/6)
+                for i in range(int(ASIENTOS_POR_AVION/6)):
+                    for k in range(3): #carga hasta pasillo
+                        asientos[j][k] = random.choice(["L", "O", "R"])
+                    for k in range(4,7): #carga dsp pasillo
+                        asientos[j][k] = random.choice(["L", "O", "R"])
+                    j += 1
+                print("✔ Vuelo cargado correctamente.")
+        ultimo = ultimo+1           
+    if ultimo == -1 or ultimo==20:
+        print("Ya no hay espacio disponible para mas vuelos.")
+    listar_vuelos_aerolineas()
+    volver()
+            
+""" def modificar_vuelo():
+    global vuelos, precios_vuelos
+    print("ingrese el codigo del vuelo que quiere modificar: ")
+    codigo = validar_entero()
+
+    #Validar rango de índice
+    while codigo == -1 or codigo < 0 or codigo > 19 :
+        print(" ⚠️  Codigo de vuelo invalido. Intentelo nuevamente ")
+        print("Ingrese el codigo del vuelo que quiere modificar: ")
+        codigo = validar_entero()
+
+    # Validar que exista un vuelo cargado en esa posición
+    if vuelos[codigo][6] != 'A' and vuelos[codigo][6] != 'B':
+        print("No existe ningun vuelo activo o dado de baja con ese codigo.")
+    else:
+        if vuelos[codigo][6] == 'A':
+            print("✈️  VUELO EN ESTADO ACTIVO: ")
+            print(f"Código aero: {vuelos[codigo][0]}\nOrigen: {vuelos[codigo][1]}\nDestino: {vuelos[codigo][2]}\nFecha salida: {vuelos[codigo][3]}\nFecha llegada: {vuelos[codigo][4]}\nHora salida: {vuelos[codigo][5]}\nPrecio:${precios_vuelos[codigo]}")
+            print()
+            print("Seleccione que desea modificar:")
+            print("1. Origen 🛫")
+            print("2. Destino 🛫")
+            print("3. Fecha salida 📅")
+            print("4. Fecha llegada 📅")
+            print("5. Hora salida  🕒")
+            print("6. Precio 💰")
+            print("7. Volver 🔙")
+            opcion = validar_entero()
+
+            while opcion < 1 or opcion > 7:
+                print("⚠️  Opción no válida. Inténtelo nuevamente.")
+                opcion = validar_entero()
+
+            if opcion == 1:
+                nuevo_origen = input("Origen: ").upper()
+                vuelos[codigo][1] = nuevo_origen
+            elif opcion == 2:
+                nuevo_destino = input("Destino: ").upper()
+                vuelos[codigo][2] = nuevo_destino
+            elif opcion == 3:
+                nueva_fecha_salida = pedir_fecha_valida()
+                vuelos[codigo][3] = nueva_fecha_salida
+            elif opcion == 4:
+                nueva_fecha_llegada = pedir_fecha_valida()
+                while datetime.strptime(nueva_fecha_llegada, "%d/%m/%Y") < datetime.strptime(vuelos[codigo][3], "%d/%m/%Y"):
+                    print("⚠️  La fecha de finalización no puede ser anterior a la de inicio")
+                    nueva_fecha_llegada = pedir_fecha_valida()
+                vuelos[codigo][4] = nueva_fecha_llegada
+            elif opcion == 5:
+                nueva_hora_salida = validar_hora()
+                vuelos[codigo][5] = nueva_hora_salida
+            elif opcion == 6:
+                nuevo_precio = validar_precio()
+                precios_vuelos[codigo] = nuevo_precio
+            else:
+                volver()
+         
+            input("✅ Modificación realizada (o cancelada). Presione Enter para continuar...")
             os.system('cls')
+            volver()  
+
+        else: 
+            print("✈️  VUELO EN ESTADO INACTIVO")
+            opc = input("¿Desea cambiar el estado de su vuelo?, S(si) N(no): ")
+
+            while opc != 'S' and opc != 'N':
+                opc = input("opcion invalida, seleccione S o N: ")
+
+            if opc == "S":
+                vuelos[codigo][6] = 'A'
+                print("✈️  VUELO EN ESTADO ACTIVO: ")
+                print(f"Código aero: {vuelos[codigo][0]}\nOrigen: {vuelos[codigo][1]}\nDestino: {vuelos[codigo][2]}\nFecha salida: {vuelos[codigo][3]}\nFecha llegada: {vuelos[codigo][4]}\nHora salida: {vuelos[codigo][5]}\nPrecio:${precios_vuelos[codigo]}")
+                print()
+                print("Seleccione qué desea modificar:")
+                print("1. Origen 🛫")
+                print("2. Destino 🛫")
+                print("3. Fecha salida 📅")
+                print("4. Fecha llegada 📅")
+                print("5. Hora salida  🕒")
+                print("6. Precio 💰")
+                print("7. Volver 🔙")
+                opcion = validar_entero()
+
+                while opcion < 1 or opcion > 7:
+                    print("⚠️  Opción no válida. Inténtelo nuevamente.")
+                    opcion = validar_entero()
+
+                if opcion == 1:
+                    nuevo_origen = input("Origen: ").upper()
+                    vuelos[codigo][1] = nuevo_origen
+                elif opcion == 2:
+                    nuevo_destino = input("Destino: ").upper()
+                    vuelos[codigo][2] = nuevo_destino
+                elif opcion == 3:
+                    nueva_fecha_salida = pedir_fecha_valida()
+                    vuelos[codigo][3] = nueva_fecha_salida
+                elif opcion == 4:
+                    nueva_fecha_llegada = pedir_fecha_valida()
+                    while datetime.strptime(nueva_fecha_llegada, "%d/%m/%Y") < datetime.strptime(vuelos[codigo][3], "%d/%m/%Y"):
+                        print("⚠️  La fecha de finalización no puede ser anterior a la de inicio")
+                        nueva_fecha_llegada = pedir_fecha_valida()
+                    vuelos[codigo][4] = nueva_fecha_llegada
+                elif opcion == 5:
+                    nueva_hora_salida = validar_hora()
+                    vuelos[codigo][5] = nueva_hora_salida
+                elif opcion == 6:
+                    nuevo_precio = validar_precio()
+                    precios_vuelos[codigo] = nuevo_precio
+                else:
+                    volver()
+            
+                input("✅ Modificación realizada (o cancelada). Presione Enter para continuar...")
+                os.system('cls')
+                volver()  
+
+            else:
+                input("No se puede modificar un vuelo en estado INACTIVO. Presione Enter para continuar...")
+                os.system('cls')
+                volver()
+ """
+def mostrar_opciones_modificacion():
+    print("\nSeleccione qué desea modificar:")
+    print("1. Origen 🛫")
+    print("2. Destino 🛫")
+    print("3. Fecha salida 📅")
+    print("4. Fecha llegada 📅")
+    print("5. Hora salida 🕒")
+    print("6. Precio 💰")
+    print("7. Volver 🔙")
+
+def modificar_vuelo():
+    global vuelos, precios_vuelos
+
+    codigo = 0 
+
+    while codigo != 20:
+
+        print("Ingrese el código del vuelo que quiere modificar (20 para salir): ")
+        codigo = validar_entero()
+
+        if codigo == -1:
+            print("⚠️  Entrada inválida. Intente nuevamente.")
+        elif codigo == 20:
+            volver()
+        elif codigo<0 or codigo>19:
+            print("⚠️  Código de vuelo inválido. Inténtelo nuevamente.")
+        else:
+            estado = vuelos[codigo][6]
+            puede_modificar = False
+
+            if estado == 'A':
+                puede_modificar = True
+
+            elif estado == 'B':
+                print("✈️  VUELO EN ESTADO INACTIVO.")
+                opc = input("¿Desea cambiar el estado de su vuelo? S(si) / N(no): ").upper()
+                while opc != 'S' and opc != 'N':
+                    opc = input("Opcion invalida. Seleccione S o N: ").upper()
+                if opc == 'S':
+                    vuelos[codigo][6] = 'A'
+                    puede_modificar = True
+                else:
+                    print("No se puede modificar un vuelo en estado INACTIVO.")
+
+            else:
+                print("No existe ningún vuelo activo o dado de baja con ese código.")
+
+            if puede_modificar:
+                opcion = 0  
+                while opcion != 7:
+                    print("\n✈️  VUELO EN ESTADO ACTIVO:")
+                    print(f"Código aero: {vuelos[codigo][0]}\nOrigen: {vuelos[codigo][1]}\nDestino: {vuelos[codigo][2]}\n"
+                          f"Fecha salida: {vuelos[codigo][3]}\nFecha llegada: {vuelos[codigo][4]}\nHora salida: {vuelos[codigo][5]}\n"
+                          f"Precio: ${precios_vuelos[codigo]}")
+
+                    mostrar_opciones_modificacion()
+                    opcion = validar_entero()
+
+                    while opcion < 1 or opcion > 7:
+                        print("⚠️  Opción no válida. Inténtelo nuevamente.")
+                        opcion = validar_entero()
+
+                    match opcion:
+                        case 1:
+                            vuelos[codigo][1] = input("Nuevo origen: ").upper()
+                        case 2:
+                            vuelos[codigo][2] = input("Nuevo destino: ").upper()
+                        case 3:
+                            vuelos[codigo][3] = pedir_fecha_valida()
+                        case 4:
+                            nueva_fecha_llegada = pedir_fecha_valida()
+                            while datetime.strptime(nueva_fecha_llegada, "%d/%m/%Y") < datetime.strptime(vuelos[codigo][3], "%d/%m/%Y"):
+                                print("⚠️  La fecha de llegada no puede ser anterior a la de salida.")
+                                nueva_fecha_llegada = pedir_fecha_valida()
+                            vuelos[codigo][4] = nueva_fecha_llegada
+                        case 5:
+                            vuelos[codigo][5] = validar_hora()
+                        case 6:
+                            precios_vuelos[codigo] = validar_precio()
+                        case 7:
+                            volver()
+
+                    if opcion != 7:
+                        print("✅ Modificación realizada.")
+    volver()
+
+
+
+# testear por las dudas
+def eliminar_vuelo():
+    global vuelos
+    print("ingrese el codigo del vuelo que quiere eliminar: ")
+    codigo = validar_entero()
+    os.system('cls')
+    
+    while codigo == -1 or codigo > 19 :
+        print(" ⚠️  codigo de vuelo invalido. ")
+        codigo = validar_entero()
+    
+    while vuelos[codigo][6] != 'A' and vuelos[codigo][6] != 'B' :
+        print("no se ha creado un vuelo con ese codigo aun.")
+        codigo = validar_entero()
+        while codigo == -1 or codigo > 19 :
+            print(" ⚠️  codigo de vuelo invalido. ")
+            codigo = validar_entero()
+    
+    if vuelos[codigo][6] == 'A':
+        opc = input("seguro que quiere eliminar el vuelo, S(si) N(no): ")
+        while opc != 'S' and opc != 'N':
+            opc = input("opcion invalida, poravor seleccione S o N: ")
+            
+        if opc == 'S':
+            vuelos[codigo][6] = 'B'
+            print("se ha eliminado el vuelo nro:", codigo)
+            input("presione enter para volver.")
+            volver()
+        else:
+            input("no se ha eliminado el vuelo, presione enter para volver.")
+            volver()
+    else:
+        input("ese vuelo ya fue eliminado, presione enter para volver.")
+        volver()
+        
+
+def menu_gestion_vuelos():
+    global vuelos, asientos, precios_vuelos
+    opc = -1
+    while opc !=4:
+        mostrar_menu_gestion_vuelos()
+        opc=validar_entero()
+        while opc<1 or opc>4:
+            print("⚠️  Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_gestion_vuelos()
+            opc=validar_entero()
+        mostrar = -1
+        while opc!=4 and (mostrar<1 or mostrar>2):
+            print("Desea ver los vuelos cargados hasta el momento? 1-Si 2-No")
+            mostrar = validar_entero()
+        if mostrar == 1:
+            ver_arreglo_limitado_pr(vuelos, "Vuelos Ingresados", ["Cod Ar", "Origen", "Destino", "Salida", "Llegada", "Hora","Estado"], "", 0, [1,0], 15)
+            ver_arreglo_limitado_unidimensional(precios_vuelos, "Precios vuelos", ["Precio"], 0,[1,0],15)
+
         match opc:
             case 1:
-                en_construccion()
+                crear_vuelo()
             case 2:
                 en_construccion()
             case 3:
@@ -539,7 +1091,7 @@ def mostrar_menu_principal_ceo():
     
 
 
-def menu_ceo(vuelos):
+def menu_ceo():
     opc = -1
     while opc != 4:
         mostrar_menu_principal_ceo()
@@ -554,7 +1106,7 @@ def menu_ceo(vuelos):
 
         match opc:
             case 1:
-                menu_gestion_vuelos(vuelos)
+                menu_gestion_vuelos()
             case 2:
                 menu_gestion_promociones()
             case 3:
@@ -740,8 +1292,9 @@ def  mostrar_menu_principal_usuario():
     print("6) Ver Novedades 📑")
     print("7) Cerrar Sesión ❌")
     
-def menu_usuario(vuelos):
+def menu_usuario():
      opc = -1
+     global novedades
      while opc != 7:
         mostrar_menu_principal_usuario()
         opc = validar_entero()
@@ -765,13 +1318,11 @@ def menu_usuario(vuelos):
             case 5:
                 ver_historial_compras()
             case 6:
-                ver_novedades()
+                ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
             case 7:
                 print("Cerrando sesión...\n")
                 os.system('cls' if os.name == 'nt' else 'clear')
-    
-usuarios = [[""] * 3 for i in range(10)]
-cantidad_nuevos_usuarios = 0
+
     
 
 def cargarNovedades(novedades):
@@ -826,18 +1377,6 @@ def cargarUsuarios(usuarios):
     usuarios[7][1] = "usuario456"
     usuarios[7][2] = "usuario"
 
-
-
-def busquedaSecuencial (arreglo, elemento_buscado, columna):
-    cant_filas = len(arreglo)
-    i=0
-    while i<cant_filas-1 and arreglo[i][columna]!=elemento_buscado:
-        i=i+1
-    if arreglo[i][columna]==elemento_buscado:
-        return i
-    else:
-        return-1
-
        
 def registrarse(usuarios):
     registrado = False
@@ -872,7 +1411,7 @@ def menu_login():
     print("║       🏠  INICIAR SESION  🏠       ║")
     print("╚════════════════════════════════════╝\n")
         
-def login(usuarios,novedades,aerolineas,vuelos):
+def login(usuarios):
     intentos = 3
     menu_login()
     mail_usuario = input("\nIngrese su usuario (* para volver): ")
@@ -885,11 +1424,11 @@ def login(usuarios,novedades,aerolineas,vuelos):
                 intentos = 3 
                 tipo_usuario = usuarios[posicion][2]
                 if tipo_usuario == "administrador":
-                    menu_administrador(novedades,aerolineas)
+                    menu_administrador()
                 elif tipo_usuario == "ceo":
-                    menu_ceo(vuelos)
+                    menu_ceo()
                 else:
-                    menu_usuario(vuelos)
+                    menu_usuario()
             else:
                 intentos = intentos -1
                 print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
@@ -920,7 +1459,14 @@ cargarNovedades(novedades)
 usuarios = [[""] * 3 for i in range(10)]
 cargarUsuarios(usuarios)
 aerolineas = [[""] * 5 for i in range(5)]
-vuelos = [[""]* 5 for i in range(20)]
+vuelos = [[""]* 7 for i in range(20)]
+precios_vuelos = [0.0 for i in range(20)]
+
+ASIENTOS_POR_AVION = 240
+asientos = [[""]*7 for i in range(int(20*(ASIENTOS_POR_AVION/6)))]
+
+
+
 
 mostrar_primer_menu()
 opc = validar_entero()
@@ -936,7 +1482,7 @@ while opc!= 3:
             mostrar_primer_menu()
             opc = validar_entero()
         case 2:
-            login(usuarios,novedades,aerolineas,vuelos)
+            login(usuarios)
             mostrar_primer_menu()
             opc = validar_entero()
         case 3:
