@@ -934,38 +934,40 @@ def modificar_vuelo():
 # testear por las dudas
 def eliminar_vuelo():
     global vuelos
-    print("ingrese el codigo del vuelo que quiere eliminar: ")
+    print("ingrese el codigo del vuelo que quiere eliminar, 20 para salir. ")
     codigo = validar_entero()
     os.system('cls')
     
-    while codigo == -1 or codigo > 19 :
-        print(" ⚠️  codigo de vuelo invalido. ")
-        codigo = validar_entero()
-    
-    while vuelos[codigo][6] != 'A' and vuelos[codigo][6] != 'B' :
-        print("no se ha creado un vuelo con ese codigo aun.")
-        codigo = validar_entero()
-        while codigo == -1 or codigo > 19 :
-            print(" ⚠️  codigo de vuelo invalido. ")
+    if codigo != 20:
+        while codigo == -1 or codigo > 20:
+            print(" ⚠️  codigo de vuelo invalido, 20 para salir. ")
             codigo = validar_entero()
-    
-    if vuelos[codigo][6] == 'A':
-        opc = input("seguro que quiere eliminar el vuelo, S(si) N(no): ")
-        while opc != 'S' and opc != 'N':
-            opc = input("opcion invalida, poravor seleccione S o N: ")
             
-        if opc == 'S':
-            vuelos[codigo][6] = 'B'
-            print("se ha eliminado el vuelo nro:", codigo)
-            input("presione enter para volver.")
+        if codigo == 20:
             volver()
         else:
-            input("no se ha eliminado el vuelo, presione enter para volver.")
-            volver()
+            if vuelos[codigo][6] != 'A' and vuelos[codigo][6] != 'B' :
+                print("no se ha creado un vuelo con ese codigo aun. ")
+                volver()
+            else:
+                if vuelos[codigo][6] == 'A':
+                    opc = input("seguro que quiere eliminar el vuelo, S(si) N(no): ")
+                    while opc != 'S' and opc != 'N':
+                        opc = input("opcion invalida, poravor seleccione S o N: ")
+                        
+                    if opc == 'S':
+                        vuelos[codigo][6] = 'B'
+                        print("se ha eliminado el vuelo nro:", codigo)
+                        input("presione enter para volver.")
+                        volver()
+                    else:
+                        input("no se ha eliminado el vuelo, presione enter para volver.")
+                        volver()
+                else:
+                    input("ese vuelo ya fue eliminado, presione enter para volver.")
+                    volver()                    
     else:
-        input("ese vuelo ya fue eliminado, presione enter para volver.")
         volver()
-        
 
 def menu_gestion_vuelos():
     global vuelos, asientos, precios_vuelos
