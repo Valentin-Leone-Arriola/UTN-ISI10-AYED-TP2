@@ -649,19 +649,15 @@ def validar_precio():
     valido = False
     while not valido:
         entrada = input("Precio del vuelo: ")
-        i = 0
-        punto = 0
-        while i < len(entrada):
-            if entrada[i] == ".":
-                punto += 1
-            elif entrada[i] < "0" or entrada[i] > "9":
-                punto = 999  # fuerza error
-            i += 1
-        if punto <= 1 and len(entrada) > 0:
-            valido = True
-        else:
-            print("Precio inválido. Ingrese solo números.")
-    return float(entrada)
+        try:
+            precio = float(entrada)
+            if precio >= 0:
+                valido = True
+            else:
+                print("⚠️ El precio no puede ser negativo.")
+        except:
+            print("⚠️ Precio inválido. Ingrese solo números.")
+    return precio
 
 def listar_vuelos_aerolineas():
     global vuelos, aerolineas
