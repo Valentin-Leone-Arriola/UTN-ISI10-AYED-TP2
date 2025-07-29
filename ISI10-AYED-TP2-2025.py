@@ -2,7 +2,8 @@
 # STRING: us_admin, contrasenia_admin, texto_nove1, texto_nove2, texto_nove3, fecha_ini_nove1, fecha_ini_nove2, fecha_ini_nove3, fecha_fin_nove1, fecha_fin_nove2, fecha_fin_nove3, fecha, fecha_aux, codigo_pais, descripcion_aereo, nombre_aereo, codigo_mayor, codigo_menor, usuario, contrasenia
 # INT: intentos, codigo_nove1, codigo_nove2, codigo_nove3, opc, nuevo_codigo, opc_novedad, opc_aspecto, mayor, menor, contador_arg, contador_bra, contador_chi, opc_input, codigo_IATA
 # BOOL: fecha_valida
-from colorama import Fore, Style, Back, init  
+from colorama import Fore, Style, Back, init
+import random
 import pwinput
 import os
 from datetime import datetime
@@ -478,7 +479,7 @@ def modificar_aereo(): #testeado
     codigo = input("Ingrese el código de la aerolínea que desea modificar (0 para salir): ").upper()
 
     while codigo != "0":
-        pos = busquedaSecuencial(aerolineas, codigo, 0)
+        pos = busqueda_secuencial(aerolineas, codigo, 0)
 
         if pos == -1:
             print("⚠️ No se encontró ninguna aerolínea con ese código.")
@@ -1115,8 +1116,9 @@ def menu_ceo():
                 print("Cerrando sesión...\n")
                 os.system('cls' if os.name == 'nt' else 'clear')
 
-def  buscar_vuelos(): 
-    opc = -1
+def  buscar_vuelos():
+    pass
+"""     opc = -1
     while opc != 4:
         print("╔════════════════════════════════════╗")
         print("║   🛩️  MENÚ DE BÚSQUEDA DE VUELOS 🛩️   ║")
@@ -1144,9 +1146,10 @@ def  buscar_vuelos():
                 volver()
     print("entra a vuelos")
     entra = input()
-
+ """
 def  buscar_asientos():
-    opc = -1
+    pass
+"""     opc = -1
     while opc != 3:
         print("╔════════════════════════════════════╗")
         print("║   💺  MENÚ DE BÚSQUEDA DE ASIENTOS 💺  ║")
@@ -1169,13 +1172,13 @@ def  buscar_asientos():
                 en_construccion()
             case 3:
                 volver()
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear') """
 
 
   #  print("entra a asientos")
   #   entra = input()
 
-def reservar_vuelo():
+""" def reservar_vuelo():
     opc = -1    
     while opc != 2:
         print("╔════════════════════════════════════╗")
@@ -1198,7 +1201,7 @@ def reservar_vuelo():
 
    # print("entra a reservar vuelo")
    # entra = input()
-    
+
 def mostrar_menu_reservas():
     print("╔════════════════════════════════════════╗")
     print("║  📆  MENÚ DE GESTION DE RESERVAS 📆    ║")
@@ -1220,15 +1223,12 @@ def  menu_gestion_reservas():
             os.system('cls' if os.name == 'nt' else 'clear')
         match opc: 
             case 1:
-                consultar_reservas()
+                en_construccion()
             case 2:
-                cancelar_confirmar_reservas() 
+                en_construccion()
             case 3:
                 volver()
     os.system('cls' if os.name == 'nt' else 'clear')
-
-
-
 
 def  ver_historial_compras():
     print("entra a historial")
@@ -1252,7 +1252,7 @@ def  ver_historial_compras():
                 en_construccion()
             case 2:
                 volver() 
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear') """
 
 def ver_novedades():
     print("entra a novedades")
@@ -1312,15 +1312,15 @@ def menu_usuario():
             case 2:
                 buscar_asientos()
             case 3:
-                reservar_vuelo()
+                en_construccion()
             case 4:
-                menu_gestion_reservas()
+                en_construccion()
             case 5:
-                ver_historial_compras()
+                en_construccion()
             case 6:
                 ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
             case 7:
-                print("Cerrando sesión...\n")
+                input("Cerrando sesión...\nPresione enter para continuar")
                 os.system('cls' if os.name == 'nt' else 'clear')
 
     
@@ -1348,7 +1348,7 @@ def cargarUsuarios(usuarios):
     usuarios[0][2] = "administrador"
 
     # CEOs
-    usuarios[1][0] = "ceo1@ventaspasajes777.com"
+    usuarios[1][0] = "ceo1"
     usuarios[1][1] = "ceo123"
     usuarios[1][2] = "ceo"
 
@@ -1385,12 +1385,12 @@ def registrarse(usuarios):
             print("\nDebe ingresar un mail")
             mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
     while mail != "*" and not registrado:
-        posicion = busquedaSecuencial(usuarios, "", 0)
+        posicion = busqueda_secuencial(usuarios, "", 0)
         if posicion ==-1:
             input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
             mail = "*"
         else:
-            encontrado = busquedaSecuencial(usuarios, mail, 0)
+            encontrado = busqueda_secuencial(usuarios, mail, 0)
             if encontrado == -1:
                 usuarios[posicion][0] = mail
                 usuarios[posicion][2] = "usuario"
@@ -1418,7 +1418,7 @@ def login(usuarios):
     while intentos != 0 and mail_usuario!="*":
         contrasenia = pwinput.pwinput(prompt="Ingrese la contraseña: ")
         os.system('cls')
-        posicion = busquedaSecuencial(usuarios, mail_usuario , 0)
+        posicion = busqueda_secuencial(usuarios, mail_usuario , 0)
         if posicion !=-1:
             if  contrasenia == usuarios[posicion][1]: 
                 intentos = 3 
