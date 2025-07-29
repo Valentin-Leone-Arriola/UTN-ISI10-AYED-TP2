@@ -602,7 +602,7 @@ def obtener_pos_mayor(arreglo):
     for i in range(1, len(arreglo)):
         if arreglo[i] > arreglo[pos_mayor]:
             pos_mayor = i
-    return pos_mayor
+    return
     
 #-------------------------------------------------------------------------------------------------------------
 
