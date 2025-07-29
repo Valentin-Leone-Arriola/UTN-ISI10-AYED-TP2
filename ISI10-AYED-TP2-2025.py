@@ -200,6 +200,19 @@ def busqueda_secuencial (arreglo, elemento_buscado, columna):
     else:
         return-1
     
+def obtener_pos_menor(arreglo):
+    pos_menor = 0
+    for i in range(1, len(arreglo)):
+        if arreglo[i] < arreglo[pos_menor]:
+            pos_menor = i
+    return pos_menor
+
+def obtener_pos_mayor(arreglo):
+    pos_mayor = 0
+    for i in range(1, len(arreglo)):
+        if arreglo[i] > arreglo[pos_mayor]:
+            pos_mayor = i
+    return pos_mayor
 #MENU ADMINISTRADOR
 
 #############
@@ -233,22 +246,6 @@ def menu_report ():
                 en_construccion()
             case 4:
                 volver()
-
-""" def ver_nodefv():
-    print("╔═══════════════════════════════════════╗")
-    print("║    📑  NOVEDADES DISPONIBLES  📑      ║")
-    print("╚═══════════════════════════════════════╝\n")
-    linea = "-" * 150
-    print("Novedad #",codigo_nove1, "descripcion:", texto_nove1 )
-    print("con fecha del", fecha_ini_nove1 ,"hasta", fecha_fin_nove1)
-    print(linea)
-    print("Novedad #",codigo_nove2, "Descripcion:", texto_nove2 )
-    print("con fecha del", fecha_ini_nove2 ,"hasta", fecha_fin_nove2)
-    print(linea)
-    print("Novedad #",codigo_nove3, "descripcion:", texto_nove3 )
-    print("con fecha del", fecha_ini_nove3 ,"hasta", fecha_fin_nove3)
-    print(linea)
-    volver() """
 
 def ver_novedades(novedades):
     print("╔═══════════════════════════════════════╗")
@@ -424,13 +421,12 @@ def crear_aereo():
     global aerolineas
     nombre_aereo = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
     cantidad_aereo =  busqueda_secuencial(aerolineas,"",0)
-
+    contadores = [0]*3
+    paises = ["ARG", "BRA", "CHI"]
     if cantidad_aereo == -1:
         input("\nYa no se pueden cargar mas aerolíneas. Presione enter para continuar")
         nombre_aereo = ""
     else:
-        contadores = [0]*3
-        paises = ["ARG", "BRA", "CHI"]
         while nombre_aereo != "" and cantidad_aereo < 5:
             codigo_nuevo = pedir_codigo_aerolinea()
             nro = busqueda_secuencial(aerolineas, codigo_nuevo, 0)
@@ -476,9 +472,9 @@ def modificar_aereo(): #testeado
     global aerolineas
     os.system('cls')
     
-    codigo = input("Ingrese el código de la aerolínea que desea modificar (0 para salir): ").upper()
+    codigo = input("Ingrese el código de la aerolínea que desea modificar (Presione enter para salir): ")
 
-    while codigo != "0":
+    while codigo != "":
         pos = busqueda_secuencial(aerolineas, codigo, 0)
 
         if pos == -1:
@@ -517,7 +513,7 @@ def modificar_aereo(): #testeado
             input("✅ Modificación realizada (o cancelada). Presione Enter para continuar...")
 
         os.system('cls')
-        codigo = input("Ingrese otro código de aerolínea a modificar (0 para salir): ").upper()
+        codigo = input("Ingrese otro código de aerolínea a modificar (Presione enter para salir): ")
 
     os.system('cls')
     volver()
@@ -587,22 +583,8 @@ def pedir_codigo_aerolinea():
     codigo = input("Ingrese código de la aerolinea: ")
     while not (1 <= len(codigo) <= 5):   
         print("El código debe tener como minimo 1 caracter y como máximo 5 caracteres")
-        codigo = input("Ingrese código de la aerolinea: ").upper()
+        codigo = input("Ingrese código de la aerolinea: ")
     return codigo
-
-def obtener_pos_menor(arreglo):
-    pos_menor = 0
-    for i in range(1, len(arreglo)):
-        if arreglo[i] < arreglo[pos_menor]:
-            pos_menor = i
-    return pos_menor
-
-def obtener_pos_mayor(arreglo):
-    pos_mayor = 0
-    for i in range(1, len(arreglo)):
-        if arreglo[i] > arreglo[pos_mayor]:
-            pos_mayor = i
-    return
     
 #-------------------------------------------------------------------------------------------------------------
 
@@ -660,12 +642,12 @@ def validar_precio():
     return precio
 
 def listar_vuelos_aerolineas():
-    global vuelos, aerolineas
+    global vuelos, aerolineas, CANTIDAD_VUELOS, CANTIDAD_AEROLINEAS
     fecha_actual = datetime.today()
-    vuelos_por_aerolinea = [[i, 0] for i in range(len(aerolineas))]
+    vuelos_por_aerolinea = [[i, 0] for i in range(CANTIDAD_AEROLINEAS)]
 
     i = 0
-    while i < len(vuelos) and vuelos[i][0] != "":
+    while i < CANTIDAD_VUELOS and vuelos[i][0] != "":
         fecha_vuelo = datetime.strptime(vuelos[i][3], "%d/%m/%Y")
         if fecha_vuelo > fecha_actual:
             cod_aerolinea = vuelos[i][0]
@@ -684,7 +666,7 @@ def listar_vuelos_aerolineas():
 
     total = 0
     i = 0
-    while i < len(aerolineas) and aerolineas[i][0] != "":
+    while i < CANTIDAD_AEROLINEAS and aerolineas[i][0] != "":
         pos_aero = vuelos_por_aerolinea[i][0]
         nombre = aerolineas[pos_aero][1]
         cantidad = vuelos_por_aerolinea[i][1]
@@ -701,14 +683,14 @@ def listar_vuelos_aerolineas():
     
     
 def crear_vuelo():
-    global vuelos, precios_vuelos, asientos, ASIENTOS_POR_AVION
+    global aerolineas, vuelos, precios_vuelos, asientos, ASIENTOS_POR_AVION, CANTIDAD_VUELOS
     ultimo= busqueda_secuencial(vuelos, "", 0)
      #VER
     
-    while ultimo!=-1 and ultimo<=19:
+    while ultimo!=-1 and ultimo<=(int(CANTIDAD_VUELOS-1)):
 
         print("\nIngrese datos del vuelo (deje el codigo vacio para salir):")
-        codigo = input("Codigo de aerolinea: ").upper()
+        codigo = input("Codigo de aerolinea: ")
         if codigo == "":
             ultimo = 100
         else:
@@ -720,15 +702,8 @@ def crear_vuelo():
                 vuelos[ultimo][1] = input("Origen: ").upper()
                 vuelos[ultimo][2] = input("Destino: ").upper()
                 vuelos[ultimo][3] = pedir_fecha_valida()
-                fecha_llegada = pedir_fecha_valida()
-                
-                while datetime.strptime(fecha_llegada, "%d/%m/%Y") < datetime.strptime(vuelos[ultimo][3], "%d/%m/%Y"):
-                    print("⚠️  La fecha de finalización no puede ser anterior a la de inicio")
-                    fecha_llegada = pedir_fecha_valida()
-                    
-                vuelos[ultimo][4] = fecha_llegada
-                vuelos[ultimo][5] = validar_hora()
-                vuelos[ultimo][6] = "A"
+                vuelos[ultimo][4] = validar_hora()
+                vuelos[ultimo][5] = "A"
                 precios_vuelos[ultimo] = validar_precio()
                 
                 
@@ -741,7 +716,7 @@ def crear_vuelo():
                     j += 1
                 print("✔ Vuelo cargado correctamente.")
         ultimo = ultimo+1           
-    if ultimo == -1 or ultimo==20:
+    if ultimo == -1 or ultimo==CANTIDAD_VUELOS:
         print("Ya no hay espacio disponible para mas vuelos.")
     listar_vuelos_aerolineas()
     volver()
@@ -868,32 +843,32 @@ def crear_vuelo():
  """
 def mostrar_opciones_modificacion():
     print("\nSeleccione qué desea modificar:")
-    print("1. Origen 🛫")
-    print("2. Destino 🛫")
-    print("3. Fecha salida 📅")
-    print("4. Fecha llegada 📅")
+    print("1. Codigo aerolinea 🛫")
+    print("2. Origen 🛫")
+    print("3. Destino 🛫")
+    print("4. Fecha salida 📅")
     print("5. Hora salida 🕒")
     print("6. Precio 💰")
     print("7. Volver 🔙")
 
 def modificar_vuelo():
-    global vuelos, precios_vuelos
+    global vuelos, precios_vuelos, aerolineas, CANTIDAD_VUELOS, CANTIDAD_AEROLINEAS
 
     codigo = 0 
 
-    while codigo != 20:
+    while codigo != CANTIDAD_VUELOS:
 
-        print("Ingrese el código del vuelo que quiere modificar (20 para salir): ")
+        print(f"Ingrese el código del vuelo que quiere modificar ({CANTIDAD_VUELOS} para salir): ")
         codigo = validar_entero()
 
         if codigo == -1:
             print("⚠️  Entrada inválida. Intente nuevamente.")
-        elif codigo == 20:
+        elif codigo == CANTIDAD_VUELOS:
             volver()
         elif codigo<0 or codigo>19:
             print("⚠️  Código de vuelo inválido. Inténtelo nuevamente.")
         else:
-            estado = vuelos[codigo][6]
+            estado = vuelos[codigo][5]
             puede_modificar = False
 
             if estado == 'A':
@@ -905,7 +880,7 @@ def modificar_vuelo():
                 while opc != 'S' and opc != 'N':
                     opc = input("Opcion invalida. Seleccione S o N: ").upper()
                 if opc == 'S':
-                    vuelos[codigo][6] = 'A'
+                    vuelos[codigo][5] = 'A'
                     puede_modificar = True
                 else:
                     print("No se puede modificar un vuelo en estado INACTIVO.")
@@ -917,9 +892,12 @@ def modificar_vuelo():
                 opcion = 0  
                 while opcion != 7:
                     print("\n✈️  VUELO EN ESTADO ACTIVO:")
-                    print(f"Código aero: {vuelos[codigo][0]}\nOrigen: {vuelos[codigo][1]}\nDestino: {vuelos[codigo][2]}\n"
-                          f"Fecha salida: {vuelos[codigo][3]}\nFecha llegada: {vuelos[codigo][4]}\nHora salida: {vuelos[codigo][5]}\n"
-                          f"Precio: ${precios_vuelos[codigo]}")
+                    print("Codigo aerolinea:", vuelos[codigo][0])
+                    print("Origen:", vuelos[codigo][1])
+                    print("Destino:", vuelos[codigo][2])
+                    print("Fecha salida:", vuelos[codigo][3])
+                    print("Hora salida:", vuelos[codigo][4])
+                    print("Precio: $", precios_vuelos[codigo][3])
 
                     mostrar_opciones_modificacion()
                     opcion = validar_entero()
@@ -930,24 +908,25 @@ def modificar_vuelo():
 
                     match opcion:
                         case 1:
-                            vuelos[codigo][1] = input("Nuevo origen: ").upper()
+                            existe = -1
+                            while existe == -1:
+                                nuevo_cod_aerolinea = ""
+                                while nuevo_cod_aerolinea =="":
+                                    nuevo_cod_aerolinea = input("Ingrese el nuevo codigo de aerolinea: ")
+                                existe = busqueda_secuencial(aerolineas,nuevo_cod_aerolinea,0)
+                            vuelos[codigo][0]=nuevo_cod_aerolinea
                         case 2:
-                            vuelos[codigo][2] = input("Nuevo destino: ").upper()
+                            vuelos[codigo][1] = input("Nuevo origen: ").upper()
                         case 3:
-                            vuelos[codigo][3] = pedir_fecha_valida()
+                            vuelos[codigo][2] = input("Nuevo destino: ").upper()
                         case 4:
-                            nueva_fecha_llegada = pedir_fecha_valida()
-                            while datetime.strptime(nueva_fecha_llegada, "%d/%m/%Y") < datetime.strptime(vuelos[codigo][3], "%d/%m/%Y"):
-                                print("⚠️  La fecha de llegada no puede ser anterior a la de salida.")
-                                nueva_fecha_llegada = pedir_fecha_valida()
-                            vuelos[codigo][4] = nueva_fecha_llegada
+                            vuelos[codigo][3] = pedir_fecha_valida()
                         case 5:
                             vuelos[codigo][5] = validar_hora()
                         case 6:
                             precios_vuelos[codigo] = validar_precio()
                         case 7:
                             volver()
-
                     if opcion != 7:
                         print("✅ Modificación realizada.")
     volver()
@@ -956,30 +935,30 @@ def modificar_vuelo():
 
 # testear por las dudas
 def eliminar_vuelo():
-    global vuelos
-    print("ingrese el codigo del vuelo que quiere eliminar, 20 para salir. ")
+    global vuelos, CANTIDAD_VUELOS
+    print(f"ingrese el codigo del vuelo que quiere eliminar, {CANTIDAD_VUELOS} para salir. ")
     codigo = validar_entero()
     os.system('cls')
     
-    if codigo != 20:
-        while codigo == -1 or codigo > 20:
-            print(" ⚠️  codigo de vuelo invalido, 20 para salir. ")
+    if codigo != CANTIDAD_VUELOS:
+        while codigo == -1 or codigo > CANTIDAD_VUELOS:
+            print(f" ⚠️  codigo de vuelo invalido, {CANTIDAD_VUELOS} para salir. ")
             codigo = validar_entero()
             
         if codigo == 20:
             volver()
         else:
-            if vuelos[codigo][6] != 'A' and vuelos[codigo][6] != 'B' :
+            if vuelos[codigo][5] != 'A' and vuelos[codigo][5] != 'B' :
                 print("no se ha creado un vuelo con ese codigo aun. ")
                 volver()
             else:
-                if vuelos[codigo][6] == 'A':
+                if vuelos[codigo][5] == 'A':
                     opc = input("seguro que quiere eliminar el vuelo, S(si) N(no): ")
                     while opc != 'S' and opc != 'N':
                         opc = input("opcion invalida, poravor seleccione S o N: ")
                         
                     if opc == 'S':
-                        vuelos[codigo][6] = 'B'
+                        vuelos[codigo][5] = 'B'
                         print("se ha eliminado el vuelo nro:", codigo)
                         input("presione enter para volver.")
                         volver()
@@ -1007,16 +986,16 @@ def menu_gestion_vuelos():
             print("Desea ver los vuelos cargados hasta el momento? 1-Si 2-No")
             mostrar = validar_entero()
         if mostrar == 1:
-            ver_arreglo_limitado_pr(vuelos, "Vuelos Ingresados", ["Cod Ar", "Origen", "Destino", "Salida", "Llegada", "Hora","Estado"], "", 0, [1,0], 15)
+            ver_arreglo_limitado_pr(vuelos, "Vuelos Ingresados", ["Cod Ar", "Origen", "Destino", "Salida", "Hora","Estado"], "", 0, [1,0], 15)
             ver_arreglo_limitado_unidimensional(precios_vuelos, "Precios vuelos", ["Precio"], 0,[1,0],15)
 
         match opc:
             case 1:
                 crear_vuelo()
             case 2:
-                en_construccion()
+                modificar_vuelo()
             case 3:
-                en_construccion()
+                eliminar_vuelo()
             case 4:
                 volver()
 
@@ -1252,7 +1231,7 @@ def  ver_historial_compras():
                 volver() 
     os.system('cls' if os.name == 'nt' else 'clear') """
 
-def ver_novedades():
+""" def ver_novedades():
     print("entra a novedades")
     opc = -1
     while opc != 2:
@@ -1274,7 +1253,7 @@ def ver_novedades():
                 en_construccion()
             case 2:
                 volver() 
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear') """
 
 
 
@@ -1341,12 +1320,12 @@ def cargarUsuarios(usuarios):
     
 
     # Administrador
-    usuarios[0][0] = "admin@ventaspasajes777.com"
+    usuarios[0][0] = "admin"
     usuarios[0][1] = "admin123"
     usuarios[0][2] = "administrador"
 
     # CEOs
-    usuarios[1][0] = "ceo1"
+    usuarios[1][0] = "ceo"
     usuarios[1][1] = "ceo123"
     usuarios[1][2] = "ceo"
 
@@ -1367,7 +1346,7 @@ def cargarUsuarios(usuarios):
     usuarios[5][2] = "ceo"
 
     # Usuarios comunes
-    usuarios[6][0] = "usuario1@ventaspasajes777.com"
+    usuarios[6][0] = "usuario"
     usuarios[6][1] = "usuario123"
     usuarios[6][2] = "usuario"
 
@@ -1456,10 +1435,11 @@ novedades = [[""] * 4 for i in range(3)] #no dice en ningun lado hasta cuantas n
 cargarNovedades(novedades)
 usuarios = [[""] * 3 for i in range(10)]
 cargarUsuarios(usuarios)
-aerolineas = [[""] * 5 for i in range(5)]
-vuelos = [[""]* 7 for i in range(20)]
-precios_vuelos = [0.0 for i in range(20)]
-
+CANTIDAD_VUELOS = 20
+CANTIDAD_AEROLINEAS = 5
+aerolineas = [[""] * 5 for i in range(int(CANTIDAD_AEROLINEAS))]
+vuelos = [[""]* 6 for i in range(int(CANTIDAD_VUELOS))]
+precios_vuelos = [0.0 for i in range(int(CANTIDAD_VUELOS))]
 ASIENTOS_POR_AVION = 240
 asientos = [[""]*7 for i in range(int(20*(ASIENTOS_POR_AVION/6)))]
 
