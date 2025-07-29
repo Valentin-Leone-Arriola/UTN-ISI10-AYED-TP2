@@ -2,18 +2,31 @@
 # STRING: us_admin, contrasenia_admin, texto_nove1, texto_nove2, texto_nove3, fecha_ini_nove1, fecha_ini_nove2, fecha_ini_nove3, fecha_fin_nove1, fecha_fin_nove2, fecha_fin_nove3, fecha, fecha_aux, codigo_pais, descripcion_aereo, nombre_aereo, codigo_mayor, codigo_menor, usuario, contrasenia
 # INT: intentos, codigo_nove1, codigo_nove2, codigo_nove3, opc, nuevo_codigo, opc_novedad, opc_aspecto, mayor, menor, contador_arg, contador_bra, contador_chi, opc_input, codigo_IATA
 # BOOL: fecha_valida
-
+from colorama import Fore, Style, Back, init
+import random
 import pwinput
 import os
 from datetime import datetime
-import getpass
-import random
-
+import getpass 
 #PROCEDIMIENTOS Y FUNCIONES GENERALES
+init(autoreset=True) 
+
+
+def validar_entero():
+    opc_input = input("\nSeleccione una opción valida: ")
+    if opc_input.isdigit():
+        return(int(opc_input))
+    else:
+        return -1
+    
+
+def cambiar_color(): 
+    print(Fore.BLUE )
+
 
 def en_construccion():
-    input("En construccion. Presione enter para continuar")
-    os.system('cls')
+     input(Back.GREEN + Fore.BLUE + " En construccion. Presione enter para continuar:" + Style.RESET_ALL)
+     os.system('cls')
 
 def volver():
     input("Regresando al menu anterior. Presione enter para continuar")
@@ -221,9 +234,23 @@ def menu_report ():
             case 4:
                 volver()
 
+""" def ver_nodefv():
+    print("╔═══════════════════════════════════════╗")
+    print("║    📑  NOVEDADES DISPONIBLES  📑      ║")
+    print("╚═══════════════════════════════════════╝\n")
+    linea = "-" * 150
+    print("Novedad #",codigo_nove1, "descripcion:", texto_nove1 )
+    print("con fecha del", fecha_ini_nove1 ,"hasta", fecha_fin_nove1)
+    print(linea)
+    print("Novedad #",codigo_nove2, "Descripcion:", texto_nove2 )
+    print("con fecha del", fecha_ini_nove2 ,"hasta", fecha_fin_nove2)
+    print(linea)
+    print("Novedad #",codigo_nove3, "descripcion:", texto_nove3 )
+    print("con fecha del", fecha_ini_nove3 ,"hasta", fecha_fin_nove3)
+    print(linea)
+    volver() """
 
-
-""" def ver_novedades(novedades):
+def ver_novedades(novedades):
     print("╔═══════════════════════════════════════╗")
     print("║    📑  NOVEDADES DISPONIBLES  📑      ║")
     print("╚═══════════════════════════════════════╝\n")
@@ -243,7 +270,7 @@ def menu_report ():
     print("-" * 130)
     print()
     return i
- """
+
 
 """ def validar_codigo(): #DE LA NOVEDAD
     nuevo_codigo = -1
@@ -575,7 +602,7 @@ def obtener_pos_mayor(arreglo):
     for i in range(1, len(arreglo)):
         if arreglo[i] > arreglo[pos_mayor]:
             pos_mayor = i
-    return pos_mayor
+    return
     
 #-------------------------------------------------------------------------------------------------------------
 
@@ -991,9 +1018,9 @@ def menu_gestion_vuelos():
             case 1:
                 crear_vuelo()
             case 2:
-                modificar_vuelo()
+                en_construccion()
             case 3:
-                eliminar_vuelo()
+                en_construccion()
             case 4:
                 volver()
 
@@ -1008,8 +1035,25 @@ def  mostrar_menu_gestion_promociones():
 
     
 def  menu_gestion_promociones():
-    mostrar_menu_gestion_promociones()
-    entro = input()
+    opc= -1 
+    while opc != 4:
+        mostrar_menu_gestion_promociones()
+        opc = validar_entero()
+        os.system('cls')
+        while opc < 1 or opc > 4:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_gestion_promociones()
+            opc = validar_entero()
+            os.system('cls')
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                en_construccion()
+            case 3:
+                en_construccion()
+            case 4:
+                volver() 
 
 def  mostrar_menu_reportes():
     print("╔════════════════════════════════════════╗")
@@ -1020,8 +1064,23 @@ def  mostrar_menu_reportes():
     print("3) Volver al Menú Principal 🔙")
         
 def  menu_reportes_ceo():
-    mostrar_menu_reportes()
-    entro = input()
+    opc= -1 
+    while opc != 3:
+        mostrar_menu_reportes()
+        opc = validar_entero()
+        os.system('cls')
+        while opc < 1 or opc > 3:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_reportes()
+            opc = validar_entero()
+            os.system('cls')
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                en_construccion()
+            case 3:
+                volver()
 
 
 def mostrar_menu_principal_ceo():
@@ -1060,17 +1119,91 @@ def menu_ceo():
                 os.system('cls' if os.name == 'nt' else 'clear')
 
 def  buscar_vuelos():
+    pass
+"""     opc = -1
+    while opc != 4:
+        print("╔════════════════════════════════════╗")
+        print("║   🛩️  MENÚ DE BÚSQUEDA DE VUELOS 🛩️   ║")
+        print("╚════════════════════════════════════╝\n")
+        print("1) Buscar por Aerolínea ✈️")
+        print("2) Buscar por Fecha 📅")
+        print("3) Buscar por Destino 🌍")
+        print("4) Volver al Menú Principal 🔙") 
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        while opc < 1 or opc > 4:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                en_construccion()
+            case 3:
+                en_construccion()
+            case 4:
+                volver()
     print("entra a vuelos")
     entra = input()
-
+ """
 def  buscar_asientos():
-    print("entra a asientos")
-    entra = input()
+    pass
+"""     opc = -1
+    while opc != 3:
+        print("╔════════════════════════════════════╗")
+        print("║   💺  MENÚ DE BÚSQUEDA DE ASIENTOS 💺  ║")
+        print("╚════════════════════════════════════╝\n")
+        print("1) Buscar por Vuelo ✈️")
+        print("2) Buscar por Clase de Asiento 🛋️")
+        print("3) Volver al Menú Principal 🔙") 
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
 
-def  reservar_vuelo():
-    print("entra a reservar vuelo")
-    entra = input()
-    
+        while opc < 1 or opc > 3:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                en_construccion()
+            case 3:
+                volver()
+    os.system('cls' if os.name == 'nt' else 'clear') """
+
+
+  #  print("entra a asientos")
+  #   entra = input()
+
+""" def reservar_vuelo():
+    opc = -1    
+    while opc != 2:
+        print("╔════════════════════════════════════╗")
+        print("║   🛩️  MENÚ DE RESERVA DE VUELOS 🛩️   ║")
+        print("╚════════════════════════════════════╝\n")
+        print("1) Reservar Vuelo ✈️")
+        print("2) Volver al Menú Principal 🔙")
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+        while opc < 1 or opc > 2:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                volver()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+   # print("entra a reservar vuelo")
+   # entra = input()
+
 def mostrar_menu_reservas():
     print("╔════════════════════════════════════════╗")
     print("║  📆  MENÚ DE GESTION DE RESERVAS 📆    ║")
@@ -1080,12 +1213,74 @@ def mostrar_menu_reservas():
     print("3) Volver al Menú Principal 🔙") 
     
 def  menu_gestion_reservas():
-    mostrar_menu_reservas()
-    entra = input()
+    opc = -1
+    while opc != 3:
+        mostrar_menu_reservas()
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+        while opc < 1 or opc > 3:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_reservas()
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+        match opc: 
+            case 1:
+                en_construccion()
+            case 2:
+                en_construccion()
+            case 3:
+                volver()
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def  ver_historial_compras():
     print("entra a historial")
-    entra = input()
+    opc = -1
+    while opc != 2:
+        print("╔════════════════════════════════════╗")
+        print("║   💲  MENÚ DE HISTORIAL DE COMPRAS 💲  ║")
+        print("╚════════════════════════════════════╝\n")
+        print("1) Ver Historial de Compras 💰")
+        print("2) Volver al Menú Principal 🔙") 
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        while opc < 1 or opc > 2:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                volver() 
+    os.system('cls' if os.name == 'nt' else 'clear') """
+
+def ver_novedades():
+    print("entra a novedades")
+    opc = -1
+    while opc != 2:
+        print("╔════════════════════════════════════╗")
+        print("║   📑  MENÚ DE NOVEDADES 📑          ║")
+        print("╚════════════════════════════════════╝\n")
+        print("1) Ver Novedades 📑")
+        print("2) Volver al Menú Principal 🔙") 
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        while opc < 1 or opc > 2:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        match opc:
+            case 1:
+                en_construccion()
+            case 2:
+                volver() 
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
 
 def  mostrar_menu_principal_usuario():
     print("╔════════════════════════════════════╗")
@@ -1119,15 +1314,15 @@ def menu_usuario():
             case 2:
                 buscar_asientos()
             case 3:
-                reservar_vuelo()
+                en_construccion()
             case 4:
-                menu_gestion_reservas()
+                en_construccion()
             case 5:
-                ver_historial_compras()
+                en_construccion()
             case 6:
                 ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
             case 7:
-                print("Cerrando sesión...\n")
+                input("Cerrando sesión...\nPresione enter para continuar")
                 os.system('cls' if os.name == 'nt' else 'clear')
 
     
@@ -1150,12 +1345,12 @@ def cargarUsuarios(usuarios):
     
 
     # Administrador
-    usuarios[0][0] = "a"
+    usuarios[0][0] = "admin@ventaspasajes777.com"
     usuarios[0][1] = "admin123"
     usuarios[0][2] = "administrador"
 
     # CEOs
-    usuarios[1][0] = "ceo"
+    usuarios[1][0] = "ceo1"
     usuarios[1][1] = "ceo123"
     usuarios[1][2] = "ceo"
 
@@ -1294,5 +1489,6 @@ while opc!= 3:
             opc = validar_entero()
         case 3:
             print()
-print("Cerrando programa...")
-        
+print("Cerrando programa...") 
+
+
