@@ -89,8 +89,8 @@ def ver_arreglo_limitado_pr(arreglo, texto_principal, titulos, condicion_hasta, 
                 print(f"{arreglo[i][j]:<{longitud}}", end=" ")
             print()
             i += 1
-    
     print()
+
 
 def ver_arreglo_limitado_func(arreglo, texto_principal, titulos, condicion_hasta, pos_evaluar, mostrar_pos_y_modo, longitud_columnas):
     print(f"\n📑 {texto_principal} 📑\n")
@@ -213,6 +213,13 @@ def obtener_pos_mayor(arreglo):
         if arreglo[i] > arreglo[pos_mayor]:
             pos_mayor = i
     return pos_mayor
+
+def ordenamiento_arrastre(arreglo, columna):
+    pass
+
+
+
+
 #MENU ADMINISTRADOR
 
 #############
@@ -290,7 +297,7 @@ def mostrar_menu_editar_nov():
     print("3) Fecha de Finalización 📅")
     print("4) Volver 🔙")
 
-def editar_nov(): #menu3_2
+def editar_nov():
     global novedades
     ultima_novedad = ver_arreglo_limitado_func(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
     print("Ingrese la novedad que desea editar (0 para salir)")
@@ -548,7 +555,7 @@ def menu_novedades():
             case 3:
                 en_construccion()
             case 4:
-                ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
+                ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 50)
                 input("Presione Enter para continuar...")
                 os.system('cls')
             case 5:
@@ -648,12 +655,13 @@ def listar_vuelos_aerolineas():
 
     i = 0
     while i < CANTIDAD_VUELOS and vuelos[i][0] != "":
-        fecha_vuelo = datetime.strptime(vuelos[i][3], "%d/%m/%Y")
-        if fecha_vuelo > fecha_actual:
-            cod_aerolinea = vuelos[i][0]
-            pos = busqueda_secuencial(aerolineas, cod_aerolinea, 0)
-            if pos != -1:
-                vuelos_por_aerolinea[pos][1] += 1
+        if vuelos[i][5]=="A":
+            fecha_vuelo = datetime.strptime(vuelos[i][3], "%d/%m/%Y")
+            if fecha_vuelo > fecha_actual:
+                cod_aerolinea = vuelos[i][0]
+                pos = busqueda_secuencial(aerolineas, cod_aerolinea, 0)
+                if pos != -1:
+                    vuelos_por_aerolinea[pos][1] += 1
         i += 1
 
     ordenar_burbuja_desc(vuelos_por_aerolinea, 1, 2)
@@ -777,7 +785,7 @@ def modificar_vuelo():
                     print("Destino:", vuelos[codigo][2])
                     print("Fecha salida:", vuelos[codigo][3])
                     print("Hora salida:", vuelos[codigo][4])
-                    print("Precio: $", precios_vuelos[codigo][3])
+                    print("Precio: $", precios_vuelos[codigo])
 
                     mostrar_opciones_modificacion()
                     opcion = validar_entero()
@@ -809,18 +817,18 @@ def modificar_vuelo():
                             volver()
                     if opcion != 7:
                         print("✅ Modificación realizada.")
-    volver()
 
 
 
 # testear por las dudas
 def eliminar_vuelo():
     global vuelos, CANTIDAD_VUELOS
-    print(f"ingrese el codigo del vuelo que quiere eliminar, {CANTIDAD_VUELOS} para salir. ")
-    codigo = validar_entero()
-    os.system('cls')
+    codigo = 0
     
-    if codigo != CANTIDAD_VUELOS:
+    while codigo != CANTIDAD_VUELOS:
+        print(f"ingrese el codigo del vuelo que quiere eliminar, {CANTIDAD_VUELOS} para salir. ")
+        codigo = validar_entero()
+        os.system('cls')
         while codigo == -1 or codigo > CANTIDAD_VUELOS:
             print(f" ⚠️  codigo de vuelo invalido, {CANTIDAD_VUELOS} para salir. ")
             codigo = validar_entero()
@@ -840,16 +848,11 @@ def eliminar_vuelo():
                     if opc == 'S':
                         vuelos[codigo][5] = 'B'
                         print("se ha eliminado el vuelo nro:", codigo)
-                        input("presione enter para volver.")
                         volver()
                     else:
                         input("no se ha eliminado el vuelo, presione enter para volver.")
-                        volver()
                 else:
-                    input("ese vuelo ya fue eliminado, presione enter para volver.")
-                    volver()                    
-    else:
-        volver()
+                    input("ese vuelo ya fue eliminado, presione enter para volver.")                   
 
 def menu_gestion_vuelos():
     global vuelos, asientos, precios_vuelos
@@ -1025,15 +1028,15 @@ def menu_usuario():
     
 
 def cargarNovedades(novedades):
-    novedades[0][0] = "por aniversario todos los vuelos tiene un %20 de descuento con cualquier medio de pago"
+    novedades[0][0] = "promocion aniversario"
     novedades[0][1] = "02/10/2025"
     novedades[0][2] = "01/11/2025"
 
-    novedades[1][0] = "cambio de tarifa referente al equipaje extra en pasajes turista"
+    novedades[1][0] = "nueva disposicion equipaje"
     novedades[1][1] = "23/06/2025"
     novedades[1][2] = "23/07/2025"
 
-    novedades[2][0] = "los vuelos con destino a Miami seran suspendidos por fuertes tormentas y posibilidad de huracan"
+    novedades[2][0] = "vuelos a Miami suspendidos"
     novedades[2][1] = "04/08/2025"
     novedades[2][2] = "11/08/2025"
 
