@@ -671,7 +671,7 @@ def listar_vuelos_aerolineas():
     ordenar_burbuja_desc(vuelos_por_aerolinea, 1, 2)
 
     print("\n" + "="*60)
-    print("REPORTE DE VUELOS VIGENTES POR AEROLINEA")
+    print("REPORTE DE VUELOS --VIGENTES-- POR AEROLINEA")
     print("="*60)
     print(f"{'POSICION':<10}{'AEROLINEA':<30}{'CANTIDAD DE VUELOS'}")
     print("-" * 60)
@@ -873,7 +873,7 @@ def menu_gestion_vuelos():
             print("Desea ver los vuelos cargados hasta el momento? 1-Si 2-No")
             mostrar = validar_entero()
         if mostrar == 1:
-            ver_arreglo_limitado_pr(vuelos, "Vuelos Ingresados", ["Cod Ar", "Origen", "Destino", "Salida", "Hora","Estado"], "", 0, [1,0], 15)
+            ver_arreglo_limitado_pr(vuelos, "TODOS los vuelos Ingresados (incluyendo eliminados/no vigentes)", ["Cod Ar", "Origen", "Destino", "Salida", "Hora","Estado"], "", 0, [1,0], 15)
             ver_arreglo_limitado_unidimensional(precios_vuelos, "Precios vuelos", ["Precio"], 0,[1,0],15)
 
         match opc:
@@ -995,13 +995,15 @@ def  buscar_vuelos():
 def mostrar_asientos(asientos, vuelo):
     inicio = int(vuelo * ASIENTOS_POR_AVION/6)
     fin = int(inicio + ASIENTOS_POR_AVION/6)
-    print("   A   B   C       D   E   F")
-    print(" +---+---+---+   +---+---+---+")
+    print("   A     B     C         D     E     F")
+    print("+-----+-----+-----+   +-----+-----+-----+")
     for i in range(inicio, fin):
         for j in range(7):
             print("|",asientos[i][j],"|", end=" ")
+        print()
 
 def  buscar_asientos():
+    global CANTIDAD_VUELOS, vuelos, asientos
     vuelo = -1
     while vuelo != CANTIDAD_VUELOS:
         print(f"Ingrese el codigo del vuelo del cual quiere ver los asientos, {CANTIDAD_VUELOS} para salir. ")
@@ -1014,7 +1016,7 @@ def  buscar_asientos():
             volver()
         else:
             if validar_vigencia(vuelos, vuelo):
-                mostrar_asientos()
+                mostrar_asientos(asientos, vuelo)
             else:
                 print("El vuelo no esta vigente.")
 
