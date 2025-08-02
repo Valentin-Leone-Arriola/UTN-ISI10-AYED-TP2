@@ -304,7 +304,7 @@ def mostrar_menu_editar_nov():
 
 def editar_nov():
     global novedades
-    ultima_novedad = ver_arreglo_limitado_func(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [True,True], 100)
+    ultima_novedad = ver_arreglo_limitado_func(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [True,True], 50)
     print("Ingrese la novedad que desea editar (0 para salir)")
     opc_novedad = validar_entero()-1
     while opc_novedad !=-1:
