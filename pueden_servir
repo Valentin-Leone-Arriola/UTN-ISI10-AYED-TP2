@@ -279,3 +279,13 @@ def modificar_vuelo():
                 input("No se puede modificar un vuelo en estado INACTIVO. Presione Enter para continuar...")
                 os.system('cls')
                 volver()
+
+
+def esta_vigente(arreglo, vuelo):
+    vigente = False
+    if arreglo[vuelo][5]=="A":
+        fecha_actual = datetime.today()
+        fecha_vuelo = datetime.strptime(vuelos[vuelo][3], "%d/%m/%Y")
+        if fecha_vuelo > fecha_actual:
+            vigente = True
+    return vigente

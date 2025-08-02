@@ -671,7 +671,7 @@ def listar_vuelos_aerolineas():
     ordenar_burbuja_desc(vuelos_por_aerolinea, 1, 2)
 
     print("\n" + "="*60)
-    print("REPORTE DE VUELOS VIGENTES POR AEROLINEA")
+    print("REPORTE DE VUELOS --VIGENTES-- POR AEROLINEA")
     print("="*60)
     print(f"{'POSICION':<10}{'AEROLINEA':<30}{'CANTIDAD DE VUELOS'}")
     print("-" * 60)
@@ -837,7 +837,7 @@ def eliminar_vuelo():
             print(f" ⚠️  codigo de vuelo invalido, {CANTIDAD_VUELOS} para salir. ")
             codigo = validar_entero()
             
-        if codigo == 20:
+        if codigo == CANTIDAD_VUELOS:
             volver()
         else:
             if vuelos[codigo][5] != 'A' and vuelos[codigo][5] != 'B' :
@@ -873,7 +873,7 @@ def menu_gestion_vuelos():
             print("Desea ver los vuelos cargados hasta el momento? 1-Si 2-No")
             mostrar = validar_entero()
         if mostrar == 1:
-            ver_arreglo_limitado_pr(vuelos, "Vuelos Ingresados", ["Cod Ar", "Origen", "Destino", "Salida", "Hora","Estado"], "", 0, [1,0], 15)
+            ver_arreglo_limitado_pr(vuelos, "TODOS los vuelos Ingresados (incluyendo eliminados/no vigentes)", ["Cod Ar", "Origen", "Destino", "Salida", "Hora","Estado"], "", 0, [1,0], 15)
             ver_arreglo_limitado_unidimensional(precios_vuelos, "Precios vuelos", ["Precio"], 0,[1,0],15)
 
         match opc:
@@ -980,14 +980,46 @@ def menu_ceo():
                 print("Cerrando sesión...\n")
                 os.system('cls' if os.name == 'nt' else 'clear')
 
-def esta_vigente():
-    pass
+def validar_vigencia(arreglo, vuelo):
+    vigente = False
+    if arreglo[vuelo][5]=="A":
+        fecha_actual = datetime.today()
+        fecha_vuelo = datetime.strptime(vuelos[vuelo][3], "%d/%m/%Y")
+        if fecha_vuelo > fecha_actual:
+            vigente = True
+    return vigente
 
 def  buscar_vuelos():
     pass
 
+def mostrar_asientos(asientos, vuelo):
+    inicio = int(vuelo * ASIENTOS_POR_AVION/6)
+    fin = int(inicio + ASIENTOS_POR_AVION/6)
+    print("   A     B     C         D     E     F")
+    print("+-----+-----+-----+   +-----+-----+-----+")
+    for i in range(inicio, fin):
+        for j in range(7):
+            print("|",asientos[i][j],"|", end=" ")
+        print()
+
 def  buscar_asientos():
-    pass
+    global CANTIDAD_VUELOS, vuelos, asientos
+    vuelo = -1
+    while vuelo != CANTIDAD_VUELOS:
+        print(f"Ingrese el codigo del vuelo del cual quiere ver los asientos, {CANTIDAD_VUELOS} para salir. ")
+        vuelo = validar_entero()
+        os.system('cls')
+        while vuelo == -1 or vuelo > CANTIDAD_VUELOS:
+            print(f" ⚠️  Codigo de vuelo invalido, {CANTIDAD_VUELOS} para salir. ")
+            vuelo = validar_entero()
+        if vuelo == CANTIDAD_VUELOS:
+            volver()
+        else:
+            if validar_vigencia(vuelos, vuelo):
+                mostrar_asientos(asientos, vuelo)
+            else:
+                print("El vuelo no esta vigente.")
+
 
 def  mostrar_menu_principal_usuario():
     print("╔════════════════════════════════════╗")
