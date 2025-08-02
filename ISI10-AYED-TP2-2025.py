@@ -837,7 +837,7 @@ def eliminar_vuelo():
             print(f" ⚠️  codigo de vuelo invalido, {CANTIDAD_VUELOS} para salir. ")
             codigo = validar_entero()
             
-        if codigo == 20:
+        if codigo == CANTIDAD_VUELOS:
             volver()
         else:
             if vuelos[codigo][5] != 'A' and vuelos[codigo][5] != 'B' :
@@ -980,14 +980,44 @@ def menu_ceo():
                 print("Cerrando sesión...\n")
                 os.system('cls' if os.name == 'nt' else 'clear')
 
-def esta_vigente():
-    pass
+def validar_vigencia(arreglo, vuelo):
+    vigente = False
+    if arreglo[vuelo][5]=="A":
+        fecha_actual = datetime.today()
+        fecha_vuelo = datetime.strptime(vuelos[vuelo][3], "%d/%m/%Y")
+        if fecha_vuelo > fecha_actual:
+            vigente = True
+    return vigente
 
 def  buscar_vuelos():
     pass
 
+def mostrar_asientos(asientos, vuelo):
+    inicio = int(vuelo * ASIENTOS_POR_AVION/6)
+    fin = int(inicio + ASIENTOS_POR_AVION/6)
+    print("   A   B   C       D   E   F")
+    print(" +---+---+---+   +---+---+---+")
+    for i in range(inicio, fin):
+        for j in range(7):
+            print("|",asientos[i][j],"|", end=" ")
+
 def  buscar_asientos():
-    pass
+    vuelo = -1
+    while vuelo != CANTIDAD_VUELOS:
+        print(f"Ingrese el codigo del vuelo del cual quiere ver los asientos, {CANTIDAD_VUELOS} para salir. ")
+        vuelo = validar_entero()
+        os.system('cls')
+        while vuelo == -1 or vuelo > CANTIDAD_VUELOS:
+            print(f" ⚠️  Codigo de vuelo invalido, {CANTIDAD_VUELOS} para salir. ")
+            vuelo = validar_entero()
+        if vuelo == CANTIDAD_VUELOS:
+            volver()
+        else:
+            if validar_vigencia(vuelos, vuelo):
+                mostrar_asientos()
+            else:
+                print("El vuelo no esta vigente.")
+
 
 def  mostrar_menu_principal_usuario():
     print("╔════════════════════════════════════╗")
