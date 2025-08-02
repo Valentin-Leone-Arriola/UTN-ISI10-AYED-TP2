@@ -1116,8 +1116,8 @@ def menu_login():
 def login(usuarios):
     intentos = 3
     menu_login()
-    mail_usuario = input("\nIngrese su usuario (* para volver): ")
-    while intentos != 0 and mail_usuario!="*":
+    mail_usuario = input("\nIngrese su usuario (enter para volver): ")
+    while intentos != 0 and mail_usuario!="":
         contrasenia = pwinput.pwinput(prompt="Ingrese la contraseña: ")
         os.system('cls')
         posicion = busqueda_secuencial(usuarios, mail_usuario , 0)
@@ -1141,7 +1141,7 @@ def login(usuarios):
             else:
                 print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
         menu_login()
-        mail_usuario = input("Ingrese su mail (* para volver):")
+        mail_usuario = input("Ingrese su mail (Enter para volver):")
     os.system('cls')
 
 def mostrar_primer_menu():
