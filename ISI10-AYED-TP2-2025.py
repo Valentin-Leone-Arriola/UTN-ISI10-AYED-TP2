@@ -989,8 +989,42 @@ def validar_vigencia(arreglo, vuelo):
             vigente = True
     return vigente
 
+def ver_vuelos(vuelos, aerolineas, precio, cant_vuelos):
+    print("\n") 
+    print("="*100)
+    print("LISTADO DE VUELOS DISPONIBLES EN EL SISTEMA".center(100))
+    print("="*100)
+    print("\n")
+    print("CÓDIGO   AEROLÍNEA          ORIGEN           DESTINO        FECHA        HORA     PRECIO")
+    print("-"*100)
+    fecha_actual = datetime.today()
+    i = 0
+    cont = 0
+    
+    while i < cant_vuelos and vuelos[i][0] != "":
+        if vuelos[i][5] == "A":
+            fecha_vuelo = datetime.strptime(vuelos[i][3], "%d/%m/%Y")
+            if fecha_vuelo > fecha_actual:
+                cont = cont + 1   
+                pos_aerolinea = busqueda_secuencial(aerolineas, vuelos[i][0], 0)
+                print(f"{i:<8}{aerolineas[pos_aerolinea][1]:<20}{vuelos[i][1]:<16}{vuelos[i][2]:<16}{vuelos[i][3]:<12}{vuelos[i][4]:<8}${precio[i]:<5}") 
+               
+        i += 1
+    print("-"*100)
+    print(f"Total de vuelos: {cont}")
+    
 def  buscar_vuelos():
-    pass
+    global vuelos, aerolineas, CANTIDAD_VUELOS, precios_vuelos
+    fecha = input("Ingrese la fecha en formato dd/mm/aaaa, Enter para salir: ")
+    valida = validar_fecha(fecha)
+   
+    while fecha != '' and valida != True :
+        fecha = input("Porfavor, Ingrese la fecha en formato dd/mm/aaaa, Enter para salir: ")
+        valida = validar_fecha(fecha)
+    if valida == True :
+        os.system('cls')
+        ver_vuelos(vuelos, aerolineas, precios_vuelos, CANTIDAD_VUELOS)
+
 
 def mostrar_asientos(asientos, vuelo):
     inicio = int(vuelo * ASIENTOS_POR_AVION/6)
