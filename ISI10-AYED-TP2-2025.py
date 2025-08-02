@@ -37,15 +37,19 @@ def add_item(arreglo, valores_fila, posicion):
         arreglo[posicion][i] = valores_fila[i]
         
 def pedir_fecha_valida():
-    fecha_valida = False
-    while not fecha_valida:
-        fecha = input("Ingrese la fecha en formato dd/mm/aaaa: ")
-        try:
-            datetime.strptime(fecha,"%d/%m/%Y")
-            fecha_valida = True
-        except:
-            print("Error: Fecha inexistente. Verificá los valores.\n")
-    return fecha 
+    fecha_aux = input("Ingrese la fecha en formato dd/mm/aaaa: ")
+    while not validar_fecha(fecha_aux):
+        print("Fecha invalida. Intentelo nuevamente")
+        fecha_aux = input("Ingrese la fecha en formato dd/mm/aaaa: ")
+    return fecha_aux
+
+def validar_fecha(fecha):
+    try:
+        datetime.strptime(fecha,"%d/%m/%Y")
+        fecha_valida = True
+    except:
+        fecha_valida = False
+    return fecha_valida
 
 def validar_entero():
     opc_input = input("\nSeleccione una opción valida: ")
@@ -975,6 +979,9 @@ def menu_ceo():
             case 4:
                 print("Cerrando sesión...\n")
                 os.system('cls' if os.name == 'nt' else 'clear')
+
+def esta_vigente():
+    pass
 
 def  buscar_vuelos():
     pass
