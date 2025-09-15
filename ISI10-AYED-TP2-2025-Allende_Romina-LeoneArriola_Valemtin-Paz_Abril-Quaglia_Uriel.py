@@ -37,6 +37,7 @@ def busqueda_secuencial_registro(arfi, arlo, valor, campo):
     arlo.seek(0,0)
     cant_registros = buscar_ultimo_registro(arfi, arlo)
     if cant_registros != -1:
+        arlo.seek(0,0)
         i = 1
         registro = pickle.load(arlo)
         valor_campo = getattr(registro, campo)
@@ -1193,20 +1194,23 @@ def menu_login():
     print("║       🏠  INICIAR SESION  🏠       ║")
     print("╚════════════════════════════════════╝\n")
         
-def login(usuarios):
-    global arfi_usuarios, arlo_usuarios
+def login(arfi_usuarios, arlo_usuarios):
     intentos = 3
+    tamArc = os.path.getsize(arfi_usuarios)
+    tamReg = calcular_tamanio_registro(tamArc,arlo_usuarios)
     menu_login()
     mail_usuario = input("\nIngrese su usuario (enter para volver): ")
     while intentos != 0 and mail_usuario!="":
         contrasenia = pwinput.pwinput(prompt="Ingrese la contraseña: ")
         os.system('cls')
-        posicion = busqueda_secuencial_registro(arfi_usuarios,arlo_usuarios,mail_usuario, "email_usuario")
+        posicion = busqueda_secuencial_registro(arfi_usuarios,arlo_usuarios, mail_usuario, "email_usuario")
         #posicion = busqueda_secuencial(usuarios, mail_usuario , 0)
         if posicion !=-1:
-            if  contrasenia == usuarios[posicion][1]: 
+            arlo_usuarios.seek(posicion * tamReg,0)
+            usuario = pickle.load(arlo_usuarios)
+            if  contrasenia == usuario.clave_usuario: 
                 intentos = 3 
-                tipo_usuario = usuarios[posicion][2]
+                tipo_usuario = usuario.tipo_usuario
                 if tipo_usuario == "administrador":
                     menu_administrador()
                 elif tipo_usuario == "ceo":
@@ -1218,12 +1222,12 @@ def login(usuarios):
                 print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
         else:
             intentos = intentos - 1
-            if intentos == 0: 
+        if intentos == 0: 
                 print("\nHubieron 3 intentos fallidos. Por medidas de seguridad se cerrara el programa\n")
-            else:
+        else:
                 print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
-        menu_login()
-        mail_usuario = input("Ingrese su mail (Enter para volver):")
+                menu_login()
+                mail_usuario = input("Ingrese su mail (Enter para volver):")
     os.system('cls')
 
 def mostrar_primer_menu():
@@ -1377,7 +1381,7 @@ while opc!= 3:
             mostrar_primer_menu()
             opc = validar_entero()
         case 2:
-            login(usuarios)
+            login(arfi_usuarios,arlo_usuarios)
             mostrar_primer_menu()
             opc = validar_entero()
         case 3:
