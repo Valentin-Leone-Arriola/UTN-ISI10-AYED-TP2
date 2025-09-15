@@ -8,11 +8,49 @@ import pwinput
 import os
 from datetime import datetime
 import getpass 
+import os.path
+import pickle
 
 
 #------------------------------------------------PROCEDIMIENTOS Y FUNCIONES GENERALES------------------------------------------------------------------
 init(autoreset=True) 
 
+def calcular_tamanio_registro(tamanio_arfi,arlo):
+    if tamanio_arfi != 0:
+        arlo.seek(0,0)
+        registro = pickle.load(arlo) 
+        len_registro = arlo.tell()
+        return len_registro
+    else:
+        return -1
+
+def buscar_ultimo_registro(arfi, arlo):
+    len_archivo  = os.path.getsize(arfi)
+    len_registro  = calcular_tamanio_registro(len_archivo,arlo)
+    if len_registro != -1:
+        cant_registros = len_archivo // len_registro #al ser registros de tamanio fijo, no es necesario verificar que no sea cero para no dividir por 0. Si fuese 0 entonces todo el documento tendria registros vacios
+        return cant_registros-1
+    else:
+        return -1
+
+def busqueda_secuencial_registro(arfi, arlo, valor, campo):
+    arlo.seek(0,0)
+    cant_registros = buscar_ultimo_registro(arfi, arlo)
+    if cant_registros != -1:
+        i = 1
+        registro = pickle.load(arlo)
+        valor_campo = getattr(registro, campo)
+        while valor_campo!= valor and i < cant_registros:
+            i = i+1
+            registro = pickle.load(arlo)
+            valor_campo = getattr(registro, campo)
+        if valor_campo== valor:
+            return i-1
+    else:
+        return -1
+        
+        
+    
 
 def validar_entero():
     opc_input = input("\nSeleccione una opción valida: ")
@@ -1156,13 +1194,15 @@ def menu_login():
     print("╚════════════════════════════════════╝\n")
         
 def login(usuarios):
+    global arfi_usuarios, arlo_usuarios
     intentos = 3
     menu_login()
     mail_usuario = input("\nIngrese su usuario (enter para volver): ")
     while intentos != 0 and mail_usuario!="":
         contrasenia = pwinput.pwinput(prompt="Ingrese la contraseña: ")
         os.system('cls')
-        posicion = busqueda_secuencial(usuarios, mail_usuario , 0)
+        posicion = busqueda_secuencial_registro(arfi_usuarios,arlo_usuarios,mail_usuario, "email_usuario")
+        #posicion = busqueda_secuencial(usuarios, mail_usuario , 0)
         if posicion !=-1:
             if  contrasenia == usuarios[posicion][1]: 
                 intentos = 3 
@@ -1246,6 +1286,9 @@ def cargarUsuarios(usuarios):
     usuarios[7][2] = "usuario"
 
 #PROGRAMA PRINCIPAL
+
+
+
 novedades = [[""] * 4 for i in range(3)] #no dice en ningun lado hasta cuantas novedades pueden ser
 cargarNovedades(novedades)
 usuarios = [[""] * 3 for i in range(10)]
@@ -1257,6 +1300,68 @@ vuelos = [[""]* 6 for i in range(int(CANTIDAD_VUELOS))]
 precios_vuelos = [0.0 for i in range(int(CANTIDAD_VUELOS))]
 ASIENTOS_POR_AVION = 240
 asientos = [[""]*7 for i in range(int(20*(ASIENTOS_POR_AVION/6)))]
+
+class usuario:
+    def __init__(self):
+        self.cod_usuario = 0
+        self.email_usuario = ""
+        self.clave_usuario = ""
+        self.tipo_usuario = ""
+        self.telefono_usuario = ""  
+
+class aerolinea:
+    def __init__(self):
+        self.cod_aerolinea = 0
+        self.nombre_aerolinea = ""
+        self.cod_IATA = ""
+        self.descripcion_aerolinea = ""
+        self.cod_pais = ""
+        
+class vuelo:
+    def __init__(self):
+        self.cod_vuelo = 0
+        self.cod_aerolinea = ""
+        self.origen_vuelo = ""
+        self.destino_vuelo = ""
+        self.fecha_salida = ""
+        self.hora_salida = ""
+        self.precio_vuelo = 0.0
+        self.asientos_vuelo = asientos = [[""]*7 for i in range(int(20*(ASIENTOS_POR_AVION/6)))]
+
+class reserva:
+    def __init__(self):
+        self.cod_reserva = 0
+        self.cod_usuario = 0
+        self.cod_vuelo = 0
+        self.fecha_reserva = 0
+        self.estado_reserva = ""
+        self.nro_asiento = ""
+        
+arfi_usuarios = "usuarios.dat"
+arfi_aerolineas = "aerolineas.dat"
+arfi_vuelos = "vuelos.dat"
+arfi_reservas = "reservas.dat"
+
+if os.path.exists(arfi_usuarios):
+    arlo_usuarios = open(arfi_usuarios, "r+b")
+    arlo_aerolineas = open(arfi_aerolineas, "r+b")
+    arlo_vuelos = open(arfi_vuelos, "r+b")
+    arlo_reservas = open(arfi_reservas, "r+b")
+else:
+    print(f"Los archivos {arfi_usuarios} {arfi_aerolineas} {arfi_vuelos} {arfi_reservas} NO existian y fueron creados")
+    arlo_usuarios = open(arfi_usuarios, "w+b")
+    arlo_aerolineas = open(arfi_aerolineas, "w+b")
+    arlo_vuelos = open(arfi_vuelos, "w+b")
+    arlo_reservas = open(arfi_reservas, "w+b")
+    user = usuario()
+    user.cod_usuario = 0
+    user.email_usuario = "admin@ventaspasajes.com"
+    user.clave_usuario = "admin123"
+    user.tipo_usuario = "administrador"
+    user.telefono_usuario = "3413112233"
+    pickle.dump(user, arlo_usuarios)
+    arlo_usuarios.flush()
+    
 
 mostrar_primer_menu()
 opc = validar_entero()
