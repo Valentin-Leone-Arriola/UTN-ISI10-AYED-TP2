@@ -24,19 +24,19 @@ def calcular_tamanio_registro(tamanio_arfi,arlo):
     else:
         return -1
 
-def buscar_ultimo_registro(arfi, arlo):
+def calcular_cant_registros(arfi, arlo):
     len_archivo  = os.path.getsize(arfi)
     len_registro  = calcular_tamanio_registro(len_archivo,arlo)
     if len_registro != -1:
         cant_registros = len_archivo // len_registro #al ser registros de tamanio fijo, no es necesario verificar que no sea cero para no dividir por 0. Si fuese 0 entonces todo el documento tendria registros vacios
-        return cant_registros-1
+        return cant_registros
         
     else:
         return -1
 
 def busqueda_secuencial_registro(arfi, arlo, valor, campo):
     arlo.seek(0,0)
-    cant_registros = buscar_ultimo_registro(arfi, arlo)
+    cant_registros = calcular_cant_registros(arfi, arlo)
     if cant_registros != -1:
         arlo.seek(0,0)
         i = 1
@@ -1168,25 +1168,21 @@ def menu_usuario():
 def registrarse(arfi_usuarios, arlo_usuarios):
     registrado = False
     mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
-    while mail == "":
-            print("\nDebe ingresar un mail")
-            mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
     while mail != "*" and not registrado:
         mail = mail.ljust(100," ")
         posicion = busqueda_secuencial_registro(arfi_usuarios,arlo_usuarios,mail, "email_usuario")
         while posicion !=-1:
                 print("El mail ya fue utilizado. Intentelo nuevamente con un correo distinto")
                 mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
-                while mail == "":
-                    print("\nDebe ingresar un mail")
-                    mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
-                mail = mail.ljust(100," ")
-                posicion = busqueda_secuencial_registro(arfi_usuarios,arlo_usuarios,mail, "email_usuario")
-        else:
-            arlo_usuarios.seek(0,2)
+                if mail != "*":
+                    mail = mail.ljust(100," ")
+                    posicion = busqueda_secuencial_registro(arfi_usuarios,arlo_usuarios,mail, "email_usuario")
+                else:
+                    posicion = -1
+        if mail != "*":
             user = usuario()
             user.email_usuario = mail
-            cod = buscar_ultimo_registro(arfi_usuarios,arlo_usuarios)+1
+            cod = calcular_cant_registros(arfi_usuarios,arlo_usuarios)
             user.cod_usuario = cod
             clave = " "
             while len(clave)!=8:
@@ -1202,10 +1198,12 @@ def registrarse(arfi_usuarios, arlo_usuarios):
                 telefono = input("Ingrese el telefono: ")
                 telefono = telefono.ljust(100, " ")
             user.telefono_usuario = telefono
+            arlo_usuarios.seek(0,2)
             pickle.dump(user, arlo_usuarios)
             arlo_usuarios.flush()
             
             registrado = True
+            input("Registrado correctamente")
     os.system('cls')
         
 def menu_login():
@@ -1222,11 +1220,9 @@ def login(arfi_usuarios, arlo_usuarios):
     
     while intentos != 0 and mail_usuario!="":
         mail_usuario = mail_usuario.ljust(100, " ")
-        print(mail_usuario, "hola")
         contrasenia = pwinput.pwinput(prompt="Ingrese la contraseña: ")
         os.system('cls')
         posicion = busqueda_secuencial_registro(arfi_usuarios,arlo_usuarios, mail_usuario, "email_usuario")
-        print(posicion)
         #posicion = busqueda_secuencial(usuarios, mail_usuario , 0)
         if posicion !=-1:
             arlo_usuarios.seek(posicion * tamReg,0)
@@ -1242,7 +1238,6 @@ def login(arfi_usuarios, arlo_usuarios):
                     menu_usuario()
             else:
                 intentos = intentos -1
-                print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
         else:
             intentos = intentos - 1
         if intentos == 0: 
@@ -1250,8 +1245,8 @@ def login(arfi_usuarios, arlo_usuarios):
         else:
             if intentos!=3:
                 print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
-                menu_login()
-                mail_usuario = input("Ingrese su mail (Enter para volver):")
+            menu_login()
+            mail_usuario = input("Ingrese su mail (Enter para volver):")
     os.system('cls')
 
 def mostrar_primer_menu():
