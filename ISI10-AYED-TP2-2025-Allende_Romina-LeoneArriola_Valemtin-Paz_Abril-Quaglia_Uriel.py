@@ -8,11 +8,52 @@ import pwinput
 import os
 from datetime import datetime
 import getpass 
+import os.path
+import pickle
 
 
 #------------------------------------------------PROCEDIMIENTOS Y FUNCIONES GENERALES------------------------------------------------------------------
 init(autoreset=True) 
 
+def calcular_tamanio_registro(tamanio_arfi,arlo):
+    if tamanio_arfi != 0:
+        arlo.seek(0,0)
+        registro = pickle.load(arlo) 
+        len_registro = arlo.tell()
+        return len_registro
+    else:
+        return -1
+
+def calcular_cant_registros(arfi, arlo):
+    len_archivo  = os.path.getsize(arfi)
+    len_registro  = calcular_tamanio_registro(len_archivo,arlo)
+    if len_registro != -1:
+        cant_registros = len_archivo // len_registro #al ser registros de tamanio fijo, no es necesario verificar que no sea cero para no dividir por 0. Si fuese 0 entonces todo el documento tendria registros vacios
+        return cant_registros
+        
+    else:
+        return -1
+
+def busqueda_secuencial_usuario(arfi, arlo, valor):
+    arlo.seek(0,0)
+    cant_registros = calcular_cant_registros(arfi, arlo)
+    if cant_registros != -1:
+        arlo.seek(0,0)
+        i = 1
+        registro = usuario()
+        registro = pickle.load(arlo)
+        while registro.email_usuario!= valor and i < cant_registros:
+            i = i+1
+            registro = pickle.load(arlo)
+        if registro.email_usuario == valor:
+            return i-1
+        else:
+            return -1
+    else:
+        return -1
+        
+        
+    
 
 def validar_entero():
     opc_input = input("\nSeleccione una opción valida: ")
@@ -1123,31 +1164,45 @@ def menu_usuario():
 
 #----------------------------------------MAIN---------------------------------------------------------------------------------------------
 
-def registrarse(usuarios):
+def registrarse(arfi_usuarios, arlo_usuarios):
     registrado = False
     mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
-    while mail == "":
-            print("\nDebe ingresar un mail")
-            mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
     while mail != "*" and not registrado:
-        posicion = busqueda_secuencial(usuarios, "", 0)
-        if posicion ==-1:
-            input("\nYa no se pueden cargar mas usuarios. Presione enter para continuar")
-            mail = "*"
-        else:
-            encontrado = busqueda_secuencial(usuarios, mail, 0)
-            if encontrado == -1:
-                usuarios[posicion][0] = mail
-                usuarios[posicion][2] = "usuario"
-                contrasenia = input("Ingrese la contraseña: ")
-                usuarios[posicion][1] = contrasenia
-                registrado = True
-            else:
+        mail = mail.ljust(100," ")
+        posicion = busqueda_secuencial_usuario(arfi_usuarios,arlo_usuarios,mail)
+        while posicion !=-1:
                 print("El mail ya fue utilizado. Intentelo nuevamente con un correo distinto")
                 mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
-                while mail == "":
-                    print("\nDebe ingresar un mail")
-                    mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
+                if mail != "*":
+                    mail = mail.ljust(100," ")
+                    posicion = busqueda_secuencial_usuario(arfi_usuarios,arlo_usuarios,mail)
+                else:
+                    posicion = -1
+        if mail != "*":
+            user = usuario()
+            user.email_usuario = mail
+            cod = calcular_cant_registros(arfi_usuarios,arlo_usuarios)
+            user.cod_usuario = cod
+            clave = " "
+            while len(clave)!=8:
+                clave = input("Ingrese la clave de 8 caracteres: ")
+            user.clave_usuario = clave
+            tipo = " "
+            while tipo !="ceo de aerolinea" and tipo !="usuario":
+                tipo = input("Ingrese el tipo de usuario: ")
+            tipo = tipo.ljust(20, " ")
+            user.tipo_usuario = tipo
+            telefono=" "
+            while telefono == " " or len(telefono)>100:
+                telefono = input("Ingrese el telefono: ")
+                telefono = telefono.ljust(100, " ")
+            user.telefono_usuario = telefono
+            arlo_usuarios.seek(0,2)
+            pickle.dump(user, arlo_usuarios)
+            arlo_usuarios.flush()
+            
+            registrado = True
+            input("Registrado correctamente")
     os.system('cls')
         
 def menu_login():
@@ -1155,35 +1210,42 @@ def menu_login():
     print("║       🏠  INICIAR SESION  🏠       ║")
     print("╚════════════════════════════════════╝\n")
         
-def login(usuarios):
+def login(arfi_usuarios, arlo_usuarios):
     intentos = 3
+    tamArc = os.path.getsize(arfi_usuarios)
+    tamReg = calcular_tamanio_registro(tamArc,arlo_usuarios)
     menu_login()
     mail_usuario = input("\nIngrese su usuario (enter para volver): ")
+    
     while intentos != 0 and mail_usuario!="":
+        mail_usuario = mail_usuario.ljust(100, " ")
         contrasenia = pwinput.pwinput(prompt="Ingrese la contraseña: ")
         os.system('cls')
-        posicion = busqueda_secuencial(usuarios, mail_usuario , 0)
+        posicion = busqueda_secuencial_usuario(arfi_usuarios,arlo_usuarios, mail_usuario)
+        #posicion = busqueda_secuencial(usuarios, mail_usuario , 0)
         if posicion !=-1:
-            if  contrasenia == usuarios[posicion][1]: 
+            arlo_usuarios.seek(posicion * tamReg,0)
+            usuario = pickle.load(arlo_usuarios)
+            if  contrasenia == usuario.clave_usuario: 
                 intentos = 3 
-                tipo_usuario = usuarios[posicion][2]
-                if tipo_usuario == "administrador":
+                tipo_usuario = usuario.tipo_usuario
+                if tipo_usuario == "administrador".ljust(20, " "):
                     menu_administrador()
-                elif tipo_usuario == "ceo":
+                elif tipo_usuario == "ceo de aerolinea".ljust(20, " "):
                     menu_ceo()
                 else:
                     menu_usuario()
             else:
                 intentos = intentos -1
-                print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
         else:
             intentos = intentos - 1
-            if intentos == 0: 
+        if intentos == 0: 
                 print("\nHubieron 3 intentos fallidos. Por medidas de seguridad se cerrara el programa\n")
-            else:
+        else:
+            if intentos!=3:
                 print ("\nContraseña o usuario incorrectas, le quedan", intentos,"intentos\n" )
-        menu_login()
-        mail_usuario = input("Ingrese su mail (Enter para volver):")
+            menu_login()
+            mail_usuario = input("Ingrese su mail (Enter para volver):")
     os.system('cls')
 
 def mostrar_primer_menu():
@@ -1246,6 +1308,9 @@ def cargarUsuarios(usuarios):
     usuarios[7][2] = "usuario"
 
 #PROGRAMA PRINCIPAL
+
+
+
 novedades = [[""] * 4 for i in range(3)] #no dice en ningun lado hasta cuantas novedades pueden ser
 cargarNovedades(novedades)
 usuarios = [[""] * 3 for i in range(10)]
@@ -1258,6 +1323,68 @@ precios_vuelos = [0.0 for i in range(int(CANTIDAD_VUELOS))]
 ASIENTOS_POR_AVION = 240
 asientos = [[""]*7 for i in range(int(20*(ASIENTOS_POR_AVION/6)))]
 
+class usuario:
+    def __init__(self):
+        self.cod_usuario = 0
+        self.email_usuario = ""
+        self.clave_usuario = ""
+        self.tipo_usuario = ""
+        self.telefono_usuario = ""  
+
+class aerolinea:
+    def __init__(self):
+        self.cod_aerolinea = 0
+        self.nombre_aerolinea = ""
+        self.cod_IATA = ""
+        self.descripcion_aerolinea = ""
+        self.cod_pais = ""
+        
+class vuelo:
+    def __init__(self):
+        self.cod_vuelo = 0
+        self.cod_aerolinea = ""
+        self.origen_vuelo = ""
+        self.destino_vuelo = ""
+        self.fecha_salida = ""
+        self.hora_salida = ""
+        self.precio_vuelo = 0.0
+        self.asientos_vuelo = asientos = [[""]*7 for i in range(int(20*(ASIENTOS_POR_AVION/6)))]
+
+class reserva:
+    def __init__(self):
+        self.cod_reserva = 0
+        self.cod_usuario = 0
+        self.cod_vuelo = 0
+        self.fecha_reserva = 0
+        self.estado_reserva = ""
+        self.nro_asiento = ""
+        
+arfi_usuarios = "usuarios.dat"
+arfi_aerolineas = "aerolineas.dat"
+arfi_vuelos = "vuelos.dat"
+arfi_reservas = "reservas.dat"
+
+if os.path.exists(arfi_usuarios):
+    arlo_usuarios = open(arfi_usuarios, "r+b")
+    arlo_aerolineas = open(arfi_aerolineas, "r+b")
+    arlo_vuelos = open(arfi_vuelos, "r+b")
+    arlo_reservas = open(arfi_reservas, "r+b")
+else:
+    input(f"Los archivos {arfi_usuarios} {arfi_aerolineas} {arfi_vuelos} {arfi_reservas} NO existian y fueron creados")
+    arlo_usuarios = open(arfi_usuarios, "w+b")
+    arlo_aerolineas = open(arfi_aerolineas, "w+b")
+    arlo_vuelos = open(arfi_vuelos, "w+b")
+    arlo_reservas = open(arfi_reservas, "w+b")
+    user = usuario()
+    user.cod_usuario = 0
+    user.email_usuario = "admin@ventaspasajes.com".ljust(100, " ")
+    user.clave_usuario = "admin123".ljust(8," ")
+    user.tipo_usuario = "administrador".ljust(20, " ")
+    user.telefono_usuario = "3413112233".ljust(100, " ")
+    pickle.dump(user, arlo_usuarios)
+    arlo_usuarios.flush()
+    
+
 mostrar_primer_menu()
 opc = validar_entero()
 while opc!= 3:
@@ -1268,11 +1395,11 @@ while opc!= 3:
     os.system('cls')
     match opc:
         case 1:
-            registrarse(usuarios)
+            registrarse(arfi_usuarios,arlo_usuarios)
             mostrar_primer_menu()
             opc = validar_entero()
         case 2:
-            login(usuarios)
+            login(arfi_usuarios,arlo_usuarios)
             mostrar_primer_menu()
             opc = validar_entero()
         case 3:
