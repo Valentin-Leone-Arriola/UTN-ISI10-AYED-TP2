@@ -34,19 +34,18 @@ def calcular_cant_registros(arfi, arlo):
     else:
         return -1
 
-def busqueda_secuencial_registro(arfi, arlo, valor, campo):
+def busqueda_secuencial_usuario(arfi, arlo, valor):
     arlo.seek(0,0)
     cant_registros = calcular_cant_registros(arfi, arlo)
     if cant_registros != -1:
         arlo.seek(0,0)
         i = 1
+        registro = usuario()
         registro = pickle.load(arlo)
-        valor_campo = getattr(registro, campo)
-        while valor_campo!= valor and i < cant_registros:
+        while registro.email_usuario!= valor and i < cant_registros:
             i = i+1
             registro = pickle.load(arlo)
-            valor_campo = getattr(registro, campo)
-        if valor_campo == valor:
+        if registro.email_usuario == valor:
             return i-1
         else:
             return -1
@@ -1170,13 +1169,13 @@ def registrarse(arfi_usuarios, arlo_usuarios):
     mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
     while mail != "*" and not registrado:
         mail = mail.ljust(100," ")
-        posicion = busqueda_secuencial_registro(arfi_usuarios,arlo_usuarios,mail, "email_usuario")
+        posicion = busqueda_secuencial_usuario(arfi_usuarios,arlo_usuarios,mail)
         while posicion !=-1:
                 print("El mail ya fue utilizado. Intentelo nuevamente con un correo distinto")
                 mail = input("\nIngrese el mail con el que quiere registrarse o * para volver: ")
                 if mail != "*":
                     mail = mail.ljust(100," ")
-                    posicion = busqueda_secuencial_registro(arfi_usuarios,arlo_usuarios,mail, "email_usuario")
+                    posicion = busqueda_secuencial_usuario(arfi_usuarios,arlo_usuarios,mail)
                 else:
                     posicion = -1
         if mail != "*":
@@ -1222,7 +1221,7 @@ def login(arfi_usuarios, arlo_usuarios):
         mail_usuario = mail_usuario.ljust(100, " ")
         contrasenia = pwinput.pwinput(prompt="Ingrese la contraseña: ")
         os.system('cls')
-        posicion = busqueda_secuencial_registro(arfi_usuarios,arlo_usuarios, mail_usuario, "email_usuario")
+        posicion = busqueda_secuencial_usuario(arfi_usuarios,arlo_usuarios, mail_usuario)
         #posicion = busqueda_secuencial(usuarios, mail_usuario , 0)
         if posicion !=-1:
             arlo_usuarios.seek(posicion * tamReg,0)
