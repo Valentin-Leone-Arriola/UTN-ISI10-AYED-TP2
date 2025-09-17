@@ -1175,12 +1175,18 @@ def ver_vuelos():
     
 def  buscar_vuelos():
     global vuelos, aerolineas, CANTIDAD_VUELOS, precios_vuelos
-    fecha = input("Ingrese la fecha en formato dd/mm/aaaa, Enter para salir: ")
-    valida = validar_fecha(fecha)
-   
-    while fecha != '' and valida != True :
-        fecha = input("Porfavor, Ingrese la fecha en formato dd/mm/aaaa, Enter para salir: ")
+    fecha_desde = input("Ingrese a partir de que fecha dd/mm/aaaa, enter para salir: ")
+    valida = validar_fecha(fecha_desde)
+    while fecha_desde != '' and valida != True :
+        fecha = input("Porfavor, Ingrese la fecha en formato dd/mm/aaaa, enter para salir: ")
         valida = validar_fecha(fecha)
+    fecha_hasta = input("Ingrese hasta que fecha dd/mm/aaaa, enter para salir: ")
+    valida = validar_fecha(fecha_hasta)
+    while fecha_hasta != '' and valida != True :
+        fecha_hasta = input("Porfavor, Ingrese la fecha en formato dd/mm/aaaa, enter para salir: ")
+        valida = validar_fecha(fecha_hasta)
+    origen = input("Ingrese el origen del vuelo")
+    destino = input("Ingrese el destino del vuelo")
     if valida == True :
         os.system('cls')
         ver_vuelos()
@@ -1439,7 +1445,7 @@ class vuelo:
         self.fecha_salida = " "
         self.hora_salida = " "
         self.precio_vuelo = 0.0
-        self.asientos_vuelo = [[""]*7 for i in range(int(20*(ASIENTOS_POR_AVION/6)))]
+        self.asientos_vuelo = [[""]*7 for i in range(int(ASIENTOS_POR_AVION/6))]
         self.estado_vuelo = " "
 
 class reserva:
