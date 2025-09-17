@@ -33,26 +33,6 @@ def calcular_cant_registros(arfi, arlo):
         
     else:
         return -1
-
-def busqueda_secuencial_usuario(arfi, arlo, valor):
-    arlo.seek(0,0)
-    cant_registros = calcular_cant_registros(arfi, arlo)
-    if cant_registros != -1:
-        arlo.seek(0,0)
-        i = 1
-        registro = usuario()
-        registro = pickle.load(arlo)
-        while registro.email_usuario!= valor and i < cant_registros:
-            i = i+1
-            registro = pickle.load(arlo)
-        if registro.email_usuario == valor:
-            return i-1
-        else:
-            return -1
-    else:
-        return -1
-        
-        
     
 
 def validar_entero():
@@ -1163,6 +1143,24 @@ def menu_usuario():
 
 
 #----------------------------------------MAIN---------------------------------------------------------------------------------------------
+def busqueda_secuencial_usuario(arfi, arlo, valor):
+    arlo.seek(0,0)
+    cant_registros = calcular_cant_registros(arfi, arlo)
+    if cant_registros != -1:
+        arlo.seek(0,0)
+        i = 1
+        registro = usuario()
+        registro = pickle.load(arlo)
+        while registro.email_usuario!= valor and i < cant_registros:
+            i = i+1
+            registro = pickle.load(arlo)
+        if registro.email_usuario == valor:
+            return i-1
+        else:
+            return -1
+    else:
+        return -1
+        
 
 def registrarse(arfi_usuarios, arlo_usuarios):
     registrado = False
@@ -1269,43 +1267,7 @@ def cargarNovedades(novedades):
     novedades[2][1] = "04/08/2025"
     novedades[2][2] = "11/08/2025"
 
-def cargarUsuarios(usuarios):
-    # Inicializar matriz de 10 usuarios con 4 columnas (email, clave, rol, extra opcional)
-    
-    # Administrador
-    usuarios[0][0] = "admin"
-    usuarios[0][1] = "admin123"
-    usuarios[0][2] = "administrador"
 
-    # CEOs
-    usuarios[1][0] = "ceo"
-    usuarios[1][1] = "ceo123"
-    usuarios[1][2] = "ceo"
-
-    usuarios[2][0] = "ceo2@ventaspasajes777.com"
-    usuarios[2][1] = "ceo456"
-    usuarios[2][2] = "ceo"
-
-    usuarios[3][0] = "ceo3@ventaspasajes777.com"
-    usuarios[3][1] = "ceo789"
-    usuarios[3][2] = "ceo"
-
-    usuarios[4][0] = "ceo4@ventaspasajes777.com"
-    usuarios[4][1] = "ceo321"
-    usuarios[4][2] = "ceo"
-
-    usuarios[5][0] = "ceo5@ventaspasajes777.com"
-    usuarios[5][1] = "ceo654"
-    usuarios[5][2] = "ceo"
-
-    # Usuarios comunes
-    usuarios[6][0] = "usuario"
-    usuarios[6][1] = "usuario123"
-    usuarios[6][2] = "usuario"
-
-    usuarios[7][0] = "usuario2@ventaspasajes777.com"
-    usuarios[7][1] = "usuario456"
-    usuarios[7][2] = "usuario"
 
 #PROGRAMA PRINCIPAL
 
@@ -1313,8 +1275,6 @@ def cargarUsuarios(usuarios):
 
 novedades = [[""] * 4 for i in range(3)] #no dice en ningun lado hasta cuantas novedades pueden ser
 cargarNovedades(novedades)
-usuarios = [[""] * 3 for i in range(10)]
-cargarUsuarios(usuarios)
 CANTIDAD_VUELOS = 20
 CANTIDAD_AEROLINEAS = 5
 aerolineas = [[""] * 5 for i in range(int(CANTIDAD_AEROLINEAS))]
