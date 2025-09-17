@@ -1114,6 +1114,63 @@ def valores_prueba():
     pickle.dump(registro, arlo_vuelos)
     arlo_vuelos.flush()
 
+def gestionar_reservas():
+    pass
+
+def mostrar_asientos(cod_vuelo):
+    global ASIENTOS_POR_AVION
+    print("  A      B     C            D     E     F")
+    print("+-----+-----+-----+      +-----+-----+-----+")
+    tam_reg = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
+    posicion_en_archivo = tam_reg*cod_vuelo
+    arlo_vuelos.seek(posicion_en_archivo, 0)
+    reg_vuelo = pickle.load(arlo_vuelos)
+    for i in range(0, int(ASIENTOS_POR_AVION/6)):
+        print(" ", end="")
+        for k in range(3):
+            print("|",reg_vuelo.asientos_vuelo[i][k],"|", end=" ")
+        print("       ", end="")
+        for k in range(4,7):
+            print("|",reg_vuelo.asientos_vuelo[i][k],"|", end=" ")
+        print("    ",i+1)
+        print()
+
+def validar_vigencia(cod_vuelo):
+    vigente = False
+    cantidad_vuelos = calcular_cant_registros(arfi_vuelos, arlo_vuelos)
+    if cod_vuelo >= cantidad_vuelos:
+        return vigente
+    else:
+        tam_reg = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
+        arlo_vuelos.seek(cod_vuelo*tam_reg,0)
+        registro = vuelo()
+        registro = pickle.load(arlo_vuelos)
+        fecha_actual = datetime.today()
+        if registro.estado_vuelo == "A":
+            fecha_vuelo = datetime.strptime(registro.fecha_salida, "%d/%m/%Y")
+            if fecha_vuelo > fecha_actual:
+                vigente = True
+    return vigente
+
+def  buscar_asientos():
+    continuar = "S"
+    while continuar == "S":
+        print(f"Ingrese el codigo del vuelo del cual quiere ver los asientos")
+        cod_vuelo = validar_entero()
+        os.system('cls')
+        while cod_vuelo == -1:
+            print(f" ⚠️  Codigo de vuelo invalido. Intentelo nuevamente")
+            cod_vuelo = validar_entero()
+        if validar_vigencia(cod_vuelo):
+            mostrar_asientos(cod_vuelo)
+        else:
+            print("El vuelo no esta vigente.")
+        continuar = " "
+        while continuar.upper() !="S" and continuar.upper() !="N":
+            continuar = input("Desea continuar? S/N\n")
+        if continuar.upper() != "S":
+            volver()
+
 def busqueda_secuencial_aerolinea(arfi, arlo, valor):
     arlo.seek(0,0)
     cant_registros = calcular_cant_registros(arfi, arlo)
@@ -1196,63 +1253,7 @@ def  buscar_vuelos():
     else:
         os.system('cls')
         volver()
-
-
-def mostrar_asientos(cod_vuelo):
-    global ASIENTOS_POR_AVION
-    print("  A      B     C            D     E     F")
-    print("+-----+-----+-----+      +-----+-----+-----+")
-    tam_reg = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
-    posicion_en_archivo = tam_reg*cod_vuelo
-    arlo_vuelos.seek(posicion_en_archivo, 0)
-    reg_vuelo = pickle.load(arlo_vuelos)
-    for i in range(0, int(ASIENTOS_POR_AVION/6)):
-        print(" ", end="")
-        for k in range(3):
-            print("|",reg_vuelo.asientos_vuelo[i][k],"|", end=" ")
-        print("       ", end="")
-        for k in range(4,7):
-            print("|",reg_vuelo.asientos_vuelo[i][k],"|", end=" ")
-        print("    ",i)
-        print()
-
-def validar_vigencia(cod_vuelo):
-    vigente = False
-    cantidad_vuelos = calcular_cant_registros(arfi_vuelos, arlo_vuelos)
-    if cod_vuelo >= cantidad_vuelos:
-        return vigente
-    else:
-        tam_reg = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
-        arlo_vuelos.seek(cod_vuelo*tam_reg,0)
-        registro = vuelo()
-        registro = pickle.load(arlo_vuelos)
-        fecha_actual = datetime.today()
-        if registro.estado_vuelo == "A":
-            fecha_vuelo = datetime.strptime(registro.fecha_salida, "%d/%m/%Y")
-            if fecha_vuelo > fecha_actual:
-                vigente = True
-    return vigente
-
-def  buscar_asientos():
-    continuar = "S"
-    while continuar == "S":
-        print(f"Ingrese el codigo del vuelo del cual quiere ver los asientos")
-        cod_vuelo = validar_entero()
-        os.system('cls')
-        while cod_vuelo == -1:
-            print(f" ⚠️  Codigo de vuelo invalido. Intentelo nuevamente")
-            cod_vuelo = validar_entero()
-        if validar_vigencia(cod_vuelo):
-            mostrar_asientos(cod_vuelo)
-        else:
-            print("El vuelo no esta vigente.")
-        continuar = " "
-        while continuar.upper() !="S" and continuar.upper() !="N":
-            continuar = input("Desea continuar? S/N\n")
-        if continuar.upper() != "S":
-            volver()
-
-                
+               
 
 
 def  mostrar_menu_principal_usuario():
@@ -1261,11 +1262,10 @@ def  mostrar_menu_principal_usuario():
     print("╚════════════════════════════════════╝\n")
     print("1) Buscar Vuelos 🛩️")
     print("2) Buscar Asientos💺")
-    print("3) Reservar Vuelos 🛩️")
-    print("4) Gestionar Reservas 📆")
-    print("5) Ver Historial de Compras 💲")
-    print("6) Ver Novedades 📑")
-    print("7) Cerrar Sesión ❌")
+    print("3) Gestionar Reservas 📆")
+    print("4) Ver Historial de Compras 💲")
+    print("5) Ver Novedades 📑")
+    print("6) Cerrar Sesión ❌")
     
 def menu_usuario():
      opc = -1
@@ -1287,16 +1287,15 @@ def menu_usuario():
             case 2:
                 buscar_asientos()
             case 3:
-                en_construccion()
+                gestionar_reservas()
             case 4:
                 en_construccion()
             case 5:
-                en_construccion()
-            case 6:
                 ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
-            case 7:
+            case 6:
                 input("Cerrando sesión...\nPresione enter para continuar")
                 os.system('cls' if os.name == 'nt' else 'clear')
+
        
 #----------------------------------------------------------------------------------------------------------------------------------
 
