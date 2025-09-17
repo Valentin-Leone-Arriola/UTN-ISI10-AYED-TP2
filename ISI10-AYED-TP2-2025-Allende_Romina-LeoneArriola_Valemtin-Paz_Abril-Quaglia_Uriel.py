@@ -15,8 +15,9 @@ import pickle
 #------------------------------------------------PROCEDIMIENTOS Y FUNCIONES GENERALES------------------------------------------------------------------
 init(autoreset=True) 
 
-def calcular_tamanio_registro(tamanio_arfi,arlo):
-    if tamanio_arfi != 0:
+def calcular_tamanio_registro(arfi,arlo):
+    len_archivo  = os.path.getsize(arfi)
+    if len_archivo != 0:
         arlo.seek(0,0)
         registro = pickle.load(arlo) 
         len_registro = arlo.tell()
@@ -26,11 +27,12 @@ def calcular_tamanio_registro(tamanio_arfi,arlo):
 
 def calcular_cant_registros(arfi, arlo):
     len_archivo  = os.path.getsize(arfi)
-    len_registro  = calcular_tamanio_registro(len_archivo,arlo)
-    if len_registro != -1:
+    if len_archivo != 0:
+        arlo.seek(0,0)
+        registro = pickle.load(arlo) 
+        len_registro = arlo.tell()
         cant_registros = len_archivo // len_registro #al ser registros de tamanio fijo, no es necesario verificar que no sea cero para no dividir por 0. Si fuese 0 entonces todo el documento tendria registros vacios
-        return cant_registros
-        
+        return cant_registros    
     else:
         return -1
     
@@ -1053,7 +1055,7 @@ def valores_prueba():
     registro.fecha_salida = "17/11/2025"
     registro.hora_salida = "18:00"
     registro.estado_vuelo = "A"
-    registro.precio_vuelo = 5025
+    registro.precio_vuelo = 5025.0
     arlo_vuelos.seek(0,2)
     pickle.dump(registro, arlo_vuelos)
     arlo_vuelos.flush()
@@ -1071,7 +1073,7 @@ def valores_prueba():
     registro.fecha_salida = "01/03/2025"
     registro.hora_salida = "00:00"
     registro.estado_vuelo = "A"
-    registro.precio_vuelo = 1000
+    registro.precio_vuelo = 1000.0
     arlo_vuelos.seek(0,2)
     pickle.dump(registro, arlo_vuelos)
     arlo_vuelos.flush()
@@ -1146,8 +1148,7 @@ def ver_vuelos():
     reg_aerolinea = aerolinea()
     cant_vuelos = calcular_cant_registros(arfi_vuelos, arlo_vuelos)
     arlo_vuelos.seek(0,0)
-    tam_arfi_aerolinea = os.path.getsize(arfi_aerolineas)
-    tam_reg_aerolinea = calcular_tamanio_registro(tam_arfi_aerolinea, arlo_aerolineas)
+    tam_reg_aerolinea = calcular_tamanio_registro(arfi_aerolineas, arlo_aerolineas)
     while i <= cant_vuelos:
         reg_vuelo = pickle.load(arlo_vuelos)
         if reg_vuelo.estado_vuelo == "A":
@@ -1175,59 +1176,83 @@ def ver_vuelos():
     
 def  buscar_vuelos():
     global vuelos, aerolineas, CANTIDAD_VUELOS, precios_vuelos
-    fecha_desde = input("Ingrese a partir de que fecha dd/mm/aaaa, enter para salir: ")
+    valida = False
+    fecha_desde = input("Ingrese a partir de que fecha dd/mm/aaaa, enter para salir")
     valida = validar_fecha(fecha_desde)
-    while fecha_desde != '' and valida != True :
-        fecha = input("Porfavor, Ingrese la fecha en formato dd/mm/aaaa, enter para salir: ")
-        valida = validar_fecha(fecha)
-    fecha_hasta = input("Ingrese hasta que fecha dd/mm/aaaa, enter para salir: ")
-    valida = validar_fecha(fecha_hasta)
-    while fecha_hasta != '' and valida != True :
-        fecha_hasta = input("Porfavor, Ingrese la fecha en formato dd/mm/aaaa, enter para salir: ")
+    while valida != True and fecha_desde!="" :
+        fecha_desde = input("Porfavor, Ingrese la fecha en formato dd/mm/aaaa")
+        valida = validar_fecha(fecha_desde)
+    if fecha_desde !="":
+        valida=False
+        fecha_hasta = input("Ingrese hasta que fecha dd/mm/aaaa")
         valida = validar_fecha(fecha_hasta)
-    origen = input("Ingrese el origen del vuelo")
-    destino = input("Ingrese el destino del vuelo")
-    if valida == True :
+        while valida != True :
+            fecha_hasta = input("Porfavor, Ingrese la fecha en formato dd/mm/aaaa")
+            valida = validar_fecha(fecha_hasta)
+        origen = input("Ingrese el origen del vuelo: ").upper()
+        destino = input("Ingrese el destino del vuelo: ").upper()
         os.system('cls')
         ver_vuelos()
+    else:
+        os.system('cls')
+        volver()
 
 
-def mostrar_asientos(asientos, vuelo):
-    inicio = int(vuelo * ASIENTOS_POR_AVION/6)#si es el 0, va a empezar en el 0, si es 1, va empezar en el 40 que es 1 mas del final del primer vuelo
-    fin = int(inicio + ASIENTOS_POR_AVION/6)#se desplaza la cantidad de filaas que es la cantidad de asientos por avion sobre la cantidad de asientos por fila
-    print("   A     B     C         D     E     F")
-    print("+-----+-----+-----+   +-----+-----+-----+")
-    for i in range(inicio, fin):
-        for j in range(7):
-            print("|",asientos[i][j],"|", end=" ")
+def mostrar_asientos(cod_vuelo):
+    global ASIENTOS_POR_AVION
+    print("  A      B     C            D     E     F")
+    print("+-----+-----+-----+      +-----+-----+-----+")
+    tam_reg = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
+    posicion_en_archivo = tam_reg*cod_vuelo
+    arlo_vuelos.seek(posicion_en_archivo, 0)
+    reg_vuelo = pickle.load(arlo_vuelos)
+    for i in range(0, int(ASIENTOS_POR_AVION/6)):
+        print(" ", end="")
+        for k in range(3):
+            print("|",reg_vuelo.asientos_vuelo[i][k],"|", end=" ")
+        print("       ", end="")
+        for k in range(4,7):
+            print("|",reg_vuelo.asientos_vuelo[i][k],"|", end=" ")
+        print("    ",i)
         print()
 
-def validar_vigencia(arreglo, vuelo):
+def validar_vigencia(cod_vuelo):
     vigente = False
-    if arreglo[vuelo][5]=="A":
+    cantidad_vuelos = calcular_cant_registros(arfi_vuelos, arlo_vuelos)
+    if cod_vuelo >= cantidad_vuelos:
+        return vigente
+    else:
+        tam_reg = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
+        arlo_vuelos.seek(cod_vuelo*tam_reg,0)
+        registro = vuelo()
+        registro = pickle.load(arlo_vuelos)
         fecha_actual = datetime.today()
-        fecha_vuelo = datetime.strptime(vuelos[vuelo][3], "%d/%m/%Y")
-        if fecha_vuelo > fecha_actual:
-            vigente = True
+        if registro.estado_vuelo == "A":
+            fecha_vuelo = datetime.strptime(registro.fecha_salida, "%d/%m/%Y")
+            if fecha_vuelo > fecha_actual:
+                vigente = True
     return vigente
 
 def  buscar_asientos():
-    global CANTIDAD_VUELOS, vuelos, asientos
-    vuelo = -1
-    while vuelo != CANTIDAD_VUELOS:
-        print(f"Ingrese el codigo del vuelo del cual quiere ver los asientos, {CANTIDAD_VUELOS} para salir. ")
-        vuelo = validar_entero()
+    continuar = "S"
+    while continuar == "S":
+        print(f"Ingrese el codigo del vuelo del cual quiere ver los asientos")
+        cod_vuelo = validar_entero()
         os.system('cls')
-        while vuelo == -1 or vuelo > CANTIDAD_VUELOS:
-            print(f" ⚠️  Codigo de vuelo invalido, {CANTIDAD_VUELOS} para salir. ")
-            vuelo = validar_entero()
-        if vuelo == CANTIDAD_VUELOS:
-            volver()
+        while cod_vuelo == -1:
+            print(f" ⚠️  Codigo de vuelo invalido. Intentelo nuevamente")
+            cod_vuelo = validar_entero()
+        if validar_vigencia(cod_vuelo):
+            mostrar_asientos(cod_vuelo)
         else:
-            if validar_vigencia(vuelos, vuelo):
-                mostrar_asientos(asientos, vuelo)
-            else:
-                print("El vuelo no esta vigente.")
+            print("El vuelo no esta vigente.")
+        continuar = " "
+        while continuar.upper() !="S" and continuar.upper() !="N":
+            continuar = input("Desea continuar? S/N\n")
+        if continuar.upper() != "S":
+            volver()
+
+                
 
 
 def  mostrar_menu_principal_usuario():
@@ -1347,8 +1372,7 @@ def menu_login():
         
 def login(arfi_usuarios, arlo_usuarios):
     intentos = 3
-    tamArc = os.path.getsize(arfi_usuarios)
-    tamReg = calcular_tamanio_registro(tamArc,arlo_usuarios)
+    tamReg = calcular_tamanio_registro(arfi_usuarios,arlo_usuarios)
     menu_login()
     mail_usuario = input("\nIngrese su usuario (enter para volver): ")
     
