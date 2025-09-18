@@ -34,7 +34,7 @@ def calcular_cant_registros(arfi, arlo):
         cant_registros = len_archivo // len_registro #al ser registros de tamanio fijo, no es necesario verificar que no sea cero para no dividir por 0. Si fuese 0 entonces todo el documento tendria registros vacios
         return cant_registros    
     else:
-        return -1
+        return 0
     
 
 def validar_entero():
@@ -1114,8 +1114,122 @@ def valores_prueba():
     pickle.dump(registro, arlo_vuelos)
     arlo_vuelos.flush()
 
+def reservar_vuelos():
+    global logged_user
+    reg_reserva = reserva()
+    continuar = "S"
+    while continuar =="S":
+        print("Ingrese el codigo del vuelo que desea")
+        cod_vuelo = validar_entero()
+        while cod_vuelo ==-1:
+            print("⚠️   Opción no válida. Debe ser un numero entero. Inténtelo nuevamente.")
+            cod_vuelo = validar_entero()
+        cod_vuelo = int(cod_vuelo)
+        vuelo_valido = validar_vigencia(cod_vuelo)
+        if vuelo_valido:
+            tam_reg_vuelo = calcular_tamanio_registro(arfi_vuelos,arlo_vuelos)
+            arlo_vuelos.seek(tam_reg_vuelo*cod_vuelo, 0)
+            reg_vuelo = pickle.load(arlo_vuelos)
+            asientos_disponibles = False
+            j = 0 
+            i=0
+            while i < 40 and not asientos_disponibles:  # recorre filas
+                    j = 0
+                    while j < 7 and not asientos_disponibles:  # recorre columnas
+                        if reg_vuelo.asientos_vuelo[i][j] == "L":  # asiento libre y no pasillo
+                            asientos_disponibles = True
+                        else:
+                            j += 1
+                    if not asientos_disponibles:
+                        i += 1        
+            if asientos_disponibles:
+                continuar_seleccion = "S"
+                while continuar_seleccion.upper( )== "S":
+                    print("Ingrese un numero de fila (1-40)")
+                    fila = validar_entero()
+                    while fila == -1 or fila>40 or fila<1:
+                        print("⚠️   Opción no válida. Debe ser un numero entero entre 1 y 40. Inténtelo nuevamente.")
+                        fila = validar_entero()
+                    fila_real = fila-1
+                    print("Ingrese un numero de columna (1-6)")
+                    columna = validar_entero()
+                    while columna == -1 or columna<1 or columna>6:
+                        print("⚠️   Opción no válida. Debe ser un numero entero entre 1 y 6. Inténtelo nuevamente.")
+                        columna = validar_entero()
+                    if columna <= 3:
+                        col_real = columna - 1
+                    else:
+                        col_real = columna
+                    fila = str(fila)
+                    columna = str(columna)
+                    asiento = (fila + "-" + columna)
+                    asiento = asiento.ljust(4," ")
+                    if reg_vuelo.asientos_vuelo[fila_real][col_real] == "L":
+                        reg_vuelo.asientos_vuelo[fila_real][col_real] =="R"
+                        continuar_seleccion = "N"
+                        print("Se reservo correctamente el asiento\n")
+                        reg_reserva.cod_reserva = int(calcular_cant_registros(arfi_reservas, arlo_reservas))
+                        reg_reserva.cod_usuario = logged_user.cod_usuario
+                        reg_reserva.cod_vuelo = reg_vuelo.cod_vuelo
+                        reg_reserva.estado_reserva = "confirmada".ljust(20, " ")
+                        reg_reserva.nro_asiento = asiento
+                        hoy = datetime.today()
+                        reg_reserva.fecha_reserva = hoy.strftime("%d/%m/%Y")
+                        arlo_reservas.seek(0,2)
+                        pickle.dump(reg_reserva,arlo_reservas)
+                        arlo_reservas.flush()
+                        continuar = " "
+                        while continuar.upper() !="S" and continuar.upper() !="N":
+                            continuar = input(f"Desea reservar otro vuelo? S/N")
+                    else:
+                        continuar_seleccion = " "
+                        while continuar_seleccion.upper() !="S" and continuar_seleccion.upper() !="N":
+                            continuar_seleccion = input(f"No se encuentra disponible. Desea intentar con otro asiento? S/N (hint: {i}-{j})")
+            else:
+                print("No hay asientos disponibles")
+                continuar = " "
+                while continuar.upper() !="S" and continuar.upper() !="N":
+                    continuar = input("Desea intentar con otro vuelo? S/N\n")
+            
+        elif not vuelo_valido:
+            print("No existe un vuelo vigente con ese codigo")
+            continuar = " "
+            while continuar.upper() !="S" and continuar.upper() !="N":
+                continuar = input("Desea intentar con otro vuelo? S/N\n")
+        volver()
+        
+        
+
+def mostrar_menu_reservas():
+    print("╔════════════════════════════════════════╗")
+    print("║  📆  MENÚ DE GESTION DE RESERVAS 📆    ║")
+    print("╚════════════════════════════════════════╝\n")
+    print("1) Reservar Vuelo 🛩️") 
+    print("2) Consultar Reservas📆")
+    print("3) Cancelar Reservas❌")
+    print("4) Volver al Menú Principal 🔙") 
+
 def gestionar_reservas():
-    pass
+    opc = -1
+    while opc != 4:
+        mostrar_menu_reservas()
+        opc = validar_entero()
+        os.system('cls' if os.name == 'nt' else 'clear')
+        while opc < 1 or opc > 4:
+            print("⚠️   Opción no válida. Inténtelo nuevamente.\n")
+            mostrar_menu_reservas()
+            opc = validar_entero()
+            os.system('cls' if os.name == 'nt' else 'clear')
+        match opc: 
+            case 1:
+                reservar_vuelos()
+            case 2:
+                en_construccion()
+            case 3:
+                en_construccion()
+            case 4:
+                volver()
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def mostrar_asientos(cod_vuelo):
     global ASIENTOS_POR_AVION
@@ -1174,7 +1288,7 @@ def  buscar_asientos():
 def busqueda_secuencial_aerolinea(arfi, arlo, valor):
     arlo.seek(0,0)
     cant_registros = calcular_cant_registros(arfi, arlo)
-    if cant_registros != -1:
+    if cant_registros != 0:
         arlo.seek(0,0)
         i = 1
         registro = aerolinea()
@@ -1307,7 +1421,7 @@ def menu_usuario():
 def busqueda_secuencial_usuario(arfi, arlo, valor):
     arlo.seek(0,0)
     cant_registros = calcular_cant_registros(arfi, arlo)
-    if cant_registros != -1:
+    if cant_registros != 0:
         arlo.seek(0,0)
         i = 1
         registro = usuario()
@@ -1370,6 +1484,7 @@ def menu_login():
     print("╚════════════════════════════════════╝\n")
         
 def login(arfi_usuarios, arlo_usuarios):
+    global logged_user
     intentos = 3
     tamReg = calcular_tamanio_registro(arfi_usuarios,arlo_usuarios)
     menu_login()
@@ -1384,8 +1499,9 @@ def login(arfi_usuarios, arlo_usuarios):
         if posicion !=-1:
             arlo_usuarios.seek(posicion * tamReg,0)
             usuario = pickle.load(arlo_usuarios)
-            if  contrasenia == usuario.clave_usuario: 
-                intentos = 3 
+            if  contrasenia == usuario.clave_usuario:
+                logged_user = usuario
+                intentos = 3
                 tipo_usuario = usuario.tipo_usuario
                 if tipo_usuario == "administrador".ljust(20, " "):
                     menu_administrador()
@@ -1521,6 +1637,7 @@ while opc!= 3:
             mostrar_primer_menu()
             opc = validar_entero()
         case 2:
+            logged_user = usuario()
             login(arfi_usuarios,arlo_usuarios)
             mostrar_primer_menu()
             opc = validar_entero()
