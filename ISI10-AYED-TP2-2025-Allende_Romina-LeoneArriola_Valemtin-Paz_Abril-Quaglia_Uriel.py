@@ -1114,6 +1114,39 @@ def valores_prueba():
     pickle.dump(registro, arlo_vuelos)
     arlo_vuelos.flush()
 
+def consultar_reservas():
+    continuar = "S"
+    while continuar.upper() == "S":
+        cod_reserva = validar_entero()
+        while cod_reserva == -1:
+            print("⚠️  Opción no válida. Debe ser un número entero. Inténtelo nuevamente.")
+            cod_reserva = validar_entero()
+        cod_reserva = int(cod_reserva)
+        
+        tam_arc = os.path.getsize(arfi_reservas)
+        tam_reg = calcular_tamanio_registro(arfi_reservas, arlo_reservas)
+        if cod_reserva*tam_reg >= tam_arc:
+            print("⚠️  No existe una reserva con ese código.")
+        else:
+            reg_reserva = reserva()
+            arlo_reservas.seek(cod_reserva*tam_reg, 0)
+            reg_reserva = pickle.load(arlo_reservas)
+            print("\n====== INFORMACIÓN DE LA RESERVA ======")
+            print(f"Código de reserva: {reg_reserva.cod_reserva}")
+            print(f"Código de usuario: {reg_reserva.cod_usuario}")
+            print(f"Código de vuelo:   {reg_reserva.cod_vuelo}")
+            print(f"Nro de asiento:    {reg_reserva.nro_asiento.strip()}")
+            print(f"Fecha reserva:     {reg_reserva.fecha_reserva}")
+            print(f"Estado:            {reg_reserva.estado_reserva.strip()}")
+            print("=======================================\n")
+
+        continuar = " "
+        while continuar.upper() not in ["S", "N"]:
+            continuar = input("¿Desea consultar otra reserva? S/N: ")
+
+    volver()
+    
+    
 def reservar_vuelos():
     global logged_user
     reg_reserva = reserva()
@@ -1227,7 +1260,7 @@ def gestionar_reservas():
             case 1:
                 reservar_vuelos()
             case 2:
-                en_construccion()
+                consultar_reservas()
             case 3:
                 en_construccion()
             case 4:
