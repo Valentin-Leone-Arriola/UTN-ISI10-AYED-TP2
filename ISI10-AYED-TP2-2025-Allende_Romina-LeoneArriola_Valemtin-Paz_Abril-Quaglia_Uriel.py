@@ -1165,7 +1165,10 @@ def reservar_vuelos():
                     asiento = (fila + "-" + columna)
                     asiento = asiento.ljust(4," ")
                     if reg_vuelo.asientos_vuelo[fila_real][col_real] == "L":
-                        reg_vuelo.asientos_vuelo[fila_real][col_real] =="R"
+                        reg_vuelo.asientos_vuelo[fila_real][col_real] ="R"
+                        arlo_vuelos.seek(tam_reg_vuelo*(cod_vuelo), 0)
+                        pickle.dump(reg_vuelo, arlo_vuelos)
+                        arlo_vuelos.flush()
                         continuar_seleccion = "N"
                         print("Se reservo correctamente el asiento\n")
                         reg_reserva.cod_reserva = int(calcular_cant_registros(arfi_reservas, arlo_reservas))
@@ -1184,7 +1187,7 @@ def reservar_vuelos():
                     else:
                         continuar_seleccion = " "
                         while continuar_seleccion.upper() !="S" and continuar_seleccion.upper() !="N":
-                            continuar_seleccion = input(f"No se encuentra disponible. Desea intentar con otro asiento? S/N (hint: {i}-{j})")
+                            continuar_seleccion = input(f"No se encuentra disponible. Desea intentar con otro asiento? S/N (hint: {i-j})")
             else:
                 print("No hay asientos disponibles")
                 continuar = " "
@@ -1196,7 +1199,7 @@ def reservar_vuelos():
             continuar = " "
             while continuar.upper() !="S" and continuar.upper() !="N":
                 continuar = input("Desea intentar con otro vuelo? S/N\n")
-        volver()
+    volver()
         
         
 
