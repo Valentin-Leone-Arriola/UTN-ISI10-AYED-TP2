@@ -1114,9 +1114,110 @@ def valores_prueba():
     pickle.dump(registro, arlo_vuelos)
     arlo_vuelos.flush()
 
+def ver_historial_compras():
+    continuar = "S"
+    while continuar.upper() == "S":
+        email = input("Ingrese su email de usuario: ").ljust(100, " ")
+        pos_usuario = busqueda_secuencial_usuario(arfi_usuarios, arlo_usuarios, email)
+
+        if pos_usuario == -1:
+            print("⚠️ Usuario no encontrado.")
+        else:
+            tam_reg_usuario = calcular_tamanio_registro(arfi_usuarios, arlo_usuarios)
+            arlo_usuarios.seek(tam_reg_usuario * pos_usuario, 0)
+            reg_usuario = pickle.load(arlo_usuarios)
+            cod_usuario = reg_usuario.cod_usuario
+
+            print("\n====== HISTORIAL DE COMPRAS ======\n")
+            print("CodReserva | CodVuelo | Fecha Reserva |     Origen ===> Destino     |    Fecha    | Hora | Precio")
+            print("-"*95)
+
+            cant_reservas = calcular_cant_registros(arfi_reservas, arlo_reservas)
+            arlo_reservas.seek(0, 0)
+
+            for i in range(cant_reservas):
+                reg_reserva = pickle.load(arlo_reservas)
+                if (reg_reserva.cod_usuario == cod_usuario and
+                    reg_reserva.estado_reserva.strip() == "confirmada"):
+
+                    # Buscar vuelo
+                    tam_reg_vuelo = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
+                    arlo_vuelos.seek(tam_reg_vuelo * reg_reserva.cod_vuelo, 0)
+                    reg_vuelo = pickle.load(arlo_vuelos)
+
+                    print(f"{reg_reserva.cod_reserva:<12} "
+                          f"{reg_vuelo.cod_vuelo:<10} "
+                          f"{reg_reserva.fecha_reserva:<22} "
+                          f"{reg_vuelo.origen_vuelo.strip()} ===> {reg_vuelo.destino_vuelo.strip():<10} "
+                          f"{reg_vuelo.fecha_salida:<13}"
+                          f"{reg_vuelo.hora_salida:<5} "
+                          f"${reg_vuelo.precio_vuelo}")
+            print("-"*95)
+            print("Fin del historial.")  
+        continuar = " "
+        while continuar.upper() not in ["S", "N"]:
+            continuar = input("¿Desea ver para otro usuario? S/N: ")
+    volver()
+
+def cancelar_reserva():
+    continuar = "S"
+    while continuar.upper() == "S":
+        print("Ingrese un codigo de reserva")
+        cod_reserva = validar_entero()
+        while cod_reserva == -1:
+            print("⚠️  Opción no válida. Debe ser un número entero. Inténtelo nuevamente.")
+            cod_reserva = validar_entero()
+        cod_reserva = int(cod_reserva)
+        tam_arc = os.path.getsize(arfi_reservas)
+        tam_reg = calcular_tamanio_registro(arfi_reservas, arlo_reservas)
+        if cod_reserva*tam_reg >= tam_arc:
+            print("⚠️  No existe una reserva con ese código.")
+        else:
+            reg_reserva = reserva()
+            arlo_reservas.seek(cod_reserva*tam_reg, 0)
+            reg_reserva = pickle.load(arlo_reservas)
+            cod_vuelo = reg_reserva.cod_vuelo
+            tam_reg_vuelo = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
+            arlo_vuelos.seek(cod_vuelo * tam_reg_vuelo, 0)
+            reg_vuelo = pickle.load(arlo_vuelos)
+            dt_salida = datetime.strptime(f"{reg_vuelo.fecha_salida} {reg_vuelo.hora_salida}","%d/%m/%Y %H:%M")
+            ahora = datetime.today()
+            diferencia = dt_salida - ahora
+            diferencia_horas = diferencia.days * 24 + diferencia.seconds / 3600  
+            print("Horas hasta salida:", diferencia_horas)
+            
+            if diferencia_horas < 72:
+                print("⚠️ No se puede cancelar. Hay menos de 72 horas faltantes para el vuelo")
+            else:
+                asiento_str = reg_reserva.nro_asiento.strip()   
+                partes = asiento_str.split("-")     
+                fila = int(partes[0])               
+                columna = int(partes[1])            
+                if columna <= 3:
+                    col_real = columna - 1
+                else:
+                    col_real = columna
+                fila_real = fila - 1
+                reg_vuelo.asientos_vuelo[fila_real][col_real] ="L"
+                arlo_vuelos.seek(tam_reg_vuelo*(cod_vuelo), 0)
+                pickle.dump(reg_vuelo, arlo_vuelos)
+                arlo_vuelos.flush()
+                reg_reserva.fecha_reserva = ahora.strftime("%d/%m/%Y")
+                reg_reserva.estado_reserva = "cancelada".ljust(20, " ")
+                arlo_reservas.seek(cod_reserva*tam_reg, 0)
+                pickle.dump(reg_reserva, arlo_reservas)
+                arlo_reservas.flush()
+                print("Reserva cancelada correctamente")
+        continuar = " "
+        while continuar.upper() not in ["S", "N"]:
+            continuar = input("¿Desea cancelar otra reserva? S/N: ")
+    volver()
+    
+    
 def consultar_reservas():
     continuar = "S"
     while continuar.upper() == "S":
+        print("Ingrese un codigo de reserva")
         cod_reserva = validar_entero()
         while cod_reserva == -1:
             print("⚠️  Opción no válida. Debe ser un número entero. Inténtelo nuevamente.")
@@ -1262,7 +1363,7 @@ def gestionar_reservas():
             case 2:
                 consultar_reservas()
             case 3:
-                en_construccion()
+                cancelar_reserva()
             case 4:
                 volver()
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -1439,7 +1540,7 @@ def menu_usuario():
             case 3:
                 gestionar_reservas()
             case 4:
-                en_construccion()
+                ver_historial_compras()
             case 5:
                 ver_arreglo_limitado_pr(novedades, "NOVEDADES DISPONIBLES", ["descripcion", "fecha inicio", "fecha fin"], " ", 0, [1,1], 100)
             case 6:
@@ -1656,7 +1757,7 @@ else:
     user.telefono_usuario = "3413112233".ljust(100, " ")
     pickle.dump(user, arlo_usuarios)
     arlo_usuarios.flush()
-    valores_prueba()
+    
 
 
 mostrar_primer_menu()
