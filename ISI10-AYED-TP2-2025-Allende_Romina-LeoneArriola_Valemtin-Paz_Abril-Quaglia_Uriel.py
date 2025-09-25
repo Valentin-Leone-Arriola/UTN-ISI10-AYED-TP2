@@ -1397,7 +1397,7 @@ def cancelar_reserva():
         cod_reserva = int(cod_reserva)
         tam_arc = os.path.getsize(arfi_reservas)
         tam_reg = calcular_tamanio_registro(arfi_reservas, arlo_reservas)
-        if cod_reserva*tam_reg >= tam_arc:
+        if cod_reserva*tam_reg >= tam_arc or tam_arc == -1:
             print("⚠️  No existe una reserva con ese código.")
         else:
             reg_reserva = reserva()
@@ -1453,7 +1453,7 @@ def consultar_reservas():
         
         tam_arc = os.path.getsize(arfi_reservas)
         tam_reg = calcular_tamanio_registro(arfi_reservas, arlo_reservas)
-        if cod_reserva*tam_reg >= tam_arc:
+        if cod_reserva*tam_reg >= tam_arc or tam_reg == -1:
             print("⚠️  No existe una reserva con ese código.")
         else:
             reg_reserva = reserva()
