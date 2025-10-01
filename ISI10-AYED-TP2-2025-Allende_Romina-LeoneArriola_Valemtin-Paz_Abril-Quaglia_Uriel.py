@@ -1591,21 +1591,13 @@ def ver_vuelos_limitado(fecha_desde, fecha_hasta, origen, destino):
     cant_vuelos = calcular_cant_registros(arfi_vuelos, arlo_vuelos)
     arlo_vuelos.seek(0,0)
     tam_reg_aerolinea = calcular_tamanio_registro(arfi_aerolineas, arlo_aerolineas)
-    print(cant_vuelos)
+    fecha_desde = datetime.strptime(fecha_desde, "%d/%m/%Y")
+    fecha_hasta = datetime.strptime(fecha_hasta, "%d/%m/%Y")
     while i <= cant_vuelos:
         reg_vuelo = pickle.load(arlo_vuelos)
         if reg_vuelo.estado_vuelo == "A":
             fecha_vuelo = datetime.strptime(reg_vuelo.fecha_salida, "%d/%m/%Y")
-            fecha_desde = datetime.strptime(fecha_desde, "%d/%m/%Y")
-            fecha_desde = datetime.strptime(fecha_desde, "%d/%m/%Y")
-            print(fecha_vuelo)
-            print(fecha_actual)
-            print(fecha_desde)
-            print(fecha_hasta)
             if fecha_vuelo > fecha_actual and fecha_vuelo >= fecha_desde and fecha_vuelo <= fecha_hasta:
-                print("paso")
-                print(reg_vuelo.origen_vuelo.strip())
-                print(reg_vuelo.origen_vuelo.strip())
                 if reg_vuelo.origen_vuelo.strip() == origen.upper() and reg_vuelo.destino_vuelo.strip() == destino.upper():
                     cont = cont + 1   
                     cod_aerolinea = reg_vuelo.cod_aerolinea
