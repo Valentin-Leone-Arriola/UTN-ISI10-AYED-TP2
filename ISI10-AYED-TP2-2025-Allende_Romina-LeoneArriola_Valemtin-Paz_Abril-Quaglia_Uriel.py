@@ -54,10 +54,7 @@ def en_construccion():
 def volver():
     input("Regresando al menu anterior. Presione enter para continuar")
     os.system('cls')
-    
-""" def add_item(arreglo, valores_fila, posicion): #funcion general para agregar los valores de una fila a toda una fila de cualquier arreglo
-    for i in range(len(valores_fila)): #[0-1-2]
-        arreglo[posicion][i] = valores_fila[i] """ 
+
         
 def pedir_fecha_valida():
     fecha_aux = input("Ingrese la fecha en formato dd/mm/aaaa: ")
@@ -1326,14 +1323,9 @@ def menu_ceo():
 
 
 
-
-
-
-
-
 #--------------------------MENU USUARIO---------------------------------------------
 
-def valores_prueba():
+""" def valores_prueba():
     global ASIENTOS_POR_AVION
     #aerolinea 1
     registro = aerolinea()
@@ -1426,7 +1418,7 @@ def valores_prueba():
     registro.precio_vuelo = 10.5
     arlo_vuelos.seek(0,2)
     pickle.dump(registro, arlo_vuelos)
-    arlo_vuelos.flush()
+    arlo_vuelos.flush() """
 
 def ver_historial_compras():
     continuar = "S"
