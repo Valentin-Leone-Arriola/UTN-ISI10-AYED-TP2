@@ -280,6 +280,83 @@ def busqueda_secuencial_aerolinea_cod(arfi, arlo, valor):
     else:
         return -1
     
+def aero_en_uso_y_con_reservas(cod_aero):
+    global arlo_vuelos
+    global arfi_vuelos
+    global arlo_reservas
+    global arfi_reservas
+    en_uso = False
+    tiene_reservas = False
+    
+    if os.path.getsize(arfi_vuelos) > 0:
+        arlo_vuelos.seek(0,0)
+        while arlo_vuelos.tell() < os.path.getsize(arfi_vuelos):
+            vuelo = pickle.load(arlo_vuelos)
+            if vuelo.cod_aerolinea.strip() == cod_aero.strip(): #si el vuelo pertenece a la aerolinea
+                en_uso = True #como esta en uso
+                codigo_vuelo = vuelo.cod_vuelo
+                if os.path.getsize(arfi_reservas) > 0:
+                    arlo_reservas.seek(0,0)
+                    fin_reservas = False
+                    while arlo_reservas.tell() < os.path.getsize(arfi_reservas) and not fin_reservas:
+                        reserva = pickle.load(arlo_reservas)
+                        if reserva.cod_vuelo.strip() == codigo_vuelo and reserva.estado_reserva == "confirmada":
+                            tiene_reservas == True
+                            fin_reservas = True
+
+    return en_uso, tiene_reservas
+
+"""def buscarSecuenCOD_VUELOS(cod):
+    global arfi_vuelos
+    global arlo_vuelos
+    
+    Tam_Ar = os.path.getsize(arfi_vuelos)
+    arlo_vuelos.seek(0,0)  # inicio del archivo
+    
+    while arlo_vuelos.tell() < Tam_Ar:
+        pos = arlo_vuelos.tell()           # posición del registro actual
+        vuelo = pickle.load(arlo_vuelos)
+        codAero = vuelo.cod_aerolinea.rstrip()
+        
+        if codAero == cod:
+            return pos  # encontrado
+    
+    return -1  # no se encontró"""
+ 
+def buscarSecuenCOD(cod):
+    global arfi_aerolineas
+    global arlo_aerolineas
+    
+    Tam_Ar = os.path.getsize(arfi_aerolineas)
+    arlo_aerolineas.seek(0,0)  # inicio del archivo
+    
+    while arlo_aerolineas.tell() < Tam_Ar:
+        pos = arlo_aerolineas.tell()           # posición del registro actual
+        aerolinea = pickle.load(arlo_aerolineas)
+        codAero = aerolinea.cod_aerolinea.rstrip()
+        
+        if codAero == cod:
+            return pos  # encontrado
+    
+    return -1  # no se encontró
+ 
+def buscarSecuenAerolinea(nom):
+    global arfi_aerolineas
+    global arlo_aerolineas
+    
+    Tam_Ar = os.path.getsize(arfi_aerolineas)
+    arlo_aerolineas.seek(0,0)  # inicio del archivo
+    
+    while arlo_aerolineas.tell() < Tam_Ar:
+        pos = arlo_aerolineas.tell()           # posición del registro actual
+        aerolinea = pickle.load(arlo_aerolineas)
+        nombreAero = aerolinea.nombre_aerolinea.rstrip()
+        
+        if nombreAero == nom:
+            return pos  # encontrado
+    
+    return -1  # no se encontró
+    
     
 def busqueda_secuencial (arreglo, elemento_buscado, columna):
     cant_filas = len(arreglo)
@@ -563,59 +640,149 @@ def ver_vuelos2():
     print("-"*130)
     print(f"Total de vuelos: {cont}")
     volver()
-#-------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+def listarAerolineas():
+    global arlo_aerolineas
+    global arfi_aerolineas
+    registro = aerolinea()
+    if os.path.getsize(arfi_aerolineas) == 0:
+        print("No hay aerolíneas registradas.")
+        return
+    arlo_aerolineas.seek(0, 0)
+    print("================ AEROLINEAS ACTIVAS ==================")
+    print("\nCÓDIGO   NOMBRE    CÓD-IATA     PAIS    DESCRIPCIÓN")
+    print("======================================================")
+    while arlo_aerolineas.tell() < os.path.getsize(arfi_aerolineas):
+        registro = pickle.load(arlo_aerolineas)
+        if registro.baja == "N":
+            print(f"{registro.cod_aerolinea:<8}{registro.nombre_aerolinea.strip():<13}{registro.cod_IATA.strip():<13}{registro.cod_pais.strip():<8}{registro.descripcion_aerolinea.strip():<30}")
 
+
+def eliminar_aero():
+    global arfi_aerolineas
+    global arlo_aerolineas
+    registro = aerolinea()
+
+    if os.path.getsize(arfi_aerolineas) == 0:
+        print("Archivo vacio. No hay aerolineas cargadas")
+        return
+
+    cod = input("Ingrese código de aerolínea a eliminar ('*' para salir): ")
+    while cod != "*" :
+        arlo_aerolineas.seek(0, 0)
+        while arlo_aerolineas.tell() < os.path.getsize(arfi_aerolineas):
+            p = arlo_aerolineas.tell() #se guarda la pos actual antes de leer
+            registro = pickle.load(arlo_aerolineas) #leemos un reg (aerolinea)
+
+            if registro.cod_aerolinea.rstrip() == cod:
+                if registro.baja == "N" : #si la aero esta activa 
+                    en_uso, con_reservas =  aero_en_uso_y_con_reservas(cod)
+                    if not en_uso:
+                        print("la aerolinea no tiene vuelos cargados, puede darse de baja") #se puede eliminar
+                        opc = input("seguro que quiere eliminar la aerolinea, (S/N) : ")
+                        opc = opc.upper()
+                        while opc != 'S' and opc != 'N':
+                            opc = input("opcion invalida, por favor seleccione S o N: ")
+                            opc = opc.upper()
+                        if opc == 'S':
+                            registro.baja = "S" #se dio de baja la aerolinea
+                            arlo_aerolineas.seek(p,0)
+                            pickle.dump(registro, arlo_aerolineas)
+                            arlo_aerolineas.flush()   
+                            print("✅ Aerolinea eliminada.")
+                    elif not con_reservas:
+                        print("la aerolinea tiene vuelos, pero sin reservas confirmadas") # tmb se puede eliminar
+                        opc = input("seguro que quiere eliminar la aerolinea, (S/N) : ")
+                        opc = opc.upper()
+                        while opc != 'S' and opc != 'N':
+                            opc = input("opcion invalida, por favor seleccione S o N: ")
+                            opc = opc.upper()
+                        if opc == 'S':
+                            registro.baja = "S" #se dio de baja la aerolinea
+                            arlo_aerolineas.seek(p,0)
+                            pickle.dump(registro, arlo_aerolineas)
+                            arlo_aerolineas.flush()   
+                            print("✅ Aerolinea eliminada.")
+                    else:
+                        print("la aerolinea tiene vuelos y reservas confirmadas, No se puede eliminar") #no se puede eliminar
+                    
+                else: 
+                    print("La aerolinea ya se encuentra eliminada")
+
+        cod = input("Ingrese código de aerolínea a eliminar ('*' para salir): ")
+    
+    listarAerolineas()
+    volver()
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def modificar_aereo(): 
-    global aerolineas
-    os.system('cls')
-    
-    codigo = input("Ingrese el código de la aerolínea que desea modificar (Presione enter para salir): ")
+    global arfi_aerolineas
+    global arlo_aerolineas
+    registro = aerolinea()
 
-    while codigo != "":
-        pos = busqueda_secuencial(aerolineas, codigo, 0)
+    if os.path.getsize(arfi_aerolineas) == 0:
+        print("Archivo vacio. No hay aerolineas cargadas")
+        return
 
-        if pos == -1:
-            print("⚠️ No se encontró ninguna aerolínea con ese código.")
-        else:
-            os.system('cls')
-            print(f"Aerolínea actual:\nCódigo: {aerolineas[pos][0]}\nNombre: {aerolineas[pos][1]}\nCódigo IATA: {aerolineas[pos][2]}\nDescripción: {aerolineas[pos][3]}\nPaís: {aerolineas[pos][4]}")
-            print()
-            print("Seleccione qué desea modificar:")
-            print("1. Nombre ✏️")
-            print("2. Código IATA 🛫")
-            print("3. Descripción 📝")
-            print("4. País 🌍")
-            print("5. Volver 🔙")
-            opcion = validar_entero()
+    cod = input("Ingrese código de aerolínea a modificar ('*' para salir): ")
+    while cod != "*" :
+        arlo_aerolineas.seek(0, 0)
+        while arlo_aerolineas.tell() < os.path.getsize(arfi_aerolineas):
+            p = arlo_aerolineas.tell() #se guarda la pos actual antes de leer
+            registro = pickle.load(arlo_aerolineas) #leemos un reg(aerolinea)
 
-            while opcion < 1 or opcion > 5:
-                print("⚠️  Opción no válida. Inténtelo nuevamente.")
+            if registro.cod_aerolinea.rstrip() == cod and registro.baja == "N":
+                os.system('cls')
+                print(f"Aerolínea actual:\nCódigo: {registro.cod_aerolinea}\nNombre: {registro.nombre_aerolinea}\nCódigo IATA: {registro.cod_IATA}\nDescripción: {registro.descripcion_aerolinea}\nPaís: {registro.cod_pais}")
+                print()
+                print("Seleccione qué desea modificar:")
+                print("1. Nombre ✏️")
+                print("2. Código IATA 🛫")
+                print("3. Descripción 📝")
+                print("4. País 🌍")
+                print("5. Volver 🔙")
                 opcion = validar_entero()
 
-            if opcion == 1:
-                nuevo_nombre = input("Ingrese el nuevo nombre: ")
-                aerolineas[pos][1] = nuevo_nombre
-            elif opcion == 2:
-                nuevo_iata = pedir_codigo_IATA()
-                aerolineas[pos][2] = nuevo_iata
-            elif opcion == 3:
-                nueva_descripcion = input("Ingrese la nueva descripción: ")
-                aerolineas[pos][3] = nueva_descripcion
-            elif opcion == 4:
-                nuevo_pais = pedir_codigo_pais()
-                aerolineas[pos][4] = nuevo_pais
-            else:
-                volver()
+                while opcion < 1 or opcion > 5:
+                    print("⚠️  Opción no válida. Inténtelo nuevamente.")
+                    opcion = validar_entero()
 
-            input("✅ Modificación realizada (o cancelada). Presione Enter para continuar...")
+                match opcion:
+                    case 1:
+                        nuevo_nombre = str(input("Ingrese el nuevo nombre (max. 100 caracteres): "))
+                        while len(nuevo_nombre) > 100:
+                            print("solo 100 caracteres")
+                            nuevo_nombre = str(input("Ingrese el nuevo nombre (max. 100 caracteres): "))
+                        if len(nuevo_nombre) < 100:
+                            registro.nombre_aerolinea = nuevo_nombre.ljust(100, " ")
+                    case 2:
+                        nuevo_iata = pedir_codigo_IATA()
+                        registro.cod_IATA = nuevo_iata.ljust(3, " ")
+                    case 3:
+                        nueva_descripcion = str(input("Ingrese la nueva descripción (max. 200 caracteres): "))
+                        while len(nueva_descripcion) > 200:
+                            print("solo 200 caracteres")
+                            nueva_descripcion = str(input("Ingrese la nueva descripción (max. 200 caracteres): "))
+                        if len(nueva_descripcion) < 200:
+                            registro.descripcion_aerolinea = nueva_descripcion.ljust(200, " ")
+                    case 4:
+                        nuevo_pais = pedir_codigo_pais()
+                        registro.cod_pais = nuevo_pais.ljust(3, " ")
+                    case 5:
+                        volver()
+
+                if  opcion != 5 and opcion != " ":
+                    arlo_aerolineas.seek(p, 0)
+                    pickle.dump(registro, arlo_aerolineas)
+                    arlo_aerolineas.flush()   
+                    input("✅ Modificación realizada (o cancelada). Presione Enter para continuar...")
 
         os.system('cls')
-        codigo = input("Ingrese otro código de aerolínea a modificar (Presione enter para salir): ")
+        cod = input("Ingrese código de aerolínea a modificar ('*' para salir): ")
 
     os.system('cls')
     volver()
-
+#-------------------------------------------------------------------------------------------------------------------------
 def pedir_codigo_pais():
     print("\nCodigo de pais:")
     print('- "ARG"')
@@ -647,54 +814,48 @@ def pedir_codigo_aerolinea():
         codigo = input("Ingrese código de la aerolinea: ")
     return codigo
 
+
 def crear_aereo():
-    global aerolineas
-    nombre_aereo = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
-    cantidad_aereo =  busqueda_secuencial(aerolineas,"",0)
-    contadores = [0]*3
-    paises = ["ARG", "BRA", "CHI"]
-    if cantidad_aereo == -1:
-        input("\nYa no se pueden cargar mas aerolíneas. Presione enter para continuar")
-        nombre_aereo = ""
-    else:
-        while nombre_aereo != "" and cantidad_aereo < 5:
-            codigo_nuevo = pedir_codigo_aerolinea()
-            nro = busqueda_secuencial(aerolineas, codigo_nuevo, 0)
+    registro = aerolinea()
+ 
+    nombre = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
+    while nombre != "":
+        pos = buscarSecuenAerolinea(nombre) 
+
+        while pos != -1 and nombre != "": 
+            print("\n Este Nombre de aerolinea ya existe. Intente con otro. ")
+            nombre = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
+            pos = buscarSecuenAerolinea(nombre)
+
+        if nombre != "":
+            nro = -2
             while nro != -1:
-                print("Ese código de aerolínea ya existe. Intente con otro.")
-                codigo_nuevo = pedir_codigo_aerolinea()
-                nro = busqueda_secuencial(aerolineas, codigo_nuevo, 0)
-            aerolineas[cantidad_aereo][0]=codigo_nuevo
-            aerolineas[cantidad_aereo][1]=nombre_aereo
-            aerolineas[cantidad_aereo][2] = pedir_codigo_IATA()
-            aerolineas[cantidad_aereo][3]= input("Ingrese la descripcion del vuelo: ")
-            codigo_pais = pedir_codigo_pais()
-            aerolineas[cantidad_aereo][4]=codigo_pais
+                codigo = pedir_codigo_aerolinea()
+                nro = buscarSecuenCOD(codigo) 
+                if nro != -1:
+                    print("Ese código de aerolínea ya existe. Intente con otro.")
+            arlo_aerolineas.seek(0,2)
+            registro.nombre_aerolinea = nombre.ljust(100, " ")
+            cod_aero = codigo
+            registro.cod_aerolinea = cod_aero.ljust(5, " ")
+            cod_iata = pedir_codigo_IATA()
+            registro.cod_IATA = cod_iata.ljust(3, " ")
+            codigo_pais =  pedir_codigo_pais()
+            registro.cod_pais = codigo_pais.ljust(3, " ")
+            desc = input("Ingrese la descripcion de la aerolinea: ")
+            registro.descripcion_aerolinea = desc.ljust(200, " ")
+            registro.baja = "N" # DADO DE BAJA? N-NO/S-SI
+
+            arlo_aerolineas.seek(0,2)
+            pickle.dump(registro, arlo_aerolineas)
+            arlo_aerolineas.flush()
+            print(f">> Aerolínea creada >>")
 
             os.system('cls')
-            cantidad_aereo = cantidad_aereo+1
-            nombre_aereo =input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
-    
-    for i in range(0,5):#es necesario recorrer ya que el admin puede registrar una aerolinea, irse y despues registrar otra.
-        match aerolineas[i][4]:
-            case "ARG":
-                contadores[0]=contadores[0]+1
-            case "BRA":
-                contadores[1]=contadores[1]+1
-            case "CHI":
-                contadores[2]=contadores[2]+1
-    
-    
-    if contadores[0] == contadores[1] == contadores[2]:
-        print("Los tres codigos (ARG, CHI y BRA) tienen la misma cantidad de aerolineas cargadas:", contadores[0])
-        print("")
-    else:
-        menor=obtener_pos_menor(contadores)
-        mayor=obtener_pos_mayor(contadores)
-        print("")
-        print("Mayor:", paises[mayor],"con una cantidad de aerolineas cargadas de", contadores[mayor])
-        print("Menor:", paises[menor],"con una cantidad de aerolineas cargada de", contadores[menor])
-        print("")
+            nombre = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
+            pos = buscarSecuenAerolinea(nombre)
+
+    listarAerolineas()
     volver()
 
 
@@ -708,6 +869,7 @@ def mostrar_menu_gestion_aereo():
     print("4) Volver al Menú Principal 🔙")
 
 def menu_gestion_aereo(): #menu 1
+
     opc = -1
     while opc != 4:
         mostrar_menu_gestion_aereo()
@@ -724,7 +886,7 @@ def menu_gestion_aereo(): #menu 1
             case 2:
                 modificar_aereo()
             case 3:
-                en_construccion()
+                eliminar_aero()
             case 4:
                 volver()
 
@@ -1878,6 +2040,7 @@ class aerolinea:
         self.cod_IATA = " "
         self.descripcion_aerolinea = " "
         self.cod_pais = " "
+        self.baja = " "
         
 class vuelo:
     def __init__(self):
