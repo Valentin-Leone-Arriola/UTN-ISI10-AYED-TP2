@@ -241,7 +241,7 @@ def busqueda_secuencial_aerolinea(arfi, arlo, valor):
     else:
         return -1
 
-def busqueda_secuencial_resrvas(arfi, arlo, valor1, valor2):
+def busqueda_secuencial_reservas(arfi, arlo, valor1, valor2):
     arlo.seek(0,0)
     cant_registros = calcular_cant_registros(arfi, arlo)
     if cant_registros != 0:
@@ -519,7 +519,7 @@ def menu_novedades():
     os.system('cls')
 
 
-def ver_vuelos2():
+def ver_vuelos():
     global ASIENTOS_POR_AVION
     print("\n") 
     print("="*130)
@@ -750,8 +750,8 @@ def crear_aereo():
         if nombre != "":
             nro = -2
             while nro != -1:
-                codigo = pedir_codigo_aerolinea()
-                nro = buscarSecuenCOD(codigo) 
+                codigo = pedir_codigo_aerolinea().ljust(5," ")
+                nro = busqueda_secuencial_aerolinea(arfi_aerolineas, arlo_aerolineas, codigo) 
                 if nro != -1:
                     print("Ese código de aerolínea ya existe. Intente con otro.")
             arlo_aerolineas.seek(0,2)
@@ -771,7 +771,6 @@ def crear_aereo():
             arlo_aerolineas.flush()
             print(f">> Aerolínea creada >>")
 
-            os.system('cls')
             nombre = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
             pos = buscarSecuenAerolinea(nombre)
 
@@ -999,7 +998,7 @@ def eliminar_vuelo():
                 if registro.estado_vuelo == "A":
                     
                     estado = "confirmada"
-                    reservado = busqueda_secuencial_resrvas(arfi_reservas, arlo_reservas, cod_vu, estado)
+                    reservado = busqueda_secuencial_reservas(arfi_reservas, arlo_reservas, cod_vu, estado)
                     if reservado == -1 :
                         
                         opc = input("seguro que quiere eliminar el vuelo, (S/N) : ")
@@ -1153,49 +1152,7 @@ def modificar_vuelo():
             volver()    
     os.system('cls')        
     
-   
 
-def listar_vuelos_aerolineas():
-    global vuelos, aerolineas, CANTIDAD_VUELOS, CANTIDAD_AEROLINEAS
-    fecha_actual = datetime.today()
-    vuelos_por_aerolinea = [[i, 0] for i in range(CANTIDAD_AEROLINEAS)]
-
-    i = 0
-    while i < CANTIDAD_VUELOS and vuelos[i][0] != "":
-        if vuelos[i][5]=="A":
-            fecha_vuelo = datetime.strptime(vuelos[i][3], "%d/%m/%Y")
-            if fecha_vuelo > fecha_actual:
-                cod_aerolinea = vuelos[i][0]
-                pos = busqueda_secuencial(aerolineas, cod_aerolinea, 0)
-                if pos != -1:
-                    vuelos_por_aerolinea[pos][1] += 1
-        i += 1
-
-    ordenar_burbuja_desc(vuelos_por_aerolinea, 1, 2)
-
-    print("\n" + "="*60)
-    print("REPORTE DE VUELOS --VIGENTES-- POR AEROLINEA")
-    print("="*60)
-    print(f"{'POSICION':<10}{'AEROLINEA':<30}{'CANTIDAD DE VUELOS'}")
-    print("-" * 60)
-
-    total = 0
-    i = 0
-    while i < CANTIDAD_AEROLINEAS and aerolineas[i][0] != "":
-        pos_aero = vuelos_por_aerolinea[i][0]
-        nombre = aerolineas[pos_aero][1]
-        cantidad = vuelos_por_aerolinea[i][1]
-        print(f"{i:<10}{nombre:<30}{cantidad}")
-        total += cantidad
-        i += 1
-
-    print("-" * 60)
-    print(f"TOTAL DE VUELOS VIGENTES: {total}")
-    
-    if i > 0:
-        print(f"Aerolínea con MAYOR cantidad de vuelos: {aerolineas[vuelos_por_aerolinea[0][0]][1]} ({vuelos_por_aerolinea[0][1]})") #la aerolinea que se encuentra en la primer posicion del arreglo ordenado de forma descendente y su cantidad
-        print(f"Aerolínea con MENOR cantidad de vuelos: {aerolineas[vuelos_por_aerolinea[i - 1][0]][1]} ({vuelos_por_aerolinea[i - 1][1]})") #la aerolinea que se encuentra en la ultima posicion no "vacia" del arreglo ordenado de forma descendente y su cantidad
-    
     
 def crear_vuelo():
     
@@ -1274,7 +1231,7 @@ def menu_gestion_vuelos():
             print("Desea ver los vuelos cargados hasta el momento? 1-Si 2-No")
             mostrar = validar_entero()
         if mostrar == 1:
-            ver_vuelos2()
+            ver_vuelos()
 
         match opc:
             case 1:
@@ -1982,8 +1939,6 @@ def cargarNovedades(novedades):
 
 novedades = [[""] * 4 for i in range(3)] #no dice en ningun lado hasta cuantas novedades pueden ser
 cargarNovedades(novedades)
-CANTIDAD_AEROLINEAS = 5
-aerolineas = [[""] * 5 for i in range(int(CANTIDAD_AEROLINEAS))]
 ASIENTOS_POR_AVION = 240
 
 class usuario:
