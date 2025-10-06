@@ -415,39 +415,6 @@ def menu_report ():
             case 4:
                 volver()
 
-""" def ver_novedades(novedades):
-    print("╔═══════════════════════════════════════╗")
-    print("║    📑  NOVEDADES DISPONIBLES  📑      ║")
-    print("╚═══════════════════════════════════════╝\n")
-    
-    print()
-    print(f"{'N°':<4} {'Descripcion':<100} {'Desde':<12} {'Hasta':<12}")
-    print("-" * 130)
-
-    i = 0
-    while i < len(novedades) and novedades[i][0] != "":
-        descripcion = novedades[i][0]
-        desde = novedades[i][1]
-        hasta = novedades[i][2]
-
-        print(f"{i+1:<4} {descripcion:<100} {desde:<12} {hasta:<12}")
-        i += 1
-    print("-" * 130)
-    print()
-    return i """
-
-
-""" def validar_codigo(): #DE LA NOVEDAD
-    nuevo_codigo = -1
-    while nuevo_codigo <0:
-        nuevo_codigo = input("Ingrese el nuevo codigo (DEBE SER ENTERO POSITIVO, 0 PARA SALIR)\n")
-        if nuevo_codigo.isdigit():
-            nuevo_codigo = int(nuevo_codigo)
-        else:
-            nuevo_codigo = -1
-            print("El codigo debe ser un numero entero positivo")
-    os.system('cls')
-    return nuevo_codigo """
 
 def mostrar_menu_editar_nov():
     print("╔══════════════════════════════════════╗")
@@ -553,50 +520,6 @@ def menu_novedades():
             case 5:
                 volver()
     os.system('cls')
-
-
-
-def ver_vuelos():
-    global ASIENTOS_POR_AVION
-    print("\n") 
-    print("="*120)
-    print("LISTADO DE VUELOS DISPONIBLES EN EL SISTEMA".center(100))
-    print("="*120)
-    print("\n")
-    print("CÓDIGO   AEROLÍNEA                    ORIGEN           DESTINO        FECHA        HORA     PRECIO    CANTIDAD ASIENTOS")
-    print("-"*120)
-    fecha_actual = datetime.today()
-    i = 1
-    cont = 0
-    reg_vuelo = vuelo()
-    reg_aerolinea = aerolinea()
-    cant_vuelos = calcular_cant_registros(arfi_vuelos, arlo_vuelos)
-    arlo_vuelos.seek(0,0)
-    tam_reg_aerolinea = calcular_tamanio_registro(arfi_aerolineas, arlo_aerolineas)
-    while i <= cant_vuelos:
-        reg_vuelo = pickle.load(arlo_vuelos)
-        if reg_vuelo.estado_vuelo == "A":
-            fecha_vuelo = datetime.strptime(reg_vuelo.fecha_salida, "%d/%m/%Y")
-            if fecha_vuelo > fecha_actual:
-                cont = cont + 1   
-                cod_aerolinea = reg_vuelo.cod_aerolinea
-                pos_aerolinea = busqueda_secuencial_aerolinea(arfi_aerolineas, arlo_aerolineas, cod_aerolinea)
-                arlo_aerolineas.seek(tam_reg_aerolinea*pos_aerolinea,0)
-                reg_aerolinea = pickle.load(arlo_aerolineas)
-                cantidad_asientos = 0
-                for j in range(int(ASIENTOS_POR_AVION/6)):
-                    for k in range(3): #lectura hasta pasillo
-                        if reg_vuelo.asientos_vuelo[j][k] == "L":
-                            cantidad_asientos = cantidad_asientos + 1
-                    for k in range(4,7): #lectura dsp pasillo
-                        if reg_vuelo.asientos_vuelo[j][k] == "L":
-                            cantidad_asientos = cantidad_asientos + 1
-                print(f"{reg_vuelo.cod_vuelo:<8}{reg_aerolinea.nombre_aerolinea.strip():<30}{reg_vuelo.origen_vuelo.strip():<16}{reg_vuelo.destino_vuelo.strip():<16}{reg_vuelo.fecha_salida:<12}{reg_vuelo.hora_salida:<10}${reg_vuelo.precio_vuelo:<15}{cantidad_asientos:<5}") 
-               
-        i += 1
-    print("-"*120)
-    print(f"Total de vuelos: {cont}")
-    volver()
 
 
 def ver_vuelos2():
@@ -1300,12 +1223,14 @@ def crear_vuelo():
             registro.cod_vuelo = cod_vu
             origen = input("ingrese el origen del vuelo: ")
             while len(origen) > 50:
-                origen =input("por favor no mas de 50 caracteres, ingrese el origen nuevamente: ")               
+                origen =input("por favor no mas de 50 caracteres, ingrese el origen nuevamente: ")  
+            origen = origen.upper()             
             registro.origen_vuelo = origen.ljust(50, " ")
             destino = input("ingrese el destino del vuelo: ")
             while len(destino) > 50:
                 destino = input("por favor no mas de 50 caracteres, ingrese el destino nuevamente: ")
-            registro.destino_vuelo = destino.ljust(50, " ") 
+            destino = destino.upper() 
+            registro.destino_vuelo = destino.ljust(50, " ")
             fecha = pedir_fecha_valida() 
             registro.fecha_salida = fecha.ljust(10, " ") 
             hora = validar_hora()
@@ -1434,8 +1359,8 @@ def valores_prueba():
     registro = vuelo()
     registro.cod_aerolinea ="GOL".ljust(5, " ")
     registro.cod_vuelo = 0
-    registro.destino_vuelo = "Buenos Aires".ljust(50, " ")
-    registro.origen_vuelo = "Santiago".ljust(50, " ")
+    registro.destino_vuelo = "Buenos Aires".ljust(50, " ").upper()
+    registro.origen_vuelo = "Santiago".ljust(50, " ").upper()
     for i in range(int(ASIENTOS_POR_AVION/6)):
         for k in range(3): #carga hasta pasillo
             registro.asientos_vuelo[i][k] = random.choice(["L", "O", "R"])
@@ -1452,8 +1377,8 @@ def valores_prueba():
     registro = vuelo()
     registro.cod_aerolinea = "GOL".ljust(5, " ")
     registro.cod_vuelo = 1
-    registro.destino_vuelo = "Santiago".ljust(50, " ")
-    registro.origen_vuelo = "Mendoza".ljust(50, " ")
+    registro.destino_vuelo = "Santiago".ljust(50, " ").upper()
+    registro.origen_vuelo = "Mendoza".ljust(50, " ").upper()
     for i in range(int(ASIENTOS_POR_AVION/6)):
         for k in range(3): #carga hasta pasillo
             registro.asientos_vuelo[i][k] = random.choice(["L", "O", "R"])
@@ -1470,8 +1395,8 @@ def valores_prueba():
     registro = vuelo()
     registro.cod_aerolinea = "AARG".ljust(5," ")
     registro.cod_vuelo = 2
-    registro.destino_vuelo = "Rosario".ljust(50, " ")
-    registro.origen_vuelo = "Cordoba".ljust(50, " ")
+    registro.destino_vuelo = "Rosario".ljust(50, " ").upper()
+    registro.origen_vuelo = "Cordoba".ljust(50, " ").upper()
     for i in range(int(ASIENTOS_POR_AVION/6)):
         for k in range(3): #carga hasta pasillo
             registro.asientos_vuelo[i][k] = random.choice(["L", "O", "R"])
@@ -1488,8 +1413,8 @@ def valores_prueba():
     registro = vuelo()
     registro.cod_aerolinea = "AARG".ljust(5," ")
     registro.cod_vuelo = 3
-    registro.destino_vuelo = "Salta".ljust(50, " ")
-    registro.origen_vuelo = "Buenos Aires".ljust(50, " ")
+    registro.destino_vuelo = "Salta".ljust(50, " ").upper()
+    registro.origen_vuelo = "Buenos Aires".ljust(50, " ").upper()
     for i in range(int(ASIENTOS_POR_AVION/6)):
         for k in range(3): #carga hasta pasillo
             registro.asientos_vuelo[i][k] = random.choice(["L", "O", "R"])
@@ -1544,8 +1469,8 @@ def ver_historial_compras():
             print("-"*95)
             print("Fin del historial.")  
         continuar = " "
-        while continuar.upper() not in ["S", "N"]:
-            continuar = input("¿Desea ver para otro usuario? S/N: ")
+        while continuar.upper() !="S" and continuar.upper() !="N":
+            continuar = input("Desea continuar? S/N\n")
     volver()
 
 def cancelar_reserva():
@@ -1598,8 +1523,8 @@ def cancelar_reserva():
                 arlo_reservas.flush()
                 print("Reserva cancelada correctamente")
         continuar = " "
-        while continuar.upper() not in ["S", "N"]:
-            continuar = input("¿Desea cancelar otra reserva? S/N: ")
+        while continuar.upper() !="S" and continuar.upper() !="N":
+            continuar = input("Desea continuar? S/N\n")
     volver()
     
     
@@ -1631,8 +1556,8 @@ def consultar_reservas():
             print("=======================================\n")
 
         continuar = " "
-        while continuar.upper() not in ["S", "N"]:
-            continuar = input("¿Desea consultar otra reserva? S/N: ")
+        while continuar.upper() !="S" and continuar.upper() !="N":
+            continuar = input("Desea continuar? S/N\n")
 
     volver()
     
@@ -1811,10 +1736,54 @@ def  buscar_asientos():
         if continuar.upper() != "S":
             volver()
 
-
+def ver_vuelos_limitado(fecha_desde, fecha_hasta, origen, destino):
+    global ASIENTOS_POR_AVION
+    print("\n") 
+    print("="*120)
+    print("LISTADO DE VUELOS DISPONIBLES EN EL SISTEMA".center(100))
+    print("="*120)
+    print("\n")
+    print("CÓDIGO   AEROLÍNEA                    ORIGEN           DESTINO        FECHA        HORA     PRECIO    CANTIDAD ASIENTOS")
+    print("-"*120)
+    fecha_actual = datetime.today()
+    i = 1
+    cont = 0
+    reg_vuelo = vuelo()
+    reg_aerolinea = aerolinea()
+    cant_vuelos = calcular_cant_registros(arfi_vuelos, arlo_vuelos)
+    arlo_vuelos.seek(0,0)
+    tam_reg_aerolinea = calcular_tamanio_registro(arfi_aerolineas, arlo_aerolineas)
+    fecha_desde = datetime.strptime(fecha_desde, "%d/%m/%Y")
+    fecha_hasta = datetime.strptime(fecha_hasta, "%d/%m/%Y")
+    while i <= cant_vuelos:
+        reg_vuelo = pickle.load(arlo_vuelos)
+        if reg_vuelo.estado_vuelo == "A":
+            fecha_vuelo = datetime.strptime(reg_vuelo.fecha_salida, "%d/%m/%Y")
+            if fecha_vuelo > fecha_actual and fecha_vuelo >= fecha_desde and fecha_vuelo <= fecha_hasta:
+                if reg_vuelo.origen_vuelo.strip() == origen.upper() and reg_vuelo.destino_vuelo.strip() == destino.upper():
+                    cont = cont + 1   
+                    cod_aerolinea = reg_vuelo.cod_aerolinea
+                    pos_aerolinea = busqueda_secuencial_aerolinea(arfi_aerolineas, arlo_aerolineas, cod_aerolinea)
+                    arlo_aerolineas.seek(tam_reg_aerolinea*pos_aerolinea,0)
+                    reg_aerolinea = pickle.load(arlo_aerolineas)
+                    cantidad_asientos = 0
+                    for j in range(int(ASIENTOS_POR_AVION/6)):
+                        for k in range(3): #lectura hasta pasillo
+                            if reg_vuelo.asientos_vuelo[j][k] == "L":
+                                cantidad_asientos = cantidad_asientos + 1
+                        for k in range(4,7): #lectura dsp pasillo
+                            if reg_vuelo.asientos_vuelo[j][k] == "L":
+                                cantidad_asientos = cantidad_asientos + 1
+                    print(f"{reg_vuelo.cod_vuelo:<8}{reg_aerolinea.nombre_aerolinea.strip():<30}{reg_vuelo.origen_vuelo.strip():<16}{reg_vuelo.destino_vuelo.strip():<16}{reg_vuelo.fecha_salida:<12}{reg_vuelo.hora_salida:<10}${reg_vuelo.precio_vuelo:<15}{cantidad_asientos:<5}")        
+        i += 1
+    print("-"*120)
+    if cont != 0:
+        print(f"Total de vuelos: {cont}")
+    else:
+        print("NO SE ENCONTRARON VUELOS")
+    volver()
     
 def  buscar_vuelos():
-    global vuelos, aerolineas, CANTIDAD_VUELOS, precios_vuelos
     valida = False
     fecha_desde = input("Ingrese a partir de que fecha dd/mm/aaaa, enter para salir")
     valida = validar_fecha(fecha_desde)
@@ -1831,7 +1800,7 @@ def  buscar_vuelos():
         origen = input("Ingrese el origen del vuelo: ").upper()
         destino = input("Ingrese el destino del vuelo: ").upper()
         os.system('cls')
-        ver_vuelos()
+        ver_vuelos_limitado(fecha_desde, fecha_hasta, origen, destino)
     else:
         os.system('cls')
         volver()
