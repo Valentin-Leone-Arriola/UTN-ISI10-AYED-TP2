@@ -258,6 +258,7 @@ def busqueda_secuencial_aerolinea_cod(valor):
             return -1
     else:
         return -1
+
     
 def aero_en_uso_y_con_reservas(cod_aero):
     global arlo_vuelos
@@ -680,21 +681,33 @@ def pedir_codigo_IATA():
 def pedir_codigo_aerolinea():
     codigo = input("Ingrese código de la aerolinea: ")
     while not (1 <= len(codigo) <= 5):   
-        print("El código debe tener como minimo 1 caracter y como máximo 5 caracteres")
+        print("El código debe tener como mínimo 1 caracter y como máximo 5 caracteres")
         codigo = input("Ingrese código de la aerolinea: ")
     return codigo
 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def crear_aereo():
     registro = aerolinea()
  
-    nombre = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
+    nombre = input('Ingrese el nombre de la aerolínea (max 100 caracteres). Presione enter para salir\n')
+    while len(nombre) > 100:
+        print("solo 100 caracteres")
+        nombre = input('Ingrese el nombre de la aerolínea (max 100 caracteres). Presione enter para salir\n')
+    if len(nombre) <= 100:
+        nombre_aero = nombre.ljust(100, " ")
+
     while nombre != "":
         pos = busqueda_secuencial_aerolinea_nombre(nombre)
 
         while pos != -1 and nombre != "": 
             print("\n Este Nombre de aerolinea ya existe. Intente con otro. ")
-            nombre = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
+            nombre = input('Ingrese el nombre de la aerolínea (max 100 caracteres). Presione enter para salir\n')
+            while len(nombre) > 100:
+                print("solo 100 caracteres")
+                nombre = input('Ingrese el nombre de la aerolínea (max 100 caracteres). Presione enter para salir\n')
+            if len(nombre) <= 100:
+                nombre_aero = nombre.ljust(100, " ")
             pos = busqueda_secuencial_aerolinea_nombre(nombre)
 
         if nombre != "":
@@ -704,6 +717,7 @@ def crear_aereo():
                 nro = busqueda_secuencial_aerolinea_cod(codigo) 
                 if nro != -1:
                     print("Ese código de aerolínea ya existe. Intente con otro.")
+                    codigo = pedir_codigo_aerolinea()   
             arlo_aerolineas.seek(0,2)
             registro.nombre_aerolinea = nombre.ljust(100, " ")
             cod_aero = codigo
