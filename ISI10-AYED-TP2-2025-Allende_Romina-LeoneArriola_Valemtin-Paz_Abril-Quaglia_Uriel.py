@@ -249,10 +249,10 @@ def busqueda_secuencial_aerolinea_cod(valor):
         i = 1
         registro = aerolinea()
         registro = pickle.load(arlo_aerolineas)
-        while registro.nombre_aerolinea.strip() != valor and i < cant_registros:
+        while registro.cod_aerolinea.strip() != valor and i < cant_registros:
             i = i+1
             registro = pickle.load(arlo_aerolineas)
-        if registro.nombre_aerolinea.strip() == valor:
+        if registro.cod_aerolinea.strip() == valor:
             return i-1
         else:
             return -1
@@ -298,10 +298,10 @@ def busqueda_secuencial_aerolinea_nombre(nom):
         i = 1
         registro = aerolinea()
         registro = pickle.load(arlo_aerolineas)
-        while registro.cod_aerolinea.strip() != nom and i < cant_registros:
+        while registro.nombre_aerolinea.strip() != nom and i < cant_registros:
             i = i+1
             registro = pickle.load(arlo_aerolineas)
-        if registro.cod_aerolinea.strip() == nom:
+        if registro.nombre_aerolinea.strip() == nom:
             return i-1
         else:
             return -1
