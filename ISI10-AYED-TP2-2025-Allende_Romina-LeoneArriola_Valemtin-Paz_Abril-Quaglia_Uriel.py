@@ -280,6 +280,24 @@ def busqueda_secuencial_aerolinea_cod(arfi, arlo, valor):
     else:
         return -1
     
+def busqueda_secuencial_aerolinea_nombre(arfi, arlo, valor):
+    arlo.seek(0,0)
+    cant_registros = calcular_cant_registros(arfi, arlo)
+    if cant_registros != 0:
+        arlo.seek(0,0)
+        i = 1
+        registro = aerolinea()
+        registro = pickle.load(arlo)
+        while registro.nombre_aerolinea.strip() != valor and i < cant_registros:
+            i = i+1
+            registro = pickle.load(arlo)
+        if registro.nombre_aerolinea.strip() == valor:
+            return i-1
+        else:
+            return -1
+    else:
+        return -1
+    
 def aero_en_uso_y_con_reservas(cod_aero):
     global arlo_vuelos
     global arfi_vuelos
@@ -810,34 +828,48 @@ def pedir_codigo_IATA():
 def pedir_codigo_aerolinea():
     codigo = input("Ingrese código de la aerolinea: ")
     while not (1 <= len(codigo) <= 5):   
-        print("El código debe tener como minimo 1 caracter y como máximo 5 caracteres")
+        print("El código debe tener como mínimo 1 caracter y como máximo 5 caracteres")
         codigo = input("Ingrese código de la aerolinea: ")
     return codigo
 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def crear_aereo():
     registro = aerolinea()
  
-    nombre = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
+    nombre = input('Ingrese el nombre de la aerolínea (max 100 caracteres). Presione enter para salir\n')
+    while len(nombre) > 100:
+        print("solo 100 caracteres")
+        nombre = input('Ingrese el nombre de la aerolínea (max 100 caracteres). Presione enter para salir\n')
+    if len(nombre) <= 100:
+        nombre_aero = nombre.ljust(100, " ")
+
     while nombre != "":
-        pos = buscarSecuenAerolinea(nombre) 
+        pos = busqueda_secuencial_aerolinea_nombre(arfi_aerolineas, arlo_aerolineas, nombre)
 
         while pos != -1 and nombre != "": 
             print("\n Este Nombre de aerolinea ya existe. Intente con otro. ")
-            nombre = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
-            pos = buscarSecuenAerolinea(nombre)
+            nombre = input('Ingrese el nombre de la aerolínea (max 100 caracteres). Presione enter para salir\n')
+            while len(nombre) > 100:
+                print("solo 100 caracteres")
+                nombre = input('Ingrese el nombre de la aerolínea (max 100 caracteres). Presione enter para salir\n')
+            if len(nombre) <= 100:
+                nombre_aero = nombre.ljust(100, " ")
+            pos = busqueda_secuencial_aerolinea_nombre(arfi_aerolineas, arlo_aerolineas, nombre)
 
         if nombre != "":
             nro = -2
             while nro != -1:
                 codigo = pedir_codigo_aerolinea()
-                nro = buscarSecuenCOD(codigo) 
+                if len(codigo) <= 5:
+                    cod_aero = codigo.ljust(5, " ")
+                nro = busqueda_secuencial_aerolinea_cod(arfi_aerolineas, arlo_aerolineas, codigo) 
                 if nro != -1:
                     print("Ese código de aerolínea ya existe. Intente con otro.")
+                    codigo = pedir_codigo_aerolinea()   
             arlo_aerolineas.seek(0,2)
-            registro.nombre_aerolinea = nombre.ljust(100, " ")
-            cod_aero = codigo
-            registro.cod_aerolinea = cod_aero.ljust(5, " ")
+            registro.nombre_aerolinea = nombre_aero
+            registro.cod_aerolinea = cod_aero
             cod_iata = pedir_codigo_IATA()
             registro.cod_IATA = cod_iata.ljust(3, " ")
             codigo_pais =  pedir_codigo_pais()
@@ -852,8 +884,8 @@ def crear_aereo():
             print(f">> Aerolínea creada >>")
 
             os.system('cls')
-            nombre = input('Ingrese el nombre de la aerolínea. Presione enter para salir\n')
-            pos = buscarSecuenAerolinea(nombre)
+            nombre = input('Ingrese el nombre de la aerolínea (max 100 caracteres). Presione enter para salir\n')
+            pos = busqueda_secuencial_aerolinea_nombre(arfi_aerolineas, arlo_aerolineas, nombre)
 
     listarAerolineas()
     volver()
