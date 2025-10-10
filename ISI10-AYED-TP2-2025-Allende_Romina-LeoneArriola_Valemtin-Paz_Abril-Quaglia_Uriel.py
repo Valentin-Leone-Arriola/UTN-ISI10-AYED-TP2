@@ -259,6 +259,23 @@ def busqueda_secuencial_aerolinea_cod(valor):
     else:
         return -1
 
+def busqueda_secuencial_aerolinea_cod_activa(valor):
+    arlo_aerolineas.seek(0,0)
+    cant_registros = calcular_cant_registros(arfi_aerolineas, arlo_aerolineas)
+    if cant_registros != 0:
+        arlo_aerolineas.seek(0,0)
+        i = 1
+        registro = aerolinea()
+        registro = pickle.load(arlo_aerolineas)
+        while registro.cod_aerolinea.strip() != valor and i < cant_registros:
+            i = i+1
+            registro = pickle.load(arlo_aerolineas)
+        if registro.cod_aerolinea.strip() == valor and registro.baja == 'N':
+            return i-1
+        else:
+            return -1
+    else:
+        return -1
     
 def aero_en_uso_y_con_reservas(cod_aero):
     global arlo_vuelos
@@ -702,7 +719,7 @@ def crear_aereo():
                 codigo = pedir_codigo_aerolinea()   # ya valida entre 1 y 5 caracteres
                 cod_aero = codigo.ljust(5, " ")     # completa si hace falta
 
-                nro = busqueda_secuencial_aerolinea_cod(arfi_aerolineas, arlo_aerolineas, codigo)
+                nro = busqueda_secuencial_aerolinea_cod(codigo)
 
                 if nro == -1:
                     valido = True     # ya no se repite → código válido
@@ -1081,7 +1098,7 @@ def modificar_vuelo():
                                 registro.destino_vuelo = nuevo_destino.ljust(50, " ")
                             case 4:
                                 os.system('cls')
-                                nueva_fecha = validar_fecha()
+                                nueva_fecha = pedir_fecha_valida()
                                 registro.fecha_salida = nueva_fecha.ljust(10, " ")
                             case 5:
                                 os.system('cls')
@@ -1116,12 +1133,12 @@ def crear_vuelo():
     while cod_aero != '*':
         os.system('cls')
         cod_aero = input("ingrese el codigo de la aerolinea, * para salir: ")
-        pos = busqueda_secuencial_aerolinea_cod(cod_aero)
+        pos = busqueda_secuencial_aerolinea_cod_activa(cod_aero)
         
         while pos == -1 and cod_aero != '*':
             os.system('cls')
             cod_aero = input("el codigo de aerolinea no existe, ingrese uno valido o * para salir:")
-            pos = busqueda_secuencial_aerolinea_cod(cod_aero)
+            pos = busqueda_secuencial_aerolinea_cod_activa(cod_aero)
             
         if cod_aero != '*':
             
