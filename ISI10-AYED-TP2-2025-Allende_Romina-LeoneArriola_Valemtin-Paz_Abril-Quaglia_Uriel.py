@@ -300,7 +300,7 @@ def aero_en_uso_y_con_reservas(cod_aero):
                     arlo_reservas.seek(0,0)
                     while arlo_reservas.tell() < Tam_reg_R and not encontrado:
                         reserva = pickle.load(arlo_reservas)
-                        if reserva.cod_vuelo.strip() == codigo_vuelo and reserva.estado_reserva == "confirmada":
+                        if reserva.cod_vuelo == codigo_vuelo and reserva.estado_reserva == "confirmada":
                             encontrado = True
 
     return encontrado
