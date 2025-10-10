@@ -565,7 +565,7 @@ def eliminar_aero():
             while arlo_aerolineas.tell() < os.path.getsize(arfi_aerolineas):
                 p = arlo_aerolineas.tell() #se guarda la pos actual antes de leer
                 registro = pickle.load(arlo_aerolineas) #leemos un reg (aerolinea)
-    
+
                 if registro.cod_aerolinea.rstrip() == cod:
                     if registro.baja == "N" : #si la aero esta activa 
                         vuel_y_res =  aero_en_uso_y_con_reservas(cod)
@@ -586,9 +586,9 @@ def eliminar_aero():
                             print("la aerolinea tiene vuelos y reservas confirmadas, No se puede eliminar") #no se puede eliminar
                     else: 
                         print("La aerolinea ya se encuentra eliminada")
-    
+
             cod = input("Ingrese código de aerolínea a eliminar ('*' para salir): ")
-        
+
         listarAerolineas()
         volver()
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1901,6 +1901,10 @@ while opc!= 3:
             opc = validar_entero()
         case 3:
             print()
-print("Cerrando programa...") 
+print("Cerrando programa...")
+arlo_usuarios.close()
+arlo_aerolineas.close()
+arlo_vuelos.close()
+arlo_reservas.close()
 
 
