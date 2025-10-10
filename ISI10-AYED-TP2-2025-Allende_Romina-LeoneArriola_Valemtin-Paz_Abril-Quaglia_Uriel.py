@@ -311,7 +311,7 @@ def aero_en_uso_y_con_reservas(cod_aero):
                         arlo_reservas.seek(0,0)
                         while arlo_reservas.tell() < Tam_reg_R and not encontrada_reserva:
                             reserva = pickle.load(arlo_reservas)
-                            if reserva.cod_vuelo.strip() == codigo_vuelo and reserva.estado_reserva == "confirmada":
+                            if reserva.cod_vuelo == codigo_vuelo and reserva.estado_reserva == "confirmada":
                                 encontrada_reserva = True
 
     if encontrada_reserva:
@@ -585,7 +585,7 @@ def eliminar_aero():
         while cod != "*" :
             pos = busqueda_secuencial_aerolinea_cod(cod)
             if pos != -1:
-                tamReg = calcular_tamanio_registro(arfi_aerolineas, arfi_aerolineas)
+                tamReg = calcular_tamanio_registro(arfi_aerolineas, arlo_aerolineas)
                 arlo_aerolineas.seek(tamReg*pos,0)
                 registro = pickle.load(arlo_aerolineas)
                 if registro.baja == "N" : #si la aero esta activa 
@@ -614,8 +614,9 @@ def eliminar_aero():
                                 print("✅ Aerolinea eliminada.")#no se puede eliminar
                 else: 
                     print("La aerolinea ya se encuentra eliminada")
-
-                cod = input("Ingrese código de aerolínea a eliminar ('*' para salir): ")
+            else:
+                print("No existe una aerolinea con ese codigo")
+            cod = input("Ingrese código de aerolínea a eliminar ('*' para salir): ")
 
         listarAerolineas()
         volver()
