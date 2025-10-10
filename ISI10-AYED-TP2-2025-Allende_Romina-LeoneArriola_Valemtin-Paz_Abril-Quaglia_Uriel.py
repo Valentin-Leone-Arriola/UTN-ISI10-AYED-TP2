@@ -282,28 +282,50 @@ def aero_en_uso_y_con_reservas(cod_aero):
     global arfi_vuelos
     global arlo_reservas
     global arfi_reservas
+    fecha_actual = datetime.today()
     Tam_reg_V = os.path.getsize(arfi_vuelos)
     Tam_reg_R = os.path.getsize(arfi_reservas)
-    encontrado = False
-    
+    encontrado_vuelo = False
+    baja_vuelo = True
+    vuelo_vigente = False
+    encontrada_reserva = False
+        
     if Tam_reg_V == 0:
-        print("no hay vuelos")
+        print("No hay vuelos de esa aerolinea")
     else:
         if Tam_reg_R == 0: 
             print("no hay reservas")
         else:
             arlo_vuelos.seek(0,0)
-            while arlo_vuelos.tell() < Tam_reg_V and not encontrado:
+            while arlo_vuelos.tell() < Tam_reg_V and not encontrada_reserva:
                 vuelo = pickle.load(arlo_vuelos)
-                if vuelo.cod_aerolinea.strip() == cod_aero.strip() and vuelo.estado_vuelo != "B": #si el vuelo pertenece a la aerolinea y esta vigente
-                    codigo_vuelo = vuelo.cod_vuelo
-                    arlo_reservas.seek(0,0)
-                    while arlo_reservas.tell() < Tam_reg_R and not encontrado:
-                        reserva = pickle.load(arlo_reservas)
-                        if reserva.cod_vuelo.strip() == codigo_vuelo and reserva.estado_reserva == "confirmada":
-                            encontrado = True
+                fecha_vuelo = datetime.strptime(vuelo.fecha_salida, "%d/%m/%Y")
+                if vuelo.cod_aerolinea.strip() == cod_aero.strip():
+                    encontrado_vuelo = True
+                    if vuelo.estado_vuelo != "B":
+                        baja_vuelo = False
+                        if fecha_vuelo > fecha_actual:
+                            vuelo_vigente = True
+                    #si el vuelo pertenece a la aerolinea y esta vigente
+                        codigo_vuelo = vuelo.cod_vuelo
+                        arlo_reservas.seek(0,0)
+                        while arlo_reservas.tell() < Tam_reg_R and not encontrada_reserva:
+                            reserva = pickle.load(arlo_reservas)
+                            if reserva.cod_vuelo.strip() == codigo_vuelo and reserva.estado_reserva == "confirmada":
+                                encontrada_reserva = True
 
-    return encontrado
+    if encontrada_reserva:
+        return 0
+    elif encontrado_vuelo:
+        if not baja_vuelo:
+            if vuelo_vigente:
+                return 1
+            else:
+                return 2
+        else:
+            return 3
+    else:
+        return 4
 
 
  
@@ -558,40 +580,45 @@ def eliminar_aero():
 
     if os.path.getsize(arfi_aerolineas) == 0:
         print("Archivo vacio. No hay aerolineas cargadas")
-        return
-
-    cod = input("Ingrese código de aerolínea a eliminar ('*' para salir): ")
-    while cod != "*" :
-        arlo_aerolineas.seek(0, 0)
-        while arlo_aerolineas.tell() < os.path.getsize(arfi_aerolineas):
-            p = arlo_aerolineas.tell() #se guarda la pos actual antes de leer
-            registro = pickle.load(arlo_aerolineas) #leemos un reg (aerolinea)
-
-            if registro.cod_aerolinea.rstrip() == cod:
+    else:
+        cod = input("Ingrese código de aerolínea a eliminar ('*' para salir): ")
+        while cod != "*" :
+            pos = busqueda_secuencial_aerolinea_cod(cod)
+            if pos != -1:
+                tamReg = calcular_tamanio_registro(arfi_aerolineas, arfi_aerolineas)
+                arlo_aerolineas.seek(tamReg*pos,0)
+                registro = pickle.load(arlo_aerolineas)
                 if registro.baja == "N" : #si la aero esta activa 
-                    vuel_y_res =  aero_en_uso_y_con_reservas(cod)
-                    if not vuel_y_res:    #si no es true
-                        print("la aerolinea no tiene vuelos cargados ni reservas confirmadas, puede darse de baja") #se puede eliminar
-                        opc = input("seguro que quiere eliminar la aerolinea, (S/N) : ")
-                        opc = opc.upper()
-                        while opc != 'S' and opc != 'N':
-                            opc = input("opcion invalida, por favor seleccione S o N: ")
+                        vuel_y_res =  aero_en_uso_y_con_reservas(cod)
+                        if vuel_y_res == 0:
+                            print("La aerolinea tiene vuelos vigentes con reservas confirmadas. No se puede eliminar")
+                        else:
+                            if vuel_y_res == 4:
+                                print("La aerolinea no tiene vuelos cargados. Se puede eliminar")
+                            elif vuel_y_res == 3:
+                                print("La aerolinea tiene vuelos cargados pero estan dados de baja. Se puede eliminar.")
+                            elif vuel_y_res == 2:
+                                print("La aerolinea tiene vuelos de alta pero ya no estan vigentes. Se puede eliminar la aerolinea. No se daran de baja los vuelos asociados, debe hacerse manualmente")
+                            elif vuel_y_res == 1:
+                                print("La aerolinea tiene vuelos vigentes pero no tienen reservas confirmadas. Se puede eliminar. No se daran de baja los vuelos asociados, debe hacerse manualemnte")
+                            opc = input("seguro que quiere eliminar la aerolinea, (S/N) : ")
                             opc = opc.upper()
-                        if opc == 'S':
-                            registro.baja = "S" #se dio de baja la aerolinea
-                            arlo_aerolineas.seek(p,0)
-                            pickle.dump(registro, arlo_aerolineas)
-                            arlo_aerolineas.flush()   
-                            print("✅ Aerolinea eliminada.")
-                    else:
-                        print("la aerolinea tiene vuelos y reservas confirmadas, No se puede eliminar") #no se puede eliminar
+                            while opc != 'S' and opc != 'N':
+                                opc = input("opcion invalida, por favor seleccione S o N: ")
+                                opc = opc.upper()
+                            if opc == 'S':
+                                registro.baja = "S" #se dio de baja la aerolinea
+                                arlo_aerolineas.seek(tamReg*pos,0)
+                                pickle.dump(registro, arlo_aerolineas)
+                                arlo_aerolineas.flush()   
+                                print("✅ Aerolinea eliminada.")#no se puede eliminar
                 else: 
                     print("La aerolinea ya se encuentra eliminada")
 
-        cod = input("Ingrese código de aerolínea a eliminar ('*' para salir): ")
-    
-    listarAerolineas()
-    volver()
+                cod = input("Ingrese código de aerolínea a eliminar ('*' para salir): ")
+
+        listarAerolineas()
+        volver()
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def modificar_aereo(): 
