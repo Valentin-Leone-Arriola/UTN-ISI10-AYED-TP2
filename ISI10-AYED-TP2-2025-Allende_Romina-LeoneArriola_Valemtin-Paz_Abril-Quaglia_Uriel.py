@@ -1901,10 +1901,11 @@ while opc!= 3:
             opc = validar_entero()
         case 3:
             print()
+            arlo_usuarios.close()
+            arlo_aerolineas.close()
+            arlo_vuelos.close()
+            arlo_reservas.close()
 print("Cerrando programa...")
-arlo_usuarios.close()
-arlo_aerolineas.close()
-arlo_vuelos.close()
-arlo_reservas.close()
+
 
 
