@@ -1428,9 +1428,14 @@ def reservar_vuelos():
         cod_vuelo = int(cod_vuelo)
         vuelo_valido = validar_vigencia(cod_vuelo)
         if vuelo_valido:
+            reg_vuelo = vuelo()
             tam_reg_vuelo = calcular_tamanio_registro(arfi_vuelos,arlo_vuelos)
-            arlo_vuelos.seek(tam_reg_vuelo*cod_vuelo, 0)
+            arlo_vuelos.seek(tam_reg_vuelo*(cod_vuelo), 0)
             reg_vuelo = pickle.load(arlo_vuelos)
+            
+            print("Registro vuelo apenas leido")
+            print(reg_vuelo)
+            
             asientos_disponibles = False
             j = 0 
             i=0
@@ -1477,8 +1482,11 @@ def reservar_vuelos():
                         reg_vuelo.estado_vuelo = reg_vuelo.estado_vuelo
                         
                         
-                        pickle.dump(reg_vuelo, arlo_vuelos)
-                        arlo_vuelos.flush()
+                        
+                        print("No hace dump. Tamanio reg vuelo", tam_reg_vuelo,"Codigo vuelo", cod_vuelo)
+                        print(reg_vuelo)
+                        #pickle.dump(reg_vuelo, arlo_vuelos)
+                        #arlo_vuelos.flush()
                         
                         continuar_seleccion = "N"
                         print("Se reservo correctamente el asiento\n")
