@@ -279,8 +279,8 @@ def busqueda_secuencial_aerolinea_cod_activa(valor):
             return -1
     else:
         return -1
-    
-def aero_en_uso_y_con_reservas(cod_aero):
+ 
+"""def aero_en_uso_y_con_reservas(cod_aero):
     global arlo_vuelos
     global arfi_vuelos
     global arlo_reservas
@@ -315,7 +315,63 @@ def aero_en_uso_y_con_reservas(cod_aero):
                         while arlo_reservas.tell() < Tam_reg_R and not encontrada_reserva:
                             reserva = pickle.load(arlo_reservas)
                             if reserva.cod_vuelo == codigo_vuelo and reserva.estado_reserva == "confirmada":
-                                encontrada_reserva = True
+                                encontrada_reserva = True 
+
+    if encontrada_reserva:
+        return 0
+    elif encontrado_vuelo:
+        if not baja_vuelo:
+            if vuelo_vigente:
+                return 1
+            else:
+                return 2
+        else:
+            return 3
+    else:
+        return 4 """
+
+def aero_en_uso_y_con_reservas(cod_aero):
+    global arlo_vuelos
+    global arfi_vuelos
+    global arlo_reservas
+    global arfi_reservas
+    fecha_actual = datetime.today()
+
+    encontrada_reserva = False
+    encontrado_vuelo = False
+    baja_vuelo = True
+    vuelo_vigente = False
+
+    cant_vuelos = calcular_cant_registros(arfi_vuelos, arlo_vuelos)
+    cant_reservas = calcular_cant_registros(arfi_reservas, arlo_reservas)
+    arlo_vuelos.seek(0, 0)
+    arlo_reservas.seek(0, 0)
+    i = 0
+    while i < cant_vuelos and not encontrada_reserva:
+        tamRegV = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
+        arlo_vuelos.seek(i * tamRegV, 0)
+        vuelo = pickle.load(arlo_vuelos)
+
+        if vuelo.cod_aerolinea.strip() == cod_aero.strip():
+            encontrado_vuelo = True
+            if vuelo.estado_vuelo != "B":
+                baja_vuelo = False
+                fecha_vuelo = datetime.strptime(vuelo.fecha_salida, "%d/%m/%Y")
+                if fecha_vuelo > fecha_actual:
+                    vuelo_vigente = True
+
+                # Recorro todas las reservas de este vuelo
+                j = 0
+                encontrada_reserva_local = False
+                while j < cant_reservas and not encontrada_reserva_local:
+                    tamRegR = calcular_tamanio_registro(arfi_reservas, arlo_reservas)
+                    arlo_reservas.seek(j * tamRegR, 0)
+                    reserva = pickle.load(arlo_reservas)
+                    if reserva.cod_vuelo == vuelo.cod_vuelo and reserva.estado_reserva.strip() == "confirmada":
+                        encontrada_reserva_local = True
+                        encontrada_reserva = True
+                    j += 1
+        i += 1
 
     if encontrada_reserva:
         return 0
@@ -329,8 +385,6 @@ def aero_en_uso_y_con_reservas(cod_aero):
             return 3
     else:
         return 4
-
-
  
 
  
@@ -1084,7 +1138,7 @@ def modificar_vuelo():
                         puede_modificar = True
                     else:
                         input("no se puede modificar un vuelo dado de baja.")
-                
+                        puede_modificar = False
                 if puede_modificar:  
                     opc2 = 0
                     while opc2 != 7:
