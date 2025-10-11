@@ -1115,14 +1115,14 @@ def modificar_vuelo():
                                 nuevo_origen =  input("ingrese el nuevo origen: ")  
                                 while len(nuevo_origen) > 50:
                                    nuevo_origen = input("por favor no mas de 50 caracteres, ingrese el origen nuevamente: ")
-                                   
+                                nuevo_origen = nuevo_origen.upper()   
                                 registro.origen_vuelo = nuevo_origen.ljust(50, " ")
                             case 3:
                                 os.system('cls')
                                 nuevo_destino = input("ingrese el nuevo destino: ")
                                 while len(nuevo_destino) > 50:
                                    nuevo_destino = input("por favor no mas de 50 caracteres, ingrese el destino nuevamente: ")
-                                
+                                nuevo_destino = nuevo_destino.upper()
                                 registro.destino_vuelo = nuevo_destino.ljust(50, " ")
                             case 4:
                                 os.system('cls')
@@ -1419,7 +1419,7 @@ def reservar_vuelos():
     global logged_user
     reg_reserva = reserva()
     continuar = "S"
-    while continuar =="S":
+    while continuar.upper() =="S":
         print("Ingrese el codigo del vuelo que desea")
         cod_vuelo = validar_entero()
         while cod_vuelo ==-1:
@@ -1468,8 +1468,18 @@ def reservar_vuelos():
                     if reg_vuelo.asientos_vuelo[fila_real][col_real] == "L":
                         reg_vuelo.asientos_vuelo[fila_real][col_real] ="R"
                         arlo_vuelos.seek(tam_reg_vuelo*(cod_vuelo), 0)
+                        
+                        reg_vuelo.cod_aerolinea = reg_vuelo.cod_aerolinea.ljust(5, " ")
+                        reg_vuelo.origen_vuelo = reg_vuelo.origen_vuelo.ljust(50, " ")
+                        reg_vuelo.origen_vuelo = reg_vuelo.origen_vuelo.ljust(50, " ")
+                        reg_vuelo.fecha_salida = reg_vuelo.fecha_salida.ljust(10, " ")
+                        reg_vuelo.hora_salida = reg_vuelo.hora_salida.ljust(5, " ")
+                        reg_vuelo.estado_vuelo = reg_vuelo.estado_vuelo
+                        
+                        
                         pickle.dump(reg_vuelo, arlo_vuelos)
                         arlo_vuelos.flush()
+                        
                         continuar_seleccion = "N"
                         print("Se reservo correctamente el asiento\n")
                         reg_reserva.cod_reserva = int(calcular_cant_registros(arfi_reservas, arlo_reservas))
