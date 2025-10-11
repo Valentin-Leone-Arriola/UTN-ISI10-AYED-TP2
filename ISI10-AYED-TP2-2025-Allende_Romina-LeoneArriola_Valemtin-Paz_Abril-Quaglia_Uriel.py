@@ -1135,7 +1135,7 @@ def modificar_vuelo():
                             case 6:
                                 os.system('cls')
                                 nuevo_precio = validar_precio()
-                                registro.precio_vuelo = nuevo_precio
+                                registro.precio_vuelo = round(nuevo_precio,2)
                             case 7:
                                 os.system('cls')
                                 volver() 
@@ -1189,12 +1189,12 @@ def crear_vuelo():
             hora = validar_hora()
             registro.hora_salida = hora.ljust(5, " ")
             precio = validar_precio()
-            registro.precio_vuelo = precio
+            registro.precio_vuelo = round(precio, 2)
             for i in range(40):
               for k in range(3):
-                  registro.asientos_vuelo[i][k] = 'L'
+                  registro.asientos_vuelo[i][k] = "L"
               for k in range(4,7): 
-                  registro.asientos_vuelo[i][k] = 'L'
+                  registro.asientos_vuelo[i][k] = "L"
             registro.estado_vuelo = "A"
             arlo_vuelos.seek(0,2)
             pickle.dump(registro, arlo_vuelos)
@@ -1434,7 +1434,7 @@ def reservar_vuelos():
             reg_vuelo = pickle.load(arlo_vuelos)
             
             print("Registro vuelo apenas leido")
-            print(reg_vuelo)
+            print(tam_reg_vuelo)
             
             asientos_disponibles = False
             j = 0 
@@ -1484,9 +1484,11 @@ def reservar_vuelos():
                         
                         
                         print("No hace dump. Tamanio reg vuelo", tam_reg_vuelo,"Codigo vuelo", cod_vuelo)
-                        print(reg_vuelo)
-                        #pickle.dump(reg_vuelo, arlo_vuelos)
-                        #arlo_vuelos.flush()
+                        pickle.dump(reg_vuelo, arlo_vuelos)
+                        arlo_vuelos.flush()
+                        tam_reg_vuelo = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
+                        print("Nuevo tamanio registro vuelo")
+                        print(tam_reg_vuelo)
                         
                         continuar_seleccion = "N"
                         print("Se reservo correctamente el asiento\n")
@@ -1889,7 +1891,7 @@ class vuelo:
         self.fecha_salida = " "
         self.hora_salida = " "
         self.precio_vuelo = 0.0
-        self.asientos_vuelo = [[""]*7 for i in range(int(ASIENTOS_POR_AVION/6))]
+        self.asientos_vuelo = [[" "]*7 for i in range(int(ASIENTOS_POR_AVION/6))]
         self.estado_vuelo = " "
 
 class reserva:
