@@ -224,23 +224,26 @@ def ordenar_burbuja_desc(arreglo, columna_orden, cant_columnas):
 
 
 def busqueda_secuencial_reservas(arfi, arlo, valor1, valor2):
-    arlo.seek(0,0)
+    arlo.seek(0, 0)
     cant_registros = calcular_cant_registros(arfi, arlo)
+
     if cant_registros != 0:
-        arlo.seek(0,0)
+        arlo.seek(0, 0)
         i = 1
-        registro = reserva()
         registro = pickle.load(arlo)
-        while registro.cod_vuelo != valor1 or registro.estado_reserva.strip() != valor2 and i < cant_registros:
-            i = i+1
+
+        while (registro.cod_vuelo != valor1 or registro.estado_reserva.strip() != valor2) and i < cant_registros:
+            i += 1
             registro = pickle.load(arlo)
+
         if registro.cod_vuelo == valor1 and registro.estado_reserva.strip() == valor2:
-            return i-1
+            return i - 1
         else:
             return -1
     else:
         return -1
-
+    
+    
 def busqueda_secuencial_aerolinea_cod(valor):
     arlo_aerolineas.seek(0,0)
     cant_registros = calcular_cant_registros(arfi_aerolineas, arlo_aerolineas)
@@ -1191,10 +1194,11 @@ def crear_vuelo():
             precio = validar_precio()
             registro.precio_vuelo = round(precio, 2)
             for i in range(40):
-              for k in range(3):
-                  registro.asientos_vuelo[i][k] = "L"
-              for k in range(4,7): 
-                  registro.asientos_vuelo[i][k] = "L"
+                for k in range(3):
+                    registro.asientos_vuelo[i][k] = "L"
+                for k in range(4,7): 
+                    registro.asientos_vuelo[i][k] = "L"
+                registro.asientos_vuelo[i][3]="R"
             registro.estado_vuelo = "A"
             arlo_vuelos.seek(0,2)
             pickle.dump(registro, arlo_vuelos)
@@ -1432,9 +1436,7 @@ def reservar_vuelos():
             tam_reg_vuelo = calcular_tamanio_registro(arfi_vuelos,arlo_vuelos)
             arlo_vuelos.seek(tam_reg_vuelo*(cod_vuelo), 0)
             reg_vuelo = pickle.load(arlo_vuelos)
-            
-            print("Registro vuelo apenas leido")
-            print(tam_reg_vuelo)
+
             
             asientos_disponibles = False
             j = 0 
@@ -1483,12 +1485,9 @@ def reservar_vuelos():
                         
                         
                         
-                        print("No hace dump. Tamanio reg vuelo", tam_reg_vuelo,"Codigo vuelo", cod_vuelo)
                         pickle.dump(reg_vuelo, arlo_vuelos)
                         arlo_vuelos.flush()
-                        tam_reg_vuelo = calcular_tamanio_registro(arfi_vuelos, arlo_vuelos)
-                        print("Nuevo tamanio registro vuelo")
-                        print(tam_reg_vuelo)
+
                         
                         continuar_seleccion = "N"
                         print("Se reservo correctamente el asiento\n")
