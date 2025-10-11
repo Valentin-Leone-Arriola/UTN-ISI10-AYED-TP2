@@ -231,7 +231,7 @@ def busqueda_secuencial_reservas(arfi, arlo, valor1, valor2):
         i = 1
         registro = reserva()
         registro = pickle.load(arlo)
-        while registro.cod_vuelo != valor1 and registro.estado_reserva.strip() != valor2 and i < cant_registros:
+        while registro.cod_vuelo != valor1 or registro.estado_reserva.strip() != valor2 and i < cant_registros:
             i = i+1
             registro = pickle.load(arlo)
         if registro.cod_vuelo == valor1 and registro.estado_reserva.strip() == valor2:
