@@ -16,3 +16,5 @@ hacer todos los menus iterativos(usuarios y ceo). Tambien se puede probar hacer 
 # LO VEMOS DESPUES
 buscar_vuelos 
 buscar_asientos
+
+TEST
